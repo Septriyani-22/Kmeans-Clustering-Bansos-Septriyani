@@ -19,16 +19,18 @@ use App\Http\Controllers\KepalaDesa\KriteriaController as KepalaDesaKriteriaCont
 use App\Http\Controllers\KepalaDesa\CentroidController as KepalaDesaCentroidController;
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Penduduk\DashboardController as PendudukDashboardController;
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/search/result', [App\Http\Controllers\SearchController::class, 'search'])->name('search.result');
 
@@ -40,7 +42,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -107,7 +109,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     });
 });
 
-Route::middleware(['auth', 'kepala_desa'])->prefix('kepala_desa')->name('kepala_desa.')->group(function () {
+Route::middleware(['auth', 'role:kepala_desa'])->prefix('kepala_desa')->name('kepala_desa.')->group(function () {
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -139,4 +141,10 @@ Route::middleware(['auth', 'kepala_desa'])->prefix('kepala_desa')->name('kepala_
     Route::get('centroid/create', [KepalaDesaCentroidController::class, 'create'])->name('centroid.create');
     Route::post('centroid', [KepalaDesaCentroidController::class, 'store'])->name('centroid.store');
     Route::delete('centroid/{id}', [KepalaDesaCentroidController::class, 'destroy'])->name('centroid.destroy');
+});
+
+// Penduduk routes
+Route::middleware(['auth', 'role:penduduk'])->prefix('penduduk')->name('penduduk.')->group(function () {
+    Route::get('/dashboard', [PendudukDashboardController::class, 'index'])->name('dashboard');
+    // Add other penduduk routes here
 });
