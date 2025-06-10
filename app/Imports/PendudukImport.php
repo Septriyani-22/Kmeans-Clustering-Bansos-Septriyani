@@ -4,45 +4,77 @@ namespace App\Imports;
 use App\Models\Penduduk;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Concerns\SkipsOnFailure;
-use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
+use Illuminate\Support\Facades\Log;
 
 HeadingRowFormatter::default('none'); // disable auto snake_case header
 
-class PendudukImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure
+class PendudukImport implements ToModel, WithHeadingRow
 {
-    use Importable, SkipsFailures;
+    use Importable;
 
     public function model(array $row)
     {
-        return new Penduduk([
-            'nik' => $row['nik'],
-            'nama' => $row['nama'],
-            'jenis_kelamin' => $row['jenis_kelamin'],
-            'umur' => $row['umur'],
-            'rt_rw' => $row['rt_rw'],
-            'tanggungan' => $row['tanggungan'],
-            'penghasilan' => $row['penghasilan'],
-            'kondisi_rumah' => $row['kondisi_rumah'],
-            'status_kepemilikan_rumah' => $row['status_kepemilikan_rumah'],
-        ]);
-    }
+        try {
+            // Skip if NIK is empty
+            if (empty($row['nik'])) {
+                return null;
+            }
 
-    public function rules(): array
-    {
-        return [
-            'nik' => 'required|numeric|digits:12|unique:penduduks,nik',
-            'nama' => 'required|string|max:255',
-            'jenis_kelamin' => 'required|string',
-            'umur' => 'required|string',
-            'rt_rw' => 'nullable|string|max:20',
-            'tanggungan' => 'nullable|string',
-            'penghasilan' => 'required|string',
-            'kondisi_rumah' => 'required|string',
-            'status_kepemilikan_rumah' => 'required|string',
-        ];
+            // Clean the data
+            $nik = trim($row['nik']);
+            $nama = trim($row['nama'] ?? '');
+            $tahun = trim($row['tahun'] ?? date('Y'));
+            $jenis_kelamin = trim($row['jenis_kelamin'] ?? 'L');
+            $usia = trim($row['usia'] ?? '0');
+            $rt = trim($row['rt'] ?? '1');
+            $tanggungan = trim($row['tanggungan'] ?? '1');
+            $penghasilan = trim($row['penghasilan'] ?? '0');
+            $kondisi_rumah = trim($row['kondisi_rumah'] ?? 'cukup');
+            $status_kepemilikan = trim($row['status_kepemilikan'] ?? 'hak milik');
+
+            // Convert numeric values
+            $usia = is_numeric($usia) ? (int)$usia : 0;
+            $rt = is_numeric($rt) ? (int)$rt : 1;
+            $tanggungan = is_numeric($tanggungan) ? (int)$tanggungan : 1;
+            $penghasilan = is_numeric($penghasilan) ? (int)$penghasilan : 0;
+
+            // Cek apakah data sudah ada berdasarkan NIK
+            $penduduk = Penduduk::where('nik', $nik)->first();
+
+            if ($penduduk) {
+                // Update data yang sudah ada
+                $penduduk->update([
+                    'nama' => $nama,
+                    'tahun' => $tahun,
+                    'jenis_kelamin' => $jenis_kelamin,
+                    'usia' => $usia,
+                    'rt' => $rt,
+                    'tanggungan' => $tanggungan,
+                    'penghasilan' => $penghasilan,
+                    'kondisi_rumah' => $kondisi_rumah,
+                    'status_kepemilikan' => $status_kepemilikan,
+                ]);
+                return null;
+            }
+
+            // Buat data baru jika belum ada
+            return new Penduduk([
+                'nik' => $nik,
+                'nama' => $nama,
+                'tahun' => $tahun,
+                'jenis_kelamin' => $jenis_kelamin,
+                'usia' => $usia,
+                'rt' => $rt,
+                'tanggungan' => $tanggungan,
+                'penghasilan' => $penghasilan,
+                'kondisi_rumah' => $kondisi_rumah,
+                'status_kepemilikan' => $status_kepemilikan,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error importing row: ' . json_encode($row) . ' Error: ' . $e->getMessage());
+            return null; // Skip row on error instead of throwing exception
+        }
     }
 }

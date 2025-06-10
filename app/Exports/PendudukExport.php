@@ -5,22 +5,31 @@ namespace App\Exports;
 use App\Models\Penduduk;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class PendudukExport implements FromCollection, WithHeadings
+class PendudukExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
     public function collection()
     {
         return Penduduk::select([
-            'nik', 'nama', 'jenis_kelamin', 'umur', 'rt_rw', 'tanggungan',
-            'penghasilan', 'kondisi_rumah', 'status_kepemilikan_rumah'
+            'nik', 'nama', 'tahun', 'jenis_kelamin', 'usia', 'rt', 'tanggungan',
+            'penghasilan', 'kondisi_rumah', 'status_kepemilikan'
         ])->get();
     }
 
     public function headings(): array
     {
         return [
-            'NIK', 'Nama', 'Jenis Kelamin', 'Umur', 'RT/RW', 'Tanggungan',
-            'Penghasilan', 'Kondisi Rumah', 'Status Kepemilikan Rumah'
+            'NIK',
+            'Nama',
+            'Tahun',
+            'Jenis Kelamin',
+            'Usia',
+            'RT',
+            'Tanggungan',
+            'Penghasilan',
+            'Kondisi Rumah',
+            'Status Kepemilikan'
         ];
     }
 }

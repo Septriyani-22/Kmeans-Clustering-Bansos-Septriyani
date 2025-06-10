@@ -61,7 +61,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Penduduk
     Route::post('penduduk/import', [AdminPendudukController::class, 'import'])->name('penduduk.import');
     Route::get('penduduk/export', [AdminPendudukController::class, 'export'])->name('penduduk.export');
-    Route::get('penduduk/format', [AdminPendudukController::class, 'format'])->name('penduduk.format');
+    Route::get('/penduduk/format', [App\Http\Controllers\Admin\PendudukController::class, 'format'])->name('penduduk.format');
     Route::get('penduduk/cetak', [AdminPendudukController::class, 'cetak'])->name('penduduk.cetak');
     Route::resource('penduduk', AdminPendudukController::class)->except(['show']);
 
@@ -87,6 +87,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Hasil Kmeans
     Route::get('hasil-kmeans', [HasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
     Route::get('hasil-kmeans/export', [HasilKmeansController::class, 'export'])->name('hasil-kmeans.export');
+
+    Route::post('/penduduk/mass-update', [App\Http\Controllers\Admin\PendudukController::class, 'massUpdate'])->name('penduduk.mass-update');
+    Route::post('/penduduk/mass-delete', [App\Http\Controllers\Admin\PendudukController::class, 'massDelete'])->name('penduduk.mass-delete');
 });
 
 Route::middleware(['auth', 'kepala_desa'])->prefix('kepala_desa')->name('kepala_desa.')->group(function () {
