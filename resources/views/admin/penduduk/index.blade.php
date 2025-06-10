@@ -111,11 +111,14 @@
                                     <th>No</th>
                                     <th>NIK</th>
                                     <th>Nama</th>
+                                    <th>Tahun</th>
+                                    <th>Jenis Kelamin</th>
                                     <th>Usia</th>
-                                    <th>Jumlah Tanggungan</th>
+                                    <th>Rt</th>
+                                    <th>Tanggungan</th>
                                     <th>Kondisi Rumah</th>
                                     <th>Status Kepemilikan</th>
-                                    <th>Jumlah Penghasilan</th>
+                                    <th>Penghasilan</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -125,7 +128,10 @@
                                         <td>{{ $p->no ?? $loop->iteration }}</td>
                                         <td>{{ $p->nik }}</td>
                                         <td>{{ $p->nama }}</td>
+                                        <td>{{ $p->tahun }}</td>
+                                        <td>{{ $p->jenis_kelamin }}</td>
                                         <td>{{ $p->usia }}</td>
+                                        <td>{{ $p->rt }}</td>
                                         <td>{{ $p->tanggungan }}</td>
                                         <td>
                                             <span class="badge badge-{{ $p->kondisi_rumah == 'baik' ? 'success' : ($p->kondisi_rumah == 'cukup' ? 'warning' : 'danger') }}">
