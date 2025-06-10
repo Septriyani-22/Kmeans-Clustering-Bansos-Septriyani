@@ -5,13 +5,36 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Centroid;
+use App\Models\Penduduk;
 
 class CentroidController extends Controller
 {
     public function index()
     {
         $centroids = Centroid::orderBy('id')->get();
-        return view('admin.centroid', compact('centroids'));
+        $penduduk = Penduduk::all();
+        $hasil = [];
+
+        foreach ($penduduk as $p) {
+            $jarak = [];
+            foreach ($centroids as $c) {
+                $jarak[] = sqrt(
+                    pow($p->usia - $c->usia, 2) +
+                    pow($p->tanggungan - $c->tanggungan, 2) +
+                    pow($p->kondisi_rumah - $c->kondisi_rumah, 2) +
+                    pow($p->status_kepemilikan - $c->status_kepemilikan, 2) +
+                    pow($p->penghasilan - $c->penghasilan, 2)
+                );
+            }
+            $hasil[] = [
+                'jarak1' => $jarak[0],
+                'jarak2' => $jarak[1],
+                'jarak3' => $jarak[2],
+                'cluster' => array_search(min($jarak), $jarak) + 1
+            ];
+        }
+
+        return view('admin.centroid', compact('centroids', 'hasil'));
     }
 
     public function create()
