@@ -1,0 +1,51 @@
+NIK,Nama,Jenis Kelamin,Umur,RT/RW,Tanggungan,Penghasilan,Kondisi Rumah,Status Kepemilikan Rumah
+100000000001,Andreas Tjandra,Laki-laki,41-50,01/02,3,500-1 juta,Baik,Milik sendiri
+100000000002,Meliana Gunawan,Perempuan,31-40,02/03,2,Lebih Dari 1 juta,Baik,Milik sendiri
+100000000003,Kevin Wijaya,Laki-laki,21-30,03/04,1,Kurang Dari 500,Cukup,Tidak memiliki
+100000000004,Jessica Lim,Perempuan,51-60,01/01,4,500-1 juta,Rusak,Sewa
+100000000005,William Susanto,Laki-laki,31-40,04/05,5 lebih,Kurang Dari 500,Baik,Sewa
+100000000006,Clara Hartono,Perempuan,41-50,02/02,2,500-1 juta,Cukup,Milik sendiri
+100000000007,Richard Santoso,Laki-laki,61 keatas,03/01,3,Lebih Dari 1 juta,Baik,Milik sendiri
+100000000008,Stephanie Lie,Perempuan,21-30,01/03,1,Kurang Dari 500,Rusak,Tidak memiliki
+100000000009,Leonardo Setiawan,Laki-laki,51-60,02/04,4,500-1 juta,Baik,Sewa
+100000000010,Michelle Tan,Perempuan,31-40,04/02,2,Lebih Dari 1 juta,Cukup,Milik sendiri
+100000000011,Jonathan Halim,Laki-laki,41-50,01/01,3,500-1 juta,Baik,Sewa
+100000000012,Angelina Chandra,Perempuan,31-40,02/03,2,Kurang Dari 500,Cukup,Tidak memiliki
+100000000013,Steven Pranata,Laki-laki,21-30,03/04,1,500-1 juta,Baik,Milik sendiri
+100000000014,Veronica Liem,Perempuan,51-60,01/02,4,Lebih Dari 1 juta,Rusak,Sewa
+100000000015,Michael Gunadi,Laki-laki,31-40,04/05,5 lebih,500-1 juta,Baik,Sewa
+100000000016,Christine Suryadi,Perempuan,41-50,02/02,2,Kurang Dari 500,Cukup,Milik sendiri
+100000000017,Raymond Kusuma,Laki-laki,61 keatas,03/01,3,500-1 juta,Baik,Milik sendiri
+100000000018,Patricia Ang,Perempuan,21-30,01/03,1,Lebih Dari 1 juta,Rusak,Tidak memiliki
+100000000019,Samuel Lie,Laki-laki,51-60,02/04,4,500-1 juta,Baik,Sewa
+100000000020,Monica Tanu,Perempuan,31-40,04/02,2,500-1 juta,Cukup,Milik sendiri
+100000000021,Albert Winata,Laki-laki,41-50,01/02,3,Kurang Dari 500,Baik,Sewa
+100000000022,Gloria Setiono,Perempuan,31-40,02/03,2,500-1 juta,Baik,Milik sendiri
+100000000023,Henry Salim,Laki-laki,21-30,03/04,1,Lebih Dari 1 juta,Cukup,Tidak memiliki
+100000000024,Caroline Lim,Perempuan,51-60,01/01,4,500-1 juta,Rusak,Sewa
+100000000025,Daniel Hartanto,Laki-laki,31-40,04/05,5 lebih,500-1 juta,Baik,Sewa
+100000000026,Fransisca Gunawan,Perempuan,41-50,02/02,2,Kurang Dari 500,Cukup,Milik sendiri
+100000000027,Oscar Prasetya,Laki-laki,61 keatas,03/01,3,500-1 juta,Baik,Milik sendiri
+100000000028,Melissa Tjhin,Perempuan,21-30,01/03,1,500-1 juta,Rusak,Tidak memiliki
+100000000029,Victor Santoso,Laki-laki,51-60,02/04,4,Lebih Dari 1 juta,Baik,Sewa
+100000000030,Agnes Lie,Perempuan,31-40,04/02,2,500-1 juta,Cukup,Milik sendiri
+100000000031,David Halim,Laki-laki,41-50,01/01,3,500-1 juta,Baik,Sewa
+100000000032,Stephanie Gunadi,Perempuan,31-40,02/03,2,Kurang Dari 500,Cukup,Tidak memiliki
+100000000033,William Pranata,Laki-laki,21-30,03/04,1,500-1 juta,Baik,Milik sendiri
+100000000034,Jessica Liem,Perempuan,51-60,01/02,4,Lebih Dari 1 juta,Rusak,Sewa
+100000000035,Michael Suryadi,Laki-laki,31-40,04/05,5 lebih,Lebih Dari 1 juta,Baik,Sewa
+100000000036,Angelina Kusuma,Perempuan,41-50,02/02,2,500-1 juta,Cukup,Milik sendiri
+100000000037,Raymond Ang,Laki-laki,61 keatas,03/01,3,Kurang Dari 500,Baik,Milik sendiri
+100000000038,Patricia Winata,Perempuan,21-30,01/03,1,500-1 juta,Rusak,Tidak memiliki
+100000000039,Samuel Setiono,Laki-laki,51-60,02/04,4,500-1 juta,Baik,Sewa
+100000000040,Monica Salim,Perempuan,31-40,04/02,2,500-1 juta,Cukup,Milik sendiri
+100000000041,Albert Lim,Laki-laki,41-50,01/02,3,500-1 juta,Baik,Sewa
+100000000042,Gloria Hartanto,Perempuan,31-40,02/03,2,Lebih Dari 1 juta,Baik,Milik sendiri
+100000000043,Henry Tjhin,Laki-laki,21-30,03/04,1,500-1 juta,Cukup,Tidak memiliki
+100000000044,Caroline Santoso,Perempuan,51-60,01/01,4,500-1 juta,Rusak,Sewa
+100000000045,Daniel Gunawan,Laki-laki,31-40,04/05,5 lebih,500-1 juta,Baik,Sewa
+100000000046,Fransisca Prasetya,Perempuan,41-50,02/02,2,500-1 juta,Cukup,Milik sendiri
+100000000047,Oscar Suryadi,Laki-laki,61 keatas,03/01,3,500-1 juta,Baik,Milik sendiri
+100000000048,Melissa Ang,Perempuan,21-30,01/03,1,Kurang Dari 500,Rusak,Tidak memiliki
+100000000049,Victor Winata,Laki-laki,51-60,02/04,4,500-1 juta,Baik,Sewa
+100000000050,Agnes Setiawan,Perempuan,31-40,04/02,2,500-1 juta,Cukup,Milik sendiri
