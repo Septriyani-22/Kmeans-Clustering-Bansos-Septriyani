@@ -13,28 +13,47 @@ class HasilKmeansController extends Controller
 {
     public function index()
     {
-        $penduduk = Penduduk::orderBy('cluster')->get();
-        $centroids = Centroid::orderBy('id')->get();
-        
-        // Calculate cluster statistics
-        $clusterStats = [];
-        for ($i = 1; $i <= 3; $i++) {
-            $clusterData = $penduduk->where('cluster', $i);
-            $clusterStats[$i] = [
-                'count' => $clusterData->count(),
-                'avg_usia' => $clusterData->avg('usia'),
-                'avg_tanggungan' => $clusterData->avg('tanggungan'),
-                'avg_penghasilan' => $clusterData->avg('penghasilan'),
-                'baik' => $clusterData->where('kondisi_rumah', 'baik')->count(),
-                'cukup' => $clusterData->where('kondisi_rumah', 'cukup')->count(),
-                'kurang' => $clusterData->where('kondisi_rumah', 'kurang')->count(),
-                'hak_milik' => $clusterData->where('status_kepemilikan', 'hak milik')->count(),
-                'numpang' => $clusterData->where('status_kepemilikan', 'numpang')->count(),
-                'sewa' => $clusterData->where('status_kepemilikan', 'sewa')->count(),
-            ];
-        }
+        $hasilKmeans = HasilKmeans::with(['penduduk', 'centroid'])
+            ->orderBy('penduduk_id')
+            ->get()
+            ->map(function ($hasil) {
+                $clusterName = match($hasil->cluster) {
+                    1 => 'Membutuhkan',
+                    2 => 'Tidak Membutuhkan',
+                    3 => 'Prioritas Sedang',
+                    default => 'Tidak Diketahui'
+                };
+                
+                return [
+                    'no' => $hasil->penduduk->id,
+                    'nama' => $hasil->penduduk->nama,
+                    'kelas' => $clusterName
+                ];
+            });
 
-        return view('admin.hasil-kmeans', compact('penduduk', 'centroids', 'clusterStats'));
+        $totalData = $hasilKmeans->count();
+        $layakBantuan = $hasilKmeans->where('kelas', 'Membutuhkan')->count();
+        $tidakLayak = $hasilKmeans->where('kelas', 'Tidak Membutuhkan')->count();
+        $prioritasSedang = $hasilKmeans->where('kelas', 'Prioritas Sedang')->count();
+        
+        // Calculate average score (using cluster numbers as scores)
+        $avgScore = $hasilKmeans->avg(function($hasil) {
+            return match($hasil['kelas']) {
+                'Membutuhkan' => 1,
+                'Tidak Membutuhkan' => 2,
+                'Prioritas Sedang' => 3,
+                default => 0
+            };
+        });
+
+        return view('admin.hasil-kmeans.index', compact(
+            'hasilKmeans', 
+            'totalData', 
+            'layakBantuan', 
+            'tidakLayak',
+            'prioritasSedang',
+            'avgScore'
+        ));
     }
 
     public function export()
