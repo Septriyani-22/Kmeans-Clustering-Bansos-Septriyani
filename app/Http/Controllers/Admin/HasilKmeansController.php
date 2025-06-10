@@ -14,42 +14,27 @@ class HasilKmeansController extends Controller
     public function index()
     {
         $hasilKmeans = HasilKmeans::with(['penduduk', 'centroid'])
-            ->orderBy('penduduk_id')
-            ->get()
-            ->map(function ($hasil) {
-                $clusterName = match($hasil->cluster) {
-                    1 => 'Membutuhkan',
-                    2 => 'Tidak Membutuhkan',
-                    3 => 'Prioritas Sedang',
-                    default => 'Tidak Diketahui'
-                };
-                
-                return [
-                    'no' => $hasil->penduduk->id,
-                    'nama' => $hasil->penduduk->nama,
-                    'kelas' => $clusterName
-                ];
-            });
+            ->orderBy('cluster')
+            ->orderBy('jarak')
+            ->get();
 
+        // Count total data
         $totalData = $hasilKmeans->count();
-        $layakBantuan = $hasilKmeans->where('kelas', 'Membutuhkan')->count();
-        $tidakLayak = $hasilKmeans->where('kelas', 'Tidak Membutuhkan')->count();
-        $prioritasSedang = $hasilKmeans->where('kelas', 'Prioritas Sedang')->count();
+
+        // Count by cluster
+        $clusterCounts = $hasilKmeans->groupBy('cluster')->map->count();
         
-        // Calculate average score (using cluster numbers as scores)
-        $avgScore = $hasilKmeans->avg(function($hasil) {
-            return match($hasil['kelas']) {
-                'Membutuhkan' => 1,
-                'Tidak Membutuhkan' => 2,
-                'Prioritas Sedang' => 3,
-                default => 0
-            };
-        });
+        $layakBantuan = $clusterCounts[1] ?? 0; // C1 - Membutuhkan
+        $tidakLayak = $clusterCounts[2] ?? 0;   // C2 - Tidak Membutuhkan
+        $prioritasSedang = $clusterCounts[3] ?? 0; // C3 - Prioritas Sedang
+
+        // Calculate average score
+        $avgScore = $hasilKmeans->avg('jarak');
 
         return view('admin.hasil-kmeans.index', compact(
-            'hasilKmeans', 
-            'totalData', 
-            'layakBantuan', 
+            'hasilKmeans',
+            'totalData',
+            'layakBantuan',
             'tidakLayak',
             'prioritasSedang',
             'avgScore'

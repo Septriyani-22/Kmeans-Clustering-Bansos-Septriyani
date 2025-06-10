@@ -83,10 +83,8 @@ class ClusteringController extends Controller
 
                 // Assign each penduduk to nearest centroid
                 foreach ($penduduks as $penduduk) {
-                    $minDistance = PHP_FLOAT_MAX;
-                    $nearestCluster = 0;
-
-                    foreach ($centroids as $index => $centroid) {
+                    $distances = [];
+                    foreach ($centroids as $centroid) {
                         $distance = sqrt(
                             pow($penduduk->usia - $centroid->usia, 2) +
                             pow($this->convertToNumeric($penduduk->tanggungan) - $centroid->tanggungan_num, 2) +
@@ -94,13 +92,10 @@ class ClusteringController extends Controller
                             pow($this->convertStatusKepemilikan($penduduk->status_kepemilikan) - $this->convertStatusKepemilikan($centroid->status_kepemilikan), 2) +
                             pow($this->convertToNumeric($penduduk->penghasilan) - $centroid->penghasilan_num, 2)
                         );
-
-                        if ($distance < $minDistance) {
-                            $minDistance = $distance;
-                            $nearestCluster = $index;
-                        }
+                        $distances[] = $distance;
                     }
 
+                    $nearestCluster = $this->determineClusterNumber($centroids[0], $distances) - 1;
                     $clusterAssignments[$penduduk->id] = $nearestCluster;
                     $clusterSums[$nearestCluster]['usia'] += $penduduk->usia;
                     $clusterSums[$nearestCluster]['tanggungan'] += $this->convertToNumeric($penduduk->tanggungan);
@@ -148,17 +143,27 @@ class ClusteringController extends Controller
                 $penduduk = Penduduk::find($pendudukId);
                 $centroid = $centroids[$clusterIndex];
 
+                // Calculate distances to all centroids
+                $distances = [];
+                foreach ($centroids as $c) {
+                    $distance = sqrt(
+                        pow($penduduk->usia - $c->usia, 2) +
+                        pow($this->convertToNumeric($penduduk->tanggungan) - $c->tanggungan_num, 2) +
+                        pow($this->convertKondisiRumah($penduduk->kondisi_rumah) - $this->convertKondisiRumah($c->kondisi_rumah), 2) +
+                        pow($this->convertStatusKepemilikan($penduduk->status_kepemilikan) - $this->convertStatusKepemilikan($c->status_kepemilikan), 2) +
+                        pow($this->convertToNumeric($penduduk->penghasilan) - $c->penghasilan_num, 2)
+                    );
+                    $distances[] = $distance;
+                }
+
+                // Determine final cluster number based on distances
+                $clusterNumber = $this->determineClusterNumber($centroid, $distances);
+
                 HasilKmeans::create([
                     'penduduk_id' => $pendudukId,
                     'centroid_id' => $centroid->id,
-                    'cluster' => $clusterIndex + 1,
-                    'jarak' => sqrt(
-                        pow($penduduk->usia - $centroid->usia, 2) +
-                        pow($this->convertToNumeric($penduduk->tanggungan) - $centroid->tanggungan_num, 2) +
-                        pow($this->convertKondisiRumah($penduduk->kondisi_rumah) - $this->convertKondisiRumah($centroid->kondisi_rumah), 2) +
-                        pow($this->convertStatusKepemilikan($penduduk->status_kepemilikan) - $this->convertStatusKepemilikan($centroid->status_kepemilikan), 2) +
-                        pow($this->convertToNumeric($penduduk->penghasilan) - $centroid->penghasilan_num, 2)
-                    ),
+                    'cluster' => $clusterNumber,
+                    'jarak' => $distances[$clusterIndex],
                     'iterasi' => $iteration,
                     'tahun' => $penduduk->tahun,
                     'periode' => 1
@@ -261,5 +266,18 @@ class ClusteringController extends Controller
         // Remove any non-numeric characters except decimal point
         $numeric = preg_replace('/[^0-9.]/', '', $value);
         return $numeric ? (float)$numeric : 0;
+    }
+
+    private function determineClusterNumber($centroid, $distances)
+    {
+        // Find the minimum distance and its index
+        $minDistance = min($distances);
+        $clusterIndex = array_search($minDistance, $distances);
+        
+        // Map the cluster index to the correct cluster number
+        // C1: Index 0 - Membutuhkan
+        // C2: Index 1 - Tidak Membutuhkan
+        // C3: Index 2 - Prioritas Sedang
+        return $clusterIndex + 1;
     }
 }

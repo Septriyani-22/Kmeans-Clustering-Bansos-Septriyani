@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('penduduk_id')->constrained('penduduk')->onDelete('cascade');
             $table->foreignId('centroid_id')->constrained('centroids')->onDelete('cascade');
+            $table->integer('cluster')->default(1);
             $table->float('jarak');
             $table->integer('iterasi');
             $table->integer('tahun');
