@@ -1,3 +1,144 @@
+# Sistem Bantuan Sosial - K-means Clustering
+
+Sistem bantuan sosial berbasis web yang menggunakan algoritma K-means Clustering untuk mengelompokkan penduduk berdasarkan kriteria tertentu untuk menentukan kelayakan bantuan.
+
+## Fitur Utama
+
+- 🏠 Manajemen Data Penduduk
+- 📊 K-means Clustering untuk Pengelompokan
+- 📈 Dashboard dengan Visualisasi Data
+- 👥 Manajemen Pengguna (Admin)
+- 📋 Laporan Hasil Clustering
+
+## Teknologi yang Digunakan
+
+- PHP 8.1
+- Laravel 10.x
+- MySQL
+- Bootstrap 5
+- Chart.js
+- AdminLTE 3
+
+## Persyaratan Sistem
+
+- PHP >= 8.1
+- Composer
+- MySQL >= 5.7
+- Node.js & NPM
+- Web Server (Apache/Nginx)
+
+## Instalasi
+
+1. Clone repository
+```bash
+cd kmeans-clustering-app
+```
+
+2. Install dependencies
+```bash
+composer install
+npm install
+```
+
+3. Setup environment
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4. Konfigurasi database di file `.env`
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=kmeans_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+5. Jalankan migrasi dan seeder
+```bash
+php artisan migrate --seed
+```
+
+6. Compile assets
+```bash
+npm run dev
+```
+
+7. Jalankan server
+```bash
+php artisan serve
+```
+
+## Struktur Aplikasi
+
+### Models
+- `User`: Manajemen pengguna
+- `Penduduk`: Data penduduk
+- `Centroid`: Data centroid untuk clustering
+- `HasilKmeans`: Hasil pengelompokan
+
+### Controllers
+- `DashboardController`: Manajemen dashboard
+- `ClusteringController`: Proses K-means clustering
+- `HasilKmeansController`: Manajemen hasil clustering
+- `PendudukController`: Manajemen data penduduk
+
+### Views
+- Dashboard dengan visualisasi
+- Form input data penduduk
+- Halaman proses clustering
+- Tampilan hasil clustering
+
+## Algoritma K-means Clustering
+
+Aplikasi menggunakan algoritma K-means untuk mengelompokkan penduduk berdasarkan kriteria:
+1. Usia
+2. Jumlah Tanggungan
+3. Kondisi Rumah
+4. Status Kepemilikan
+5. Penghasilan
+
+### Proses Clustering
+1. Inisialisasi centroid secara random
+2. Hitung jarak setiap data ke centroid
+3. Kelompokkan data ke centroid terdekat
+4. Update posisi centroid
+5. Ulangi hingga konvergen
+
+## Penggunaan
+
+1. Login sebagai admin
+2. Input data penduduk
+3. Jalankan proses clustering
+4. Lihat hasil di dashboard
+5. Export hasil jika diperlukan
+
+## Dokumentasi
+
+- [Sequence Diagram](docs/sequence_diagram.md)
+- [Class Diagram](docs/class_diagram.md)
+
+## Kontribusi
+
+1. Fork repository
+2. Buat branch fitur (`git checkout -b feature/AmazingFeature`)
+3. Commit perubahan (`git commit -m 'Add some AmazingFeature'`)
+4. Push ke branch (`git push origin feature/AmazingFeature`)
+5. Buat Pull Request
+
+## Lisensi
+
+Distribusikan di bawah Lisensi MIT. Lihat `LICENSE` untuk informasi lebih lanjut.
+
+## Kontak
+
+Nama - [@your_twitter](https://twitter.com/your_twitter)
+Email - your.email@example.com
+
+Link Project: [https://github.com/your-username/kmeans-clustering-app](https://github.com/your-username/kmeans-clustering-app)
+
 ## Data Dummy dan Perhitungan Manual
 
 ### 1. Kriteria dan Bobot
