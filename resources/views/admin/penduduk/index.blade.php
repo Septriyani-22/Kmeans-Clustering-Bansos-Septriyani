@@ -103,33 +103,6 @@
                         </div>
                     </div>
 
-                    <!-- Statistics Cards -->
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="small-box bg-info">
-                                <div class="inner">
-                                    <h3>{{ $penduduk->total() }}</h3>
-                                    <p>Total Penduduk</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                            </div>
-                        </div>
-                        @for($i = 1; $i <= 3; $i++)
-                            <div class="col-md-3">
-                                <div class="small-box bg-{{ $i == 1 ? 'success' : ($i == 2 ? 'warning' : 'danger') }}">
-                                    <div class="inner">
-                                        <h3>{{ $penduduk->where('cluster', $i)->count() }}</h3>
-                                        <p>Cluster {{ $i }}</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="fas fa-chart-pie"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        @endfor
-                    </div>
 
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped">
@@ -138,16 +111,12 @@
                                     <th>No</th>
                                     <th>NIK</th>
                                     <th>Nama</th>
-                                    <th>Tahun</th>
-                                    <th>Jenis Kelamin</th>
                                     <th>Usia</th>
-                                    <th>RT</th>
-                                    <th>Tanggungan</th>
+                                    <th>Jumlah Tanggungan</th>
                                     <th>Kondisi Rumah</th>
                                     <th>Status Kepemilikan</th>
-                                    <th>Penghasilan</th>
-                                    <th>Cluster</th>
-                                    <th>Aksi</th>
+                                    <th>Jumlah Penghasilan</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -156,10 +125,7 @@
                                         <td>{{ $p->no ?? $loop->iteration }}</td>
                                         <td>{{ $p->nik }}</td>
                                         <td>{{ $p->nama }}</td>
-                                        <td>{{ $p->tahun }}</td>
-                                        <td>{{ $p->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
                                         <td>{{ $p->usia }}</td>
-                                        <td>RT {{ $p->rt }}</td>
                                         <td>{{ $p->tanggungan }}</td>
                                         <td>
                                             <span class="badge badge-{{ $p->kondisi_rumah == 'baik' ? 'success' : ($p->kondisi_rumah == 'cukup' ? 'warning' : 'danger') }}">
@@ -168,15 +134,6 @@
                                         </td>
                                         <td>{{ ucfirst($p->status_kepemilikan) }}</td>
                                         <td>Rp {{ number_format($p->penghasilan, 0, ',', '.') }}</td>
-                                        <td>
-                                            @if($p->cluster)
-                                                <span class="badge badge-{{ $p->cluster == 1 ? 'success' : ($p->cluster == 2 ? 'warning' : 'danger') }}">
-                                                    Cluster {{ $p->cluster }}
-                                                </span>
-                                            @else
-                                                <span class="badge badge-secondary">Belum di-cluster</span>
-                                            @endif
-                                        </td>
                                         <td>
                                             <div class="btn-group">
                                                 <a href="{{ route('admin.penduduk.edit', $p->id) }}" class="btn btn-sm btn-info">

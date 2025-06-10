@@ -100,7 +100,7 @@ class ClusteringController extends Controller
             $konvergen = $this->updateCentroids($centroids, $kriteria);
         }
 
-        return redirect()->route('admin.clustering.index')
+        return redirect()->route('admin.centroid.index')
                         ->with('success', 'Proses clustering selesai dengan ' . $iterasi . ' iterasi');
     }
 

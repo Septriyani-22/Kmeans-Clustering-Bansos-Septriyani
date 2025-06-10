@@ -48,72 +48,28 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Hasil Clustering K-Means</h3>
-                    <div class="card-tools">
-                        <a href="{{ route('admin.hasil-kmeans.export') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-download"></i> Export CSV
-                        </a>
-                    </div>
+                    <h3 class="card-title">Tabel 3.10 Hasil Clustering</h3>
                 </div>
                 <div class="card-body">
-                    @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if(session('error'))
-                        <div class="alert alert-danger">
-                            {{ session('error') }}
-                        </div>
-                    @endif
-
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>NIK</th>
+                                    <th>No</th>
                                     <th>Nama</th>
-                                    <th>Cluster</th>
-                                    <th>Skor Kelayakan</th>
-                                    <th>Kelayakan</th>
-                                    <th>Skor Penghasilan</th>
-                                    <th>Skor Tanggungan</th>
-                                    <th>Skor Kondisi Rumah</th>
-                                    <th>Skor Status Kepemilikan</th>
-                                    <th>Skor Usia</th>
+                                    <th>Kelas</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($hasilKmeans as $hasil)
-                                    <tr>
-                                        <td>{{ $hasil->penduduk->nik }}</td>
-                                        <td>{{ $hasil->penduduk->nama }}</td>
-                                        <td>{{ $hasil->centroid->nama_centroid }}</td>
-                                        <td>{{ number_format($hasil->skor_kelayakan, 2) }}</td>
-                                        <td>
-                                            <span class="badge {{ $hasil->kelayakan === 'Layak' ? 'badge-success' : 'badge-danger' }}" style="color: white;">
-                                                {{ $hasil->kelayakan }}
-                                            </span>
-                                        </td>
-                                        <td>{{ number_format($hasil->skor_penghasilan, 2) }}</td>
-                                        <td>{{ number_format($hasil->skor_tanggungan, 2) }}</td>
-                                        <td>{{ number_format($hasil->skor_kondisi_rumah, 2) }}</td>
-                                        <td>{{ number_format($hasil->skor_status_kepemilikan, 2) }}</td>
-                                        <td>{{ number_format($hasil->skor_usia, 2) }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="10" class="text-center">Belum ada data hasil clustering</td>
-                                    </tr>
-                                @endforelse
+                                @foreach($hasilKmeans as $hasil)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $hasil->penduduk->nama }}</td>
+                                    <td>{{ $hasil->cluster }}</td>
+                                </tr>
+                                @endforeach
                             </tbody>
                         </table>
-                    </div>
-                </div>
-                <div class="card-footer clearfix">
-                    <div class="d-flex justify-content-center">
-                        {{ $hasilKmeans->links('pagination::bootstrap-4') }}
                     </div>
                 </div>
             </div>

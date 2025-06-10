@@ -8,41 +8,62 @@
 
 @section('content')
 <div class="container-fluid">
-    <!-- Info boxes -->
     <div class="row">
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-users"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Total Penduduk</span>
-                    <span class="info-box-number">{{ $totalPenduduk }}</span>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Dashboard</h3>
                 </div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box">
-                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-check-circle"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Layak Bantuan</span>
-                    <span class="info-box-number">{{ $layakBantuan }}</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box">
-                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-times-circle"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Tidak Layak</span>
-                    <span class="info-box-number">{{ $tidakLayak }}</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box">
-                <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-chart-pie"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Rata-rata Skor</span>
-                    <span class="info-box-number">{{ number_format($avgScore, 2) }}</span>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Penduduk</h5>
+                                    <p class="card-text">{{ $totalPenduduk }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Centroid</h5>
+                                    <p class="card-text">{{ $totalCentroid }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Hasil Clustering</h5>
+                                    <p class="card-text">{{ $totalHasilKmeans }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h4>Recent Activities</h4>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Activity</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($recentActivities as $activity)
+                                        <tr>
+                                            <td>{{ $activity->description }}</td>
+                                            <td>{{ $activity->created_at->format('Y-m-d H:i:s') }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

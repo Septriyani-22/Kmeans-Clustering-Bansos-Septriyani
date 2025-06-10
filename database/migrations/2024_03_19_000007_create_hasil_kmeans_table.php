@@ -6,24 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
-        // Ensure penduduk table exists first
-        if (!Schema::hasTable('penduduk')) {
-            throw new \Exception('The penduduk table must exist before creating hasil_kmeans table');
-        }
-
         Schema::create('hasil_kmeans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('penduduk_id')->constrained('penduduk')->onDelete('cascade');
-            $table->integer('cluster');
-            $table->decimal('jarak', 10, 2);
-            $table->string('kelayakan')->nullable();
+            $table->foreignId('centroid_id')->constrained('centroids')->onDelete('cascade');
+            $table->float('jarak');
+            $table->integer('iterasi');
+            $table->integer('tahun');
+            $table->integer('periode');
             $table->timestamps();
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('hasil_kmeans');
     }

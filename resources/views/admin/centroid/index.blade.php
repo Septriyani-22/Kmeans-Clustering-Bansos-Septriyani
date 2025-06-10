@@ -1,59 +1,92 @@
 @extends('layouts.admin')
-@section('title', 'Centroid')
+
 @section('content')
-<div style="background:#fff; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.07); padding:24px; margin:0 auto;">
-    <h1 style="font-size:2rem; color:#888fa6; font-weight:400; margin-bottom:18px;">Data Centroid</h1>
-
-    @if(session('success'))
-        <div style="background:#dcfce7; color:#166534; border:1px solid #bbf7d0; padding:12px 16px; border-radius:6px; margin-bottom:18px;">
-            {{ session('success') }}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Centroid Management</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <a href="{{ route('admin.centroid.create') }}" class="btn btn-primary">Add New Centroid</a>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Nama Centroid</th>
+                                    <th>Usia</th>
+                                    <th>Jumlah Tanggungan</th>
+                                    <th>Kondisi Rumah</th>
+                                    <th>Status Kepemilikan</th>
+                                    <th>Jumlah Penghasilan</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($centroids as $centroid)
+                                <tr>
+                                    <td>{{ $centroid->nama_centroid }}</td>
+                                    <td>{{ $centroid->usia }}</td>
+                                    <td>{{ $centroid->tanggungan_num }}</td>
+                                    <td>{{ $centroid->kondisi_rumah }}</td>
+                                    <td>{{ $centroid->status_kepemilikan }}</td>
+                                    <td>Rp {{ number_format($centroid->penghasilan_num, 0, ',', '.') }}</td>
+                                    <td>
+                                        <a href="{{ route('admin.centroid.edit', $centroid->id) }}" class="btn btn-sm btn-info">Edit</a>
+                                        <form action="{{ route('admin.centroid.destroy', $centroid->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this centroid?')">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-    @endif
-
-    <div style="display:flex; justify-content:flex-end; margin-bottom:18px;">
-        <a href="{{ route('admin.centroid.create') }}" style="background:#22c55e; color:#fff; border:none; border-radius:6px; padding:10px 18px; font-size:1rem; cursor:pointer; text-decoration:none;">+ Tambah Centroid</a>
     </div>
-
-    <div style="overflow-x:auto;">
-        <table style="width:100%; border-collapse:collapse; margin-top:18px;">
-            <thead>
-                <tr style="background:#f4f6fa; color:#888fa6;">
-                    <th style="padding:12px; text-align:left;">No</th>
-                    <th style="padding:12px; text-align:left;">Nama Centroid</th>
-                    <th style="padding:12px; text-align:left;">Penghasilan</th>
-                    <th style="padding:12px; text-align:left;">Tanggungan</th>
-                    <th style="padding:12px; text-align:left;">Tahun</th>
-                    <th style="padding:12px; text-align:left;">Periode</th>
-                    <th style="padding:12px; text-align:left;">Keterangan</th>
-                    <th style="padding:12px; text-align:left;">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($centroids as $centroid)
-                <tr style="border-bottom:1px solid #e5e7eb;">
-                    <td style="padding:12px;">{{ $loop->iteration }}</td>
-                    <td style="padding:12px;">{{ $centroid->nama_centroid }}</td>
-                    <td style="padding:12px;">{{ $centroid->penghasilan_num }}</td>
-                    <td style="padding:12px;">{{ $centroid->tanggungan_num }}</td>
-                    <td style="padding:12px;">{{ $centroid->tahun }}</td>
-                    <td style="padding:12px;">{{ $centroid->periode }}</td>
-                    <td style="padding:12px;">{{ $centroid->keterangan }}</td>
-                    <td style="padding:12px;">
-                        <a href="{{ route('admin.centroid.edit', $centroid->id) }}" style="background:#2563eb; color:#fff; border:none; border-radius:4px; padding:6px 14px; margin-right:6px; cursor:pointer; text-decoration:none;">Edit</a>
-                        <form action="{{ route('admin.centroid.destroy', $centroid->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" style="background:#ef4444; color:#fff; border:none; border-radius:4px; padding:6px 14px; cursor:pointer;" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</button>
-                        </form>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="8" style="padding:12px; text-align:center; color:#888fa6;">Tidak ada data centroid</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Perhitungan Jarak Euclidean dan Penentuan Cluster</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    @foreach($centroids as $centroid)
+                                        <th>Jarak ke {{ $centroid->nama_centroid }}</th>
+                                    @endforeach
+                                    <th>Cluster Terdekat</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($distanceResults as $result)
+                                <tr>
+                                    <td>{{ $result['penduduk']->nama }}</td>
+                                    @foreach($result['distances'] as $distance)
+                                        <td>{{ number_format($distance, 6) }}</td>
+                                    @endforeach
+                                    <td>C{{ $result['cluster'] }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection 

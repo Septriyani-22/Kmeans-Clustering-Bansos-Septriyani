@@ -9,6 +9,7 @@ use App\Models\Kriteria;
 use App\Models\Centroid;
 use App\Models\HasilKmeans;
 use Illuminate\Support\Facades\DB;
+use App\Models\Activity;
 
 class DashboardController extends Controller
 {
@@ -105,6 +106,9 @@ class DashboardController extends Controller
 
             $avgScore = HasilKmeans::avg('skor_kelayakan');
 
+            $totalHasilKmeans = HasilKmeans::count();
+            $recentActivities = Activity::latest()->take(5)->get();
+
             return view('admin.dashboard', compact(
                 'totalPenduduk',
                 'totalKriteria',
@@ -120,7 +124,9 @@ class DashboardController extends Controller
                 'clusterStats',
                 'avgScores',
                 'topScores',
-                'avgScore'
+                'avgScore',
+                'totalHasilKmeans',
+                'recentActivities'
             ));
         } catch (\Exception $e) {
             // If any error occurs, return default values
@@ -146,7 +152,9 @@ class DashboardController extends Controller
                     'avg_kelayakan' => 0
                 ],
                 'topScores' => collect(),
-                'avgScore' => 0
+                'avgScore' => 0,
+                'totalHasilKmeans' => 0,
+                'recentActivities' => collect()
             ]);
         }
     }
