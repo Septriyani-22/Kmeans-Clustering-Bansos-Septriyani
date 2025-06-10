@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             KriteriaSeeder::class,
             PendudukSeeder::class,
-            CentroidSeeder::class,
+            // CentroidSeeder::class,
         ]);
     }
 }

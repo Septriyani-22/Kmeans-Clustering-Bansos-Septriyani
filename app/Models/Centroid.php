@@ -11,20 +11,21 @@ class Centroid extends Model
 
     protected $table = 'centroids';
     protected $fillable = [
+        'nama_centroid',
         'usia',
-        'tanggungan',
+        'tanggungan_num',
         'kondisi_rumah',
         'status_kepemilikan',
-        'penghasilan',
-        'cluster'
+        'penghasilan_num',
+        'tahun',
+        'periode',
+        'keterangan'
     ];
 
     protected $casts = [
+        'usia' => 'float',
+        'tanggungan_num' => 'float',
         'penghasilan_num' => 'float',
-        'tanggungan_num' => 'integer',
-        'usia_num' => 'integer',
-        'kondisi_rumah_num' => 'integer',
-        'status_kepemilikan_num' => 'integer',
         'tahun' => 'integer',
         'periode' => 'integer'
     ];

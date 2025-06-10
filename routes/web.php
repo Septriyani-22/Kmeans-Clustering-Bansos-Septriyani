@@ -90,6 +90,21 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::post('/penduduk/mass-update', [App\Http\Controllers\Admin\PendudukController::class, 'massUpdate'])->name('penduduk.mass-update');
     Route::post('/penduduk/mass-delete', [App\Http\Controllers\Admin\PendudukController::class, 'massDelete'])->name('penduduk.mass-delete');
+
+    // Penduduk Routes
+    Route::prefix('penduduk')->name('penduduk.')->group(function () {
+        Route::get('/', [AdminPendudukController::class, 'index'])->name('index');
+        Route::get('/create', [AdminPendudukController::class, 'create'])->name('create');
+        Route::post('/', [AdminPendudukController::class, 'store'])->name('store');
+        Route::get('/{penduduk}/edit', [AdminPendudukController::class, 'edit'])->name('edit');
+        Route::put('/{penduduk}', [AdminPendudukController::class, 'update'])->name('update');
+        Route::delete('/{penduduk}', [AdminPendudukController::class, 'destroy'])->name('destroy');
+        Route::post('/import', [AdminPendudukController::class, 'import'])->name('import');
+        Route::get('/export', [AdminPendudukController::class, 'export'])->name('export');
+        Route::get('/print', [AdminPendudukController::class, 'print'])->name('print');
+        Route::get('/template', [AdminPendudukController::class, 'template'])->name('template');
+        Route::post('/clear-clusters', [AdminPendudukController::class, 'clearClusters'])->name('clear-clusters');
+    });
 });
 
 Route::middleware(['auth', 'kepala_desa'])->prefix('kepala_desa')->name('kepala_desa.')->group(function () {

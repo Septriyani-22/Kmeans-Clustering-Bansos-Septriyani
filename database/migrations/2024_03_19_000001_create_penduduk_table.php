@@ -10,16 +10,17 @@ return new class extends Migration
     {
         Schema::create('penduduk', function (Blueprint $table) {
             $table->id();
-            $table->string('nik', 16)->unique();
+            $table->integer('no')->nullable();
+            $table->string('nik')->unique();
             $table->string('nama');
-            $table->integer('usia');
-            $table->integer('tanggungan');
-            $table->string('kondisi_rumah');
-            $table->string('status_kepemilikan');
-            $table->decimal('penghasilan', 12, 2);
-            $table->string('jenis_kelamin');
-            $table->integer('rt');
             $table->integer('tahun');
+            $table->enum('jenis_kelamin', ['L', 'P']);
+            $table->integer('usia');
+            $table->integer('rt');
+            $table->integer('tanggungan');
+            $table->enum('kondisi_rumah', ['baik', 'cukup', 'kurang']);
+            $table->enum('status_kepemilikan', ['hak milik', 'numpang', 'sewa']);
+            $table->decimal('penghasilan', 12, 2);
             $table->integer('cluster')->nullable();
             $table->timestamps();
         });

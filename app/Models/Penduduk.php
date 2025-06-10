@@ -11,14 +11,27 @@ class Penduduk extends Model
 
     protected $table = 'penduduk';
     protected $fillable = [
+        'no',
         'nik',
         'nama',
+        'tahun',
+        'jenis_kelamin',
         'usia',
+        'rt',
         'tanggungan',
         'kondisi_rumah',
         'status_kepemilikan',
         'penghasilan',
         'cluster'
+    ];
+
+    protected $casts = [
+        'tahun' => 'integer',
+        'usia' => 'integer',
+        'rt' => 'integer',
+        'tanggungan' => 'integer',
+        'penghasilan' => 'float',
+        'cluster' => 'integer'
     ];
 
     // Get cluster name

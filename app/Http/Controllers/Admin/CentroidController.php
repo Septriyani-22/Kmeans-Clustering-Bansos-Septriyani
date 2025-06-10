@@ -15,21 +15,43 @@ class CentroidController extends Controller
         $penduduk = Penduduk::all();
         $hasil = [];
 
+        // If no centroids exist, create initial centroids
+        if ($centroids->isEmpty()) {
+            // Get 3 random penduduk as initial centroids
+            $initialCentroids = Penduduk::inRandomOrder()->take(3)->get();
+            
+            foreach ($initialCentroids as $index => $p) {
+                Centroid::create([
+                    'nama_centroid' => 'Cluster ' . ($index + 1),
+                    'usia' => $p->usia,
+                    'tanggungan_num' => $p->tanggungan,
+                    'kondisi_rumah' => $p->kondisi_rumah,
+                    'status_kepemilikan' => $p->status_kepemilikan,
+                    'penghasilan_num' => $p->penghasilan,
+                    'tahun' => date('Y'),
+                    'periode' => 1
+                ]);
+            }
+            
+            $centroids = Centroid::orderBy('id')->get();
+        }
+
         foreach ($penduduk as $p) {
             $jarak = [];
             foreach ($centroids as $c) {
+                // Convert all values to float before calculation
                 $jarak[] = sqrt(
-                    pow($p->usia - $c->usia, 2) +
-                    pow($p->tanggungan - $c->tanggungan, 2) +
-                    pow($p->kondisi_rumah - $c->kondisi_rumah, 2) +
-                    pow($p->status_kepemilikan - $c->status_kepemilikan, 2) +
-                    pow($p->penghasilan - $c->penghasilan, 2)
+                    pow((float)$p->usia - (float)($c->usia ?? 0), 2) +
+                    pow((float)$p->tanggungan - (float)($c->tanggungan_num ?? 0), 2) +
+                    pow((float)$p->kondisi_rumah - (float)($c->kondisi_rumah ?? 0), 2) +
+                    pow((float)$p->status_kepemilikan - (float)($c->status_kepemilikan ?? 0), 2) +
+                    pow((float)$p->penghasilan - (float)($c->penghasilan_num ?? 0), 2)
                 );
             }
             $hasil[] = [
-                'jarak1' => $jarak[0],
-                'jarak2' => $jarak[1],
-                'jarak3' => $jarak[2],
+                'jarak1' => $jarak[0] ?? 0,
+                'jarak2' => $jarak[1] ?? 0,
+                'jarak3' => $jarak[2] ?? 0,
                 'cluster' => array_search(min($jarak), $jarak) + 1
             ];
         }
@@ -46,8 +68,11 @@ class CentroidController extends Controller
     {
         $request->validate([
             'nama_centroid.*' => 'required|string|max:255',
-            'penghasilan_num.*' => 'required|integer|min:0',
-            'tanggungan_num.*' => 'required|integer|min:0',
+            'usia.*' => 'required|numeric|min:0',
+            'tanggungan_num.*' => 'required|numeric|min:0',
+            'kondisi_rumah.*' => 'required|in:baik,cukup,kurang',
+            'status_kepemilikan.*' => 'required|in:hak milik,numpang,sewa',
+            'penghasilan_num.*' => 'required|numeric|min:0',
             'tahun' => 'required|integer|min:2000|max:2100',
             'periode' => 'required|integer|min:1',
             'keterangan.*' => 'nullable|string|max:255',
@@ -74,8 +99,11 @@ class CentroidController extends Controller
 
                 Centroid::create([
                     'nama_centroid' => $nama,
-                    'penghasilan_num' => $request->penghasilan_num[$i],
-                    'tanggungan_num' => $request->tanggungan_num[$i],
+                    'usia' => (float)$request->usia[$i],
+                    'tanggungan_num' => (float)$request->tanggungan_num[$i],
+                    'kondisi_rumah' => $request->kondisi_rumah[$i],
+                    'status_kepemilikan' => $request->status_kepemilikan[$i],
+                    'penghasilan_num' => (float)$request->penghasilan_num[$i],
                     'tahun' => $request->tahun,
                     'periode' => $request->periode,
                     'keterangan' => $request->keterangan[$i] ?? null,

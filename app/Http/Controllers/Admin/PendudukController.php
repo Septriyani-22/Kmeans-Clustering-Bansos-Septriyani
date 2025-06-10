@@ -9,6 +9,7 @@ use App\Exports\PendudukExport;
 use App\Imports\PendudukImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class PendudukController extends Controller
 {
@@ -25,23 +26,43 @@ class PendudukController extends Controller
             });
         }
 
-        // Filter
-        if ($request->has('jenis_kelamin') && $request->jenis_kelamin != '') {
+        // Filter by jenis kelamin
+        if ($request->has('jenis_kelamin') && $request->jenis_kelamin !== '') {
             $query->where('jenis_kelamin', $request->jenis_kelamin);
         }
 
-        if ($request->has('rt') && $request->rt != '') {
+        // Filter by RT
+        if ($request->has('rt') && $request->rt !== '') {
             $query->where('rt', $request->rt);
         }
 
-        // Sort
-        $sort = $request->get('sort', 'id');
-        $direction = $request->get('direction', 'asc');
-        $query->orderBy($sort, $direction);
+        // Filter by cluster
+        if ($request->has('cluster') && $request->cluster !== '') {
+            $query->where('cluster', $request->cluster);
+        }
 
-        $penduduks = $query->paginate(10);
+        // Sorting
+        if ($request->has('sort')) {
+            switch ($request->sort) {
+                case 'nama_asc':
+                    $query->orderBy('nama', 'asc');
+                    break;
+                case 'nama_desc':
+                    $query->orderBy('nama', 'desc');
+                    break;
+                case 'usia_asc':
+                    $query->orderBy('usia', 'asc');
+                    break;
+                case 'usia_desc':
+                    $query->orderBy('usia', 'desc');
+                    break;
+            }
+        } else {
+            $query->orderBy('no', 'asc');
+        }
 
-        return view('admin.penduduk.index', compact('penduduks'));
+        $penduduk = $query->paginate(20);
+        return view('admin.penduduk.index', compact('penduduk'));
     }
 
     public function create()
@@ -52,97 +73,89 @@ class PendudukController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nik' => 'required|unique:penduduks,nik',
+            'no' => 'nullable|integer',
+            'nik' => 'required|unique:penduduk,nik',
             'nama' => 'required',
-            'tahun' => 'required|numeric',
+            'tahun' => 'required|integer|min:2000|max:2100',
             'jenis_kelamin' => 'required|in:L,P',
-            'usia' => 'required|numeric|min:0',
-            'rt' => 'required|numeric|min:1',
-            'tanggungan' => 'required|numeric|min:1',
-            'penghasilan' => 'required|numeric|min:0',
-            'kondisi_rumah' => 'required|in:kurang,cukup,baik',
+            'usia' => 'required|integer|min:0',
+            'rt' => 'required|integer|min:1',
+            'tanggungan' => 'required|integer|min:0',
+            'kondisi_rumah' => 'required|in:baik,cukup,kurang',
             'status_kepemilikan' => 'required|in:hak milik,numpang,sewa',
+            'penghasilan' => 'required|numeric|min:0',
         ]);
 
-        try {
-            Penduduk::create($request->all());
-            return redirect()->route('admin.penduduk.index')->with('success', 'Data berhasil ditambah');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
+        Penduduk::create($request->all());
+        return redirect()->route('admin.penduduk.index')->with('success', 'Data penduduk berhasil ditambahkan!');
     }
 
-    public function edit($id)
+    public function edit(Penduduk $penduduk)
     {
-        try {
-            $penduduk = Penduduk::findOrFail($id);
-            return view('admin.penduduk.edit', compact('penduduk'));
-        } catch (\Exception $e) {
-            return redirect()->route('admin.penduduk.index')->with('error', 'Data tidak ditemukan');
-        }
+        return view('admin.penduduk.edit', compact('penduduk'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Penduduk $penduduk)
     {
-        try {
-            $penduduk = Penduduk::findOrFail($id);
-            
-            $request->validate([
-                'nik' => 'required|unique:penduduks,nik,' . $penduduk->id,
-                'nama' => 'required',
-                'tahun' => 'required|numeric',
-                'jenis_kelamin' => 'required|in:L,P',
-                'usia' => 'required|numeric|min:0',
-                'rt' => 'required|numeric|min:1',
-                'tanggungan' => 'required|numeric|min:1',
-                'penghasilan' => 'required|numeric|min:0',
-                'kondisi_rumah' => 'required|in:kurang,cukup,baik',
-                'status_kepemilikan' => 'required|in:hak milik,numpang,sewa',
-            ]);
+        $request->validate([
+            'no' => 'nullable|integer',
+            'nik' => 'required|unique:penduduk,nik,' . $penduduk->id,
+            'nama' => 'required',
+            'tahun' => 'required|integer|min:2000|max:2100',
+            'jenis_kelamin' => 'required|in:L,P',
+            'usia' => 'required|integer|min:0',
+            'rt' => 'required|integer|min:1',
+            'tanggungan' => 'required|integer|min:0',
+            'kondisi_rumah' => 'required|in:baik,cukup,kurang',
+            'status_kepemilikan' => 'required|in:hak milik,numpang,sewa',
+            'penghasilan' => 'required|numeric|min:0',
+        ]);
 
-            $penduduk->update($request->all());
-            return redirect()->route('admin.penduduk.index')->with('success', 'Data berhasil diperbarui');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
-        }
+        $penduduk->update($request->all());
+        return redirect()->route('admin.penduduk.index')->with('success', 'Data penduduk berhasil diperbarui!');
     }
 
-    public function destroy($id)
+    public function destroy(Penduduk $penduduk)
     {
-        try {
-            Penduduk::destroy($id);
-            return redirect()->route('admin.penduduk.index')->with('success', 'Data berhasil dihapus');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
+        $penduduk->delete();
+        return redirect()->route('admin.penduduk.index')->with('success', 'Data penduduk berhasil dihapus!');
     }
 
     public function import(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv'
+            'file' => 'required|mimes:xlsx,xls'
         ]);
 
         try {
-            DB::beginTransaction();
-            
             Excel::import(new PendudukImport, $request->file('file'));
-            
-            DB::commit();
-            return redirect()->back()->with('success', 'Data berhasil diimport');
+            return redirect()->route('admin.penduduk.index')->with('success', 'Data berhasil diimport!');
         } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal mengimport data: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
     public function export()
     {
-        try {
-            return Excel::download(new PendudukExport, 'data-penduduk.xlsx');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal mengexport data: ' . $e->getMessage());
-        }
+        return Excel::download(new PendudukExport, 'data-penduduk.xlsx');
+    }
+
+    public function print()
+    {
+        $penduduk = Penduduk::orderBy('no')->get();
+        $pdf = PDF::loadView('admin.penduduk.print', compact('penduduk'));
+        return $pdf->stream('data-penduduk.pdf');
+    }
+
+    public function template()
+    {
+        return response()->download(public_path('templates/template-penduduk.xlsx'));
+    }
+
+    public function clearClusters()
+    {
+        Penduduk::query()->update(['cluster' => null]);
+        return redirect()->route('admin.penduduk.index')->with('success', 'Semua data cluster berhasil dihapus!');
     }
 
     public function format()
