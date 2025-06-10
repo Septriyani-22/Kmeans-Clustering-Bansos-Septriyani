@@ -16,15 +16,26 @@ class DashboardController extends Controller
     public function index()
     {
         try {
-            // Get basic statistics
+            // Get total counts
             $totalPenduduk = Penduduk::count();
-            $totalKriteria = Kriteria::where('is_aktif', true)->count();
-            $totalCentroid = Centroid::count();
-            $totalHasilClustering = HasilKmeans::count();
+            
+            // Get clustering results
+            $hasilKmeans = HasilKmeans::with(['penduduk', 'centroid'])
+                ->orderBy('cluster')
+                ->orderBy('jarak')
+                ->get();
 
-            // Get layak/tidak layak statistics
-            $layakBantuan = HasilKmeans::where('kelayakan', 'Layak')->count();
-            $tidakLayak = HasilKmeans::where('kelayakan', 'Tidak Layak')->count();
+            // Count by cluster
+            $clusterCounts = $hasilKmeans->groupBy('cluster')->map->count();
+            
+            $layakBantuan = $clusterCounts[1] ?? 0; // C1 - Membutuhkan
+            $tidakLayak = $clusterCounts[2] ?? 0;   // C2 - Tidak Membutuhkan
+            $prioritasSedang = $clusterCounts[3] ?? 0; // C3 - Prioritas Sedang
+
+            // Calculate average income per cluster
+            $avgIncomeC1 = $hasilKmeans->where('cluster', 1)->avg('penduduk.penghasilan') ?? 0;
+            $avgIncomeC2 = $hasilKmeans->where('cluster', 2)->avg('penduduk.penghasilan') ?? 0;
+            $avgIncomeC3 = $hasilKmeans->where('cluster', 3)->avg('penduduk.penghasilan') ?? 0;
 
             // Get latest clustering results with relationships
             $latestResults = HasilKmeans::with(['penduduk', 'centroid'])
@@ -116,11 +127,13 @@ class DashboardController extends Controller
 
             return view('admin.dashboard', compact(
                 'totalPenduduk',
-                'totalKriteria',
-                'totalCentroid',
-                'totalHasilClustering',
+                'hasilKmeans',
                 'layakBantuan',
                 'tidakLayak',
+                'prioritasSedang',
+                'avgIncomeC1',
+                'avgIncomeC2',
+                'avgIncomeC3',
                 'latestResults',
                 'clusterLabels',
                 'clusterValues',
@@ -139,11 +152,13 @@ class DashboardController extends Controller
             // If any error occurs, return default values
             return view('admin.dashboard', [
                 'totalPenduduk' => 0,
-                'totalKriteria' => 0,
-                'totalCentroid' => 0,
-                'totalHasilClustering' => 0,
+                'hasilKmeans' => collect(),
                 'layakBantuan' => 0,
                 'tidakLayak' => 0,
+                'prioritasSedang' => 0,
+                'avgIncomeC1' => 0,
+                'avgIncomeC2' => 0,
+                'avgIncomeC3' => 0,
                 'latestResults' => collect(),
                 'clusterLabels' => ['Belum ada data'],
                 'clusterValues' => [0],
