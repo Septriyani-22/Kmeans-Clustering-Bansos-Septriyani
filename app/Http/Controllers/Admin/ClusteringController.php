@@ -270,14 +270,10 @@ class ClusteringController extends Controller
 
     private function determineClusterNumber($centroid, $distances)
     {
-        // Find the minimum distance and its index
-        $minDistance = min($distances);
-        $clusterIndex = array_search($minDistance, $distances);
+        // Find the index of the minimum distance
+        $minDistanceIndex = array_search(min($distances), $distances);
         
-        // Map the cluster index to the correct cluster number
-        // C1: Index 0 - Membutuhkan
-        // C2: Index 1 - Tidak Membutuhkan
-        // C3: Index 2 - Prioritas Sedang
-        return $clusterIndex + 1;
+        // Return cluster number (1-based index)
+        return $minDistanceIndex + 1;
     }
 }
