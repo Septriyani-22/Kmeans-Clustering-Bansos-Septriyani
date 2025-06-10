@@ -55,18 +55,9 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    // Check if user is penduduk
-    public function isPenduduk()
+    // Check if user is user
+    public function isUser()
     {
-        return $this->role === 'penduduk';
-    }
-
-    // Get available roles
-    public static function getRoles()
-    {
-        return [
-            'admin' => 'Administrator',
-            'penduduk' => 'Penduduk'
-        ];
+        return $this->role === 'user';
     }
 }
