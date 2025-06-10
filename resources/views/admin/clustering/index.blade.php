@@ -8,187 +8,92 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Hasil Clustering K-Means</h3>
-                    <div class="card-tools">
-                        <form action="{{ route('admin.clustering.process') }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-play"></i> Proses Clustering
-                            </button>
-                        </form>
-                        <form action="{{ route('admin.clustering.reset') }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin mereset data clustering?')">
-                                <i class="fas fa-trash"></i> Reset
-                            </button>
-                        </form>
-                    </div>
+                    <h3 class="card-title">Clustering K-Means</h3>
                 </div>
                 <div class="card-body">
                     @if(session('success'))
-                        <div class="alert alert-success">
+                        <div class="alert alert-success alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             {{ session('success') }}
                         </div>
                     @endif
 
                     @if(session('error'))
-                        <div class="alert alert-danger">
+                        <div class="alert alert-danger alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             {{ session('error') }}
                         </div>
                     @endif
 
-                    @if($iterasi)
-                        <div class="alert alert-info">
-                            <h5>Informasi Iterasi</h5>
-                            <p>Jumlah Iterasi: {{ $iterasi->iterasi }}</p>
-                        </div>
-                    @endif
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Centroid Akhir</h3>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>Cluster</th>
-                                                    <th>Usia</th>
-                                                    <th>Tanggungan</th>
-                                                    <th>Kondisi Rumah</th>
-                                                    <th>Status Kepemilikan</th>
-                                                    <th>Penghasilan</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($centroids as $centroid)
-                                                <tr>
-                                                    <td>{{ $centroid->cluster_name }}</td>
-                                                    <td>{{ $centroid->usia }}</td>
-                                                    <td>{{ $centroid->tanggungan }}</td>
-                                                    <td>{{ $centroid->kondisi_rumah }}</td>
-                                                    <td>{{ $centroid->status_kepemilikan }}</td>
-                                                    <td>{{ $centroid->penghasilan }}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                <h5><i class="icon fas fa-info"></i> Informasi Cluster</h5>
+                                <p>Jumlah cluster yang ditetapkan adalah 3 cluster berdasarkan hasil data penduduk:</p>
+                                <ul>
+                                    <li><strong>C1 (Cluster Membutuhkan)</strong> - Kelompok yang sangat membutuhkan bantuan</li>
+                                    <li><strong>C2 (Cluster Tidak Membutuhkan)</strong> - Kelompok yang tidak membutuhkan bantuan</li>
+                                    <li><strong>C3 (Prioritas Sedang)</strong> - Kelompok dengan prioritas bantuan sedang</li>
+                                </ul>
                             </div>
                         </div>
-
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Statistik Cluster</h3>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>Cluster</th>
-                                                    <th>Jumlah Penduduk</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @php
-                                                    $clusterStats = $hasil->groupBy('cluster')->map->count();
-                                                @endphp
-                                                @foreach($clusterStats as $cluster => $count)
-                                                <tr>
-                                                    <td>{{ $cluster == 1 ? 'Membutuhkan' : ($cluster == 2 ? 'Tidak Membutuhkan' : 'Prioritas Sedang') }}</td>
-                                                    <td>{{ $count }}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-    @if(session('success'))
-        <div style="background:#dcfce7; color:#166534; border:1px solid #bbf7d0; padding:12px 16px; border-radius:6px; margin-bottom:18px;">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div style="background:#fee2e2; color:#991b1b; border:1px solid #fecaca; padding:12px 16px; border-radius:6px; margin-bottom:18px;">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(500px, 1fr)); gap:24px;">
-        <!-- Data Centroid -->
-        <div>
-            <div style="background:#fff; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1); overflow:hidden;">
-                <div style="background:#f4f6fa; padding:16px; border-bottom:1px solid #e5e7eb;">
-                    <h6 style="margin:0; color:#888fa6; font-weight:600;">Data Centroid</h6>
-                </div>
-                <div style="padding:16px;">
-                    <div style="overflow-x:auto;">
-                        <table style="width:100%; border-collapse:collapse;">
-                            <thead>
-                                <tr style="background:#f4f6fa; color:#888fa6;">
-                                    <th style="padding:12px; text-align:left;">Nama Centroid</th>
-                                    <th style="padding:12px; text-align:left;">Penghasilan</th>
-                                    <th style="padding:12px; text-align:left;">Tanggungan</th>
-                                    <th style="padding:12px; text-align:left;">Keterangan</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($centroids as $centroid)
-                                <tr style="border-bottom:1px solid #e5e7eb;">
-                                    <td style="padding:12px;">{{ $centroid->nama_centroid }}</td>
-                                    <td style="padding:12px;">{{ $centroid->penghasilan_formatted }}</td>
-                                    <td style="padding:12px;">{{ $centroid->tanggungan }}</td>
-                                    <td style="padding:12px;">{{ $centroid->keterangan }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Proses Clustering -->
-        <div>
-            <div style="background:#fff; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1); overflow:hidden;">
-                <div style="background:#f4f6fa; padding:16px; border-bottom:1px solid #e5e7eb;">
-                    <h6 style="margin:0; color:#888fa6; font-weight:600;">Proses Clustering</h6>
-                </div>
-                <div style="padding:16px;">
-                    <form action="{{ route('admin.clustering.proses') }}" method="POST" id="clusteringForm">
+                    <form action="{{ route('admin.clustering.proses') }}" method="POST">
                         @csrf
-                        <div style="margin-bottom:16px;">
-                            <label style="display:block; margin-bottom:8px; color:#4b5563;">Jumlah Iterasi</label>
-                            <input type="number" name="iterasi" value="10" min="1" required style="width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:1rem;">
+                        <div class="form-group">
+                            <label for="jumlah_cluster">Jumlah Cluster</label>
+                            <input type="number" class="form-control @error('jumlah_cluster') is-invalid @enderror" 
+                                id="jumlah_cluster" name="jumlah_cluster" value="3" min="2" max="10" required readonly>
+                            @error('jumlah_cluster')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                            <small class="form-text text-muted">Jumlah cluster telah ditetapkan 3 berdasarkan analisis data penduduk.</small>
                         </div>
-                        <div style="display:flex; gap:8px;">
-                            <button type="submit" style="background:#2563eb; color:#fff; border:none; border-radius:6px; padding:10px 18px; font-size:1rem; cursor:pointer;">
-                                Mulai Proses
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-play"></i> Mulai Proses Clustering
                             </button>
-                            <a href="{{ route('admin.clustering.reset') }}" onclick="return confirm('Apakah Anda yakin ingin mereset hasil clustering?')" style="background:#ef4444; color:#fff; border:none; border-radius:6px; padding:10px 18px; font-size:1rem; cursor:pointer; text-decoration:none;">
-                                Reset Hasil
-                            </a>
                         </div>
                     </form>
+
+                    @if(isset($hasil_clustering) && $hasil_clustering->isNotEmpty())
+                    <div class="mt-4">
+                        <h4>Hasil Clustering</h4>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>NIK</th>
+                                        <th>Nama</th>
+                                        <th>Cluster</th>
+                                        <th>Keterangan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($hasil_clustering as $hasil)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $hasil->penduduk->nik }}</td>
+                                        <td>{{ $hasil->penduduk->nama }}</td>
+                                        <td>
+                                            <span class="badge badge-{{ $hasil->cluster_badge }}">
+                                                C{{ $hasil->cluster }} ({{ $hasil->cluster_name }})
+                                            </span>
+                                        </td>
+                                        <td>{{ $hasil->cluster_description }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-@push('scripts')
-<script>
-document.getElementById('clusteringForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    this.submit();
-});
-</script>
-@endpush
 @endsection 

@@ -29,6 +29,8 @@ class KriteriaController extends Controller
             'nilai' => 'required|array',
             'nilai.*.nama' => 'required|string|max:255',
             'nilai.*.nilai' => 'required|integer|min:1',
+            'nilai.*.nilai_min' => 'nullable|numeric',
+            'nilai.*.nilai_max' => 'nullable|numeric',
             'nilai.*.keterangan' => 'nullable|string|max:255',
         ]);
 
@@ -42,6 +44,8 @@ class KriteriaController extends Controller
             $kriteria->nilaiKriteria()->create([
                 'nama' => $nilai['nama'],
                 'nilai' => $nilai['nilai'],
+                'nilai_min' => $nilai['nilai_min'] ?? null,
+                'nilai_max' => $nilai['nilai_max'] ?? null,
                 'keterangan' => $nilai['keterangan'] ?? null,
             ]);
         }
@@ -65,6 +69,8 @@ class KriteriaController extends Controller
             'nilai' => 'required|array',
             'nilai.*.nama' => 'required|string|max:255',
             'nilai.*.nilai' => 'required|integer|min:1',
+            'nilai.*.nilai_min' => 'nullable|numeric',
+            'nilai.*.nilai_max' => 'nullable|numeric',
             'nilai.*.keterangan' => 'nullable|string|max:255',
         ]);
 
@@ -82,6 +88,8 @@ class KriteriaController extends Controller
             $kriteria->nilaiKriteria()->create([
                 'nama' => $nilai['nama'],
                 'nilai' => $nilai['nilai'],
+                'nilai_min' => $nilai['nilai_min'] ?? null,
+                'nilai_max' => $nilai['nilai_max'] ?? null,
                 'keterangan' => $nilai['keterangan'] ?? null,
             ]);
         }

@@ -58,13 +58,19 @@
                             <label>Nilai Kriteria <span class="text-danger">*</span></label>
                             <div id="nilai-container">
                                 <div class="row mb-2">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <input type="text" class="form-control" name="nilai[0][nama]" placeholder="Nama" required>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <input type="number" class="form-control" name="nilai[0][nilai]" placeholder="Nilai" min="1" required>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-2">
+                                        <input type="number" class="form-control" name="nilai[0][nilai_min]" placeholder="Min" step="0.01">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="number" class="form-control" name="nilai[0][nilai_max]" placeholder="Max" step="0.01">
+                                    </div>
+                                    <div class="col-md-2">
                                         <input type="text" class="form-control" name="nilai[0][keterangan]" placeholder="Keterangan">
                                     </div>
                                     <div class="col-md-1">
@@ -100,13 +106,19 @@
         $('#btn-add-nilai').click(function() {
             const template = `
                 <div class="row mb-2">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <input type="text" class="form-control" name="nilai[${nilaiCount}][nama]" placeholder="Nama" required>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <input type="number" class="form-control" name="nilai[${nilaiCount}][nilai]" placeholder="Nilai" min="1" required>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" name="nilai[${nilaiCount}][nilai_min]" placeholder="Min" step="0.01">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" name="nilai[${nilaiCount}][nilai_max]" placeholder="Max" step="0.01">
+                    </div>
+                    <div class="col-md-2">
                         <input type="text" class="form-control" name="nilai[${nilaiCount}][keterangan]" placeholder="Keterangan">
                     </div>
                     <div class="col-md-1">

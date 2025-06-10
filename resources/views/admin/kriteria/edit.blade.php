@@ -60,13 +60,19 @@
                             <div id="nilai-container">
                                 @foreach($kriteria->nilaiKriteria as $index => $nilai)
                                 <div class="row mb-2">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <input type="text" class="form-control" name="nilai[{{ $index }}][nama]" placeholder="Nama" value="{{ $nilai->nama }}" required>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <input type="number" class="form-control" name="nilai[{{ $index }}][nilai]" placeholder="Nilai" min="1" value="{{ $nilai->nilai }}" required>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-2">
+                                        <input type="number" class="form-control" name="nilai[{{ $index }}][nilai_min]" placeholder="Min" step="0.01" value="{{ $nilai->nilai_min }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="number" class="form-control" name="nilai[{{ $index }}][nilai_max]" placeholder="Max" step="0.01" value="{{ $nilai->nilai_max }}">
+                                    </div>
+                                    <div class="col-md-2">
                                         <input type="text" class="form-control" name="nilai[{{ $index }}][keterangan]" placeholder="Keterangan" value="{{ $nilai->keterangan }}">
                                     </div>
                                     <div class="col-md-1">
@@ -103,13 +109,19 @@
         $('#btn-add-nilai').click(function() {
             const template = `
                 <div class="row mb-2">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <input type="text" class="form-control" name="nilai[${nilaiCount}][nama]" placeholder="Nama" required>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <input type="number" class="form-control" name="nilai[${nilaiCount}][nilai]" placeholder="Nilai" min="1" required>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" name="nilai[${nilaiCount}][nilai_min]" placeholder="Min" step="0.01">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" name="nilai[${nilaiCount}][nilai_max]" placeholder="Max" step="0.01">
+                    </div>
+                    <div class="col-md-2">
                         <input type="text" class="form-control" name="nilai[${nilaiCount}][keterangan]" placeholder="Keterangan">
                     </div>
                     <div class="col-md-1">

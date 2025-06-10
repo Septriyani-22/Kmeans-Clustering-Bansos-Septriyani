@@ -24,38 +24,38 @@ class KriteriaSeeder extends Seeder
 
         NilaiKriteria::create([
             'kriteria_id' => $usia->id,
-            'nama' => 'Tidak Membutuhkan',
+            'nama' => '15-25 Tahun',
             'nilai' => 1,
-            'nilai_min' => 0,
-            'nilai_max' => 39,
-            'keterangan' => 'Usia < 40 tahun'
+            'nilai_min' => 15,
+            'nilai_max' => 25,
+            'keterangan' => 'Usia 15-25 tahun'
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $usia->id,
-            'nama' => 'Cukup Membutuhkan',
+            'nama' => '25-35 Tahun',
             'nilai' => 2,
-            'nilai_min' => 40,
-            'nilai_max' => 49,
-            'keterangan' => 'Usia 40-49 tahun'
+            'nilai_min' => 25,
+            'nilai_max' => 35,
+            'keterangan' => 'Usia 25-35 tahun'
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $usia->id,
-            'nama' => 'Membutuhkan',
+            'nama' => '36-45 Tahun',
             'nilai' => 3,
-            'nilai_min' => 50,
-            'nilai_max' => 59,
-            'keterangan' => 'Usia 50-59 tahun'
+            'nilai_min' => 36,
+            'nilai_max' => 45,
+            'keterangan' => 'Usia 36-45 tahun'
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $usia->id,
-            'nama' => 'Sangat Membutuhkan',
+            'nama' => '>46 Tahun',
             'nilai' => 4,
-            'nilai_min' => 60,
+            'nilai_min' => 46,
             'nilai_max' => 100,
-            'keterangan' => 'Usia ≥ 60 tahun'
+            'keterangan' => 'Usia >46 tahun'
         ]);
 
         // Kriteria Jumlah Tanggungan
@@ -67,38 +67,38 @@ class KriteriaSeeder extends Seeder
 
         NilaiKriteria::create([
             'kriteria_id' => $tanggungan->id,
-            'nama' => 'Tidak Membutuhkan',
+            'nama' => '1 Anak',
             'nilai' => 1,
             'nilai_min' => 1,
-            'nilai_max' => 2,
-            'keterangan' => '1-2 orang'
+            'nilai_max' => 1,
+            'keterangan' => '1 anak'
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $tanggungan->id,
-            'nama' => 'Cukup Membutuhkan',
+            'nama' => '2 Anak',
             'nilai' => 2,
+            'nilai_min' => 2,
+            'nilai_max' => 2,
+            'keterangan' => '2 anak'
+        ]);
+
+        NilaiKriteria::create([
+            'kriteria_id' => $tanggungan->id,
+            'nama' => '3 Anak',
+            'nilai' => 3,
             'nilai_min' => 3,
             'nilai_max' => 3,
-            'keterangan' => '3 orang'
+            'keterangan' => '3 anak'
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $tanggungan->id,
-            'nama' => 'Membutuhkan',
-            'nilai' => 3,
-            'nilai_min' => 4,
-            'nilai_max' => 4,
-            'keterangan' => '4 orang'
-        ]);
-
-        NilaiKriteria::create([
-            'kriteria_id' => $tanggungan->id,
-            'nama' => 'Sangat Membutuhkan',
+            'nama' => '>3 Anak',
             'nilai' => 4,
-            'nilai_min' => 5,
+            'nilai_min' => 4,
             'nilai_max' => 20,
-            'keterangan' => '≥ 5 orang'
+            'keterangan' => '>3 anak'
         ]);
 
         // Kriteria Kondisi Rumah
@@ -110,30 +110,29 @@ class KriteriaSeeder extends Seeder
 
         NilaiKriteria::create([
             'kriteria_id' => $kondisiRumah->id,
-            'nama' => 'Tidak Membutuhkan',
+            'nama' => 'Baik',
             'nilai' => 1,
-            'keterangan' => 'Sangat Baik'
+            'nilai_min' => 1,
+            'nilai_max' => 1,
+            'keterangan' => 'Kondisi rumah baik'
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $kondisiRumah->id,
-            'nama' => 'Cukup Membutuhkan',
+            'nama' => 'Cukup',
             'nilai' => 2,
-            'keterangan' => 'Baik'
+            'nilai_min' => 2,
+            'nilai_max' => 2,
+            'keterangan' => 'Kondisi rumah cukup'
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $kondisiRumah->id,
-            'nama' => 'Membutuhkan',
+            'nama' => 'Kurang',
             'nilai' => 3,
-            'keterangan' => 'Kurang Baik'
-        ]);
-
-        NilaiKriteria::create([
-            'kriteria_id' => $kondisiRumah->id,
-            'nama' => 'Sangat Membutuhkan',
-            'nilai' => 4,
-            'keterangan' => 'Tidak Layak'
+            'nilai_min' => 3,
+            'nilai_max' => 3,
+            'keterangan' => 'Kondisi rumah kurang'
         ]);
 
         // Kriteria Status Kepemilikan
@@ -145,30 +144,29 @@ class KriteriaSeeder extends Seeder
 
         NilaiKriteria::create([
             'kriteria_id' => $statusKepemilikan->id,
-            'nama' => 'Tidak Membutuhkan',
+            'nama' => 'Hak Milik',
             'nilai' => 1,
-            'keterangan' => 'Milik Sendiri'
+            'nilai_min' => 1,
+            'nilai_max' => 1,
+            'keterangan' => 'Status kepemilikan hak milik'
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $statusKepemilikan->id,
-            'nama' => 'Cukup Membutuhkan',
+            'nama' => 'Numpang',
             'nilai' => 2,
-            'keterangan' => 'Kontrak'
+            'nilai_min' => 2,
+            'nilai_max' => 2,
+            'keterangan' => 'Status kepemilikan numpang'
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $statusKepemilikan->id,
-            'nama' => 'Membutuhkan',
+            'nama' => 'Sewa',
             'nilai' => 3,
-            'keterangan' => 'Sewa'
-        ]);
-
-        NilaiKriteria::create([
-            'kriteria_id' => $statusKepemilikan->id,
-            'nama' => 'Sangat Membutuhkan',
-            'nilai' => 4,
-            'keterangan' => 'Menumpang'
+            'nilai_min' => 3,
+            'nilai_max' => 3,
+            'keterangan' => 'Status kepemilikan sewa'
         ]);
 
         // Kriteria Penghasilan
@@ -180,38 +178,38 @@ class KriteriaSeeder extends Seeder
 
         NilaiKriteria::create([
             'kriteria_id' => $penghasilan->id,
-            'nama' => 'Tidak Membutuhkan',
+            'nama' => '>4000000',
             'nilai' => 1,
-            'nilai_min' => 3000001,
+            'nilai_min' => 4000000,
             'nilai_max' => 9999999,
-            'keterangan' => '> Rp 3.000.000'
+            'keterangan' => 'Penghasilan > Rp 4.000.000'
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $penghasilan->id,
-            'nama' => 'Cukup Membutuhkan',
+            'nama' => '3000000 - 4000000',
             'nilai' => 2,
-            'nilai_min' => 2000001,
-            'nilai_max' => 3000000,
-            'keterangan' => 'Rp 2.000.000 - Rp 3.000.000'
+            'nilai_min' => 3000000,
+            'nilai_max' => 4000000,
+            'keterangan' => 'Penghasilan Rp 3.000.000 - Rp 4.000.000'
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $penghasilan->id,
-            'nama' => 'Membutuhkan',
+            'nama' => '2000000 - 3000000',
             'nilai' => 3,
-            'nilai_min' => 1000001,
-            'nilai_max' => 2000000,
-            'keterangan' => 'Rp 1.000.000 - Rp 2.000.000'
+            'nilai_min' => 2000000,
+            'nilai_max' => 3000000,
+            'keterangan' => 'Penghasilan Rp 2.000.000 - Rp 3.000.000'
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $penghasilan->id,
-            'nama' => 'Sangat Membutuhkan',
+            'nama' => '1000000 - 2000000',
             'nilai' => 4,
-            'nilai_min' => 0,
-            'nilai_max' => 1000000,
-            'keterangan' => '≤ Rp 1.000.000'
+            'nilai_min' => 1000000,
+            'nilai_max' => 2000000,
+            'keterangan' => 'Penghasilan Rp 1.000.000 - Rp 2.000.000'
         ]);
     }
 } 

@@ -55,6 +55,8 @@
                                                 <tr>
                                                     <th>Nama</th>
                                                     <th>Nilai</th>
+                                                    <th>Min</th>
+                                                    <th>Max</th>
                                                     <th>Keterangan</th>
                                                 </tr>
                                             </thead>
@@ -63,6 +65,8 @@
                                                 <tr>
                                                     <td>{{ $nilai->nama }}</td>
                                                     <td>{{ $nilai->nilai }}</td>
+                                                    <td>{{ $nilai->nilai_min }}</td>
+                                                    <td>{{ $nilai->nilai_max }}</td>
                                                     <td>{{ $nilai->keterangan }}</td>
                                                 </tr>
                                                 @endforeach
