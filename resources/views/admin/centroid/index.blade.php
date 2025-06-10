@@ -6,84 +6,77 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Centroid Management</h3>
+                    <h3 class="card-title">Data Centroid</h3>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <a href="{{ route('admin.centroid.create') }}" class="btn btn-primary">Add New Centroid</a>
+                    @if($centroids->isEmpty())
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Belum ada data centroid. Silakan lakukan proses clustering terlebih dahulu.
                         </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Nama Centroid</th>
-                                    <th>Usia</th>
-                                    <th>Jumlah Tanggungan</th>
-                                    <th>Kondisi Rumah</th>
-                                    <th>Status Kepemilikan</th>
-                                    <th>Jumlah Penghasilan</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($centroids as $centroid)
-                                <tr>
-                                    <td>{{ $centroid->nama_centroid }}</td>
-                                    <td>{{ $centroid->usia }}</td>
-                                    <td>{{ $centroid->tanggungan_num }}</td>
-                                    <td>{{ $centroid->kondisi_rumah }}</td>
-                                    <td>{{ $centroid->status_kepemilikan }}</td>
-                                    <td>Rp {{ number_format($centroid->penghasilan_num, 0, ',', '.') }}</td>
-                                    <td>
-                                        <a href="{{ route('admin.centroid.edit', $centroid->id) }}" class="btn btn-sm btn-info">Edit</a>
-                                        <form action="{{ route('admin.centroid.destroy', $centroid->id) }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this centroid?')">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Perhitungan Jarak Euclidean dan Penentuan Cluster</h3>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Nama</th>
+                    @else
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Centroid</th>
+                                        <th>Usia</th>
+                                        <th>Tanggungan</th>
+                                        <th>Kondisi Rumah</th>
+                                        <th>Status Kepemilikan</th>
+                                        <th>Penghasilan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     @foreach($centroids as $centroid)
-                                        <th>Jarak ke {{ $centroid->nama_centroid }}</th>
+                                        <tr>
+                                            <td>{{ $centroid->nama_centroid }}</td>
+                                            <td>{{ $centroid->usia }}</td>
+                                            <td>{{ $centroid->tanggungan_num }}</td>
+                                            <td>{{ $centroid->kondisi_rumah }}</td>
+                                            <td>{{ $centroid->status_kepemilikan }}</td>
+                                            <td>Rp {{ number_format($centroid->penghasilan_num, 0, ',', '.') }}</td>
+                                        </tr>
                                     @endforeach
-                                    <th>Cluster Terdekat</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($distanceResults as $result)
-                                <tr>
-                                    <td>{{ $result['penduduk']->nama }}</td>
-                                    @foreach($result['distances'] as $distance)
-                                        <td>{{ number_format($distance, 6) }}</td>
-                                    @endforeach
-                                    <td>C{{ $result['cluster'] }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        @if(!empty($distanceResults))
+                            <h4 class="mt-4">Perhitungan Jarak Euclidean dan Penentuan Cluster</h4>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Nama</th>
+                                            <th>Data Vector</th>
+                                            <th>Jarak ke C1</th>
+                                            <th>Jarak ke C2</th>
+                                            <th>Jarak ke C3</th>
+                                            <th>Cluster Terdekat</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($distanceResults as $result)
+                                            <tr>
+                                                <td>{{ $result['penduduk']->nama }}</td>
+                                                <td>
+                                                    [{{ $result['penduduk']->usia }}, 
+                                                    {{ $result['penduduk']->tanggungan }}, 
+                                                    {{ $result['penduduk']->kondisi_rumah }}, 
+                                                    {{ $result['penduduk']->status_kepemilikan }}, 
+                                                    {{ $result['penduduk']->penghasilan }}]
+                                                </td>
+                                                @foreach($result['distances'] as $distance)
+                                                    <td>{{ number_format($distance, 2) }}</td>
+                                                @endforeach
+                                                <td>C{{ $result['nearest_cluster'] }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
+                    @endif
                 </div>
             </div>
         </div>

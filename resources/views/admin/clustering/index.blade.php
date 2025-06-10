@@ -19,8 +19,7 @@
                     @endif
 
                     @if(session('error'))
-                        <div class="alert alert-danger alert-dismissible">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <div class="alert alert-danger">
                             {{ session('error') }}
                         </div>
                     @endif
@@ -55,6 +54,9 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-play"></i> Mulai Proses Clustering
                             </button>
+                            <a href="{{ route('admin.clustering.reset') }}" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin mereset semua data clustering?')">
+                                <i class="fas fa-trash"></i> Reset Data
+                            </a>
                         </div>
                     </form>
 
@@ -74,17 +76,17 @@
                                 </thead>
                                 <tbody>
                                     @foreach($hasil_clustering as $hasil)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $hasil->penduduk->nik }}</td>
-                                        <td>{{ $hasil->penduduk->nama }}</td>
-                                        <td>
-                                            <span class="badge badge-{{ $hasil->cluster_badge }}">
-                                                C{{ $hasil->cluster }} ({{ $hasil->cluster_name }})
-                                            </span>
-                                        </td>
-                                        <td>{{ $hasil->cluster_description }}</td>
-                                    </tr>
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $hasil->penduduk->nik }}</td>
+                                            <td>{{ $hasil->penduduk->nama }}</td>
+                                            <td>
+                                                <span class="badge badge-{{ $hasil->cluster_badge }}">
+                                                    C{{ $hasil->cluster }} ({{ $hasil->cluster_name }})
+                                                </span>
+                                            </td>
+                                            <td>{{ $hasil->cluster_description }}</td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>

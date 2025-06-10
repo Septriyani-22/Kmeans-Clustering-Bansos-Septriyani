@@ -14,26 +14,31 @@ class CentroidController extends Controller
         $centroids = Centroid::all();
         $penduduks = Penduduk::all();
         $distanceResults = [];
-        foreach ($penduduks as $penduduk) {
-            $distances = [];
-            foreach ($centroids as $centroid) {
-                $dist = sqrt(
-                    pow($penduduk->usia - $centroid->usia, 2) +
-                    pow($penduduk->tanggungan - $centroid->tanggungan_num, 2) +
-                    pow($this->convertKondisiRumah($penduduk->kondisi_rumah) - $this->convertKondisiRumah($centroid->kondisi_rumah), 2) +
-                    pow($this->convertStatusKepemilikan($penduduk->status_kepemilikan) - $this->convertStatusKepemilikan($centroid->status_kepemilikan), 2) +
-                    pow($penduduk->penghasilan - $centroid->penghasilan_num, 2)
-                );
-                $distances[] = $dist;
+
+        // Only calculate distances if there are centroids
+        if ($centroids->isNotEmpty()) {
+            foreach ($penduduks as $penduduk) {
+                $distances = [];
+                foreach ($centroids as $centroid) {
+                    $dist = sqrt(
+                        pow($penduduk->usia - $centroid->usia, 2) +
+                        pow($penduduk->tanggungan - $centroid->tanggungan_num, 2) +
+                        pow($this->convertKondisiRumah($penduduk->kondisi_rumah) - $this->convertKondisiRumah($centroid->kondisi_rumah), 2) +
+                        pow($this->convertStatusKepemilikan($penduduk->status_kepemilikan) - $this->convertStatusKepemilikan($centroid->status_kepemilikan), 2) +
+                        pow($penduduk->penghasilan - $centroid->penghasilan_num, 2)
+                    );
+                    $distances[] = $dist;
+                }
+                $min = min($distances);
+                $nearestCluster = array_search($min, $distances) + 1;
+                $distanceResults[] = [
+                    'penduduk' => $penduduk,
+                    'distances' => $distances,
+                    'nearest_cluster' => $nearestCluster
+                ];
             }
-            $min = min($distances);
-            $cluster = array_search($min, $distances) + 1;
-            $distanceResults[] = [
-                'penduduk' => $penduduk,
-                'distances' => $distances,
-                'cluster' => $cluster
-            ];
         }
+
         return view('admin.centroid.index', compact('centroids', 'distanceResults'));
     }
 

@@ -10,6 +10,7 @@ use App\Models\Iterasi;
 use App\Models\HasilKmeans;
 use App\Models\Kriteria;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ClusteringController extends Controller
 {
@@ -17,7 +18,7 @@ class ClusteringController extends Controller
     {
         $penduduk = Penduduk::all();
         $centroids = Centroid::all();
-        $iterasi = Iterasi::orderBy('iterasi', 'desc')->first();
+        $iterasi = Iterasi::all();
         $hasilKmeans = HasilKmeans::with(['penduduk', 'centroid'])->get();
         
         return view('admin.clustering.index', compact('penduduk', 'centroids', 'iterasi', 'hasilKmeans'));
@@ -25,228 +26,240 @@ class ClusteringController extends Controller
 
     public function proses(Request $request)
     {
-        // Validasi input
-        $request->validate([
-            'tahun' => 'required|integer',
-            'periode' => 'required|integer',
-            'jumlah_cluster' => 'required|integer|min:2|max:5'
-        ]);
-
-        // Hapus data iterasi dan hasil kmeans yang ada
-        Iterasi::truncate();
-        HasilKmeans::truncate();
-
-        // Ambil data penduduk dan kriteria
-        $penduduk = Penduduk::where('tahun', $request->tahun)->get();
-        $kriteria = Kriteria::all();
-
-        if ($penduduk->isEmpty()) {
-            return redirect()->back()->with('error', 'Tidak ada data penduduk untuk tahun yang dipilih');
-        }
-
-        if ($kriteria->isEmpty()) {
-            return redirect()->back()->with('error', 'Data kriteria belum tersedia');
-        }
-
-        // Inisialisasi centroid awal
-        $centroids = Centroid::where('tahun', $request->tahun)
-                           ->where('periode', $request->periode)
-                           ->get();
-
-        if ($centroids->isEmpty()) {
-            return redirect()->back()->with('error', 'Data centroid belum tersedia');
-        }
-
-        $maxIterasi = 100;
-        $iterasi = 0;
-        $konvergen = false;
-
-        while (!$konvergen && $iterasi < $maxIterasi) {
-            $iterasi++;
-            
-            // Simpan iterasi
-            Iterasi::create([
-                'iterasi' => $iterasi,
-                'tahun' => $request->tahun,
-                'periode' => $request->periode
+        try {
+            // Validate input
+            $request->validate([
+                'jumlah_cluster' => 'required|integer|min:2|max:10'
             ]);
 
-            // Hitung jarak dan tentukan cluster
-            foreach ($penduduk as $p) {
-                $minJarak = PHP_FLOAT_MAX;
-                $clusterTerdekat = null;
+            $jumlahCluster = $request->jumlah_cluster;
 
-                foreach ($centroids as $c) {
-                    $jarak = $this->calculateDistance($p, $c, $kriteria);
-                    
-                    if ($jarak < $minJarak) {
-                        $minJarak = $jarak;
-                        $clusterTerdekat = $c;
+            // Get all penduduk data
+            $penduduks = Penduduk::all();
+            if ($penduduks->isEmpty()) {
+                return redirect()->route('admin.clustering.index')
+                    ->with('error', 'Tidak ada data penduduk yang tersedia.');
+            }
+
+            // Delete existing centroids and results
+            HasilKmeans::query()->delete();
+            Centroid::query()->delete();
+
+            // Initialize centroids with random penduduk data
+            $randomPenduduk = Penduduk::inRandomOrder()->take($jumlahCluster)->get();
+            
+            if ($randomPenduduk->count() < $jumlahCluster) {
+                return redirect()->route('admin.clustering.index')
+                    ->with('error', 'Jumlah data penduduk tidak mencukupi untuk jumlah cluster yang diminta.');
+            }
+
+            $centroids = [];
+            foreach ($randomPenduduk as $index => $p) {
+                $centroid = Centroid::create([
+                    'nama_centroid' => 'C' . ($index + 1),
+                    'usia' => (int)$p->usia,
+                    'tanggungan_num' => $this->convertToNumeric($p->tanggungan),
+                    'kondisi_rumah' => $p->kondisi_rumah,
+                    'status_kepemilikan' => $p->status_kepemilikan,
+                    'penghasilan_num' => $this->convertToNumeric($p->penghasilan),
+                    'tahun' => $p->tahun,
+                    'periode' => 1
+                ]);
+                $centroids[] = $centroid;
+            }
+
+            // K-means clustering process
+            $maxIterations = 100;
+            $iteration = 0;
+            $converged = false;
+
+            while (!$converged && $iteration < $maxIterations) {
+                $iteration++;
+                $clusterAssignments = [];
+                $clusterSums = array_fill(0, $jumlahCluster, [
+                    'usia' => 0, 'tanggungan' => 0, 'kondisi_rumah' => 0,
+                    'status_kepemilikan' => 0, 'penghasilan' => 0, 'count' => 0
+                ]);
+
+                // Assign each penduduk to nearest centroid
+                foreach ($penduduks as $penduduk) {
+                    $minDistance = PHP_FLOAT_MAX;
+                    $nearestCluster = 0;
+
+                    foreach ($centroids as $index => $centroid) {
+                        $distance = sqrt(
+                            pow($penduduk->usia - $centroid->usia, 2) +
+                            pow($this->convertToNumeric($penduduk->tanggungan) - $centroid->tanggungan_num, 2) +
+                            pow($this->convertKondisiRumah($penduduk->kondisi_rumah) - $this->convertKondisiRumah($centroid->kondisi_rumah), 2) +
+                            pow($this->convertStatusKepemilikan($penduduk->status_kepemilikan) - $this->convertStatusKepemilikan($centroid->status_kepemilikan), 2) +
+                            pow($this->convertToNumeric($penduduk->penghasilan) - $centroid->penghasilan_num, 2)
+                        );
+
+                        if ($distance < $minDistance) {
+                            $minDistance = $distance;
+                            $nearestCluster = $index;
+                        }
+                    }
+
+                    $clusterAssignments[$penduduk->id] = $nearestCluster;
+                    $clusterSums[$nearestCluster]['usia'] += $penduduk->usia;
+                    $clusterSums[$nearestCluster]['tanggungan'] += $this->convertToNumeric($penduduk->tanggungan);
+                    $clusterSums[$nearestCluster]['kondisi_rumah'] += $this->convertKondisiRumah($penduduk->kondisi_rumah);
+                    $clusterSums[$nearestCluster]['status_kepemilikan'] += $this->convertStatusKepemilikan($penduduk->status_kepemilikan);
+                    $clusterSums[$nearestCluster]['penghasilan'] += $this->convertToNumeric($penduduk->penghasilan);
+                    $clusterSums[$nearestCluster]['count']++;
+                }
+
+                // Update centroids
+                $centroidsMoved = false;
+                foreach ($centroids as $index => $centroid) {
+                    if ($clusterSums[$index]['count'] > 0) {
+                        $newUsia = $clusterSums[$index]['usia'] / $clusterSums[$index]['count'];
+                        $newTanggungan = $clusterSums[$index]['tanggungan'] / $clusterSums[$index]['count'];
+                        $newKondisiRumah = $clusterSums[$index]['kondisi_rumah'] / $clusterSums[$index]['count'];
+                        $newStatusKepemilikan = $clusterSums[$index]['status_kepemilikan'] / $clusterSums[$index]['count'];
+                        $newPenghasilan = $clusterSums[$index]['penghasilan'] / $clusterSums[$index]['count'];
+
+                        if ($newUsia != $centroid->usia || 
+                            $newTanggungan != $centroid->tanggungan_num || 
+                            $newKondisiRumah != $this->convertKondisiRumah($centroid->kondisi_rumah) || 
+                            $newStatusKepemilikan != $this->convertStatusKepemilikan($centroid->status_kepemilikan) || 
+                            $newPenghasilan != $centroid->penghasilan_num) {
+                            $centroidsMoved = true;
+                        }
+
+                        $centroid->update([
+                            'usia' => (int)$newUsia,
+                            'tanggungan_num' => $newTanggungan,
+                            'kondisi_rumah' => $this->reverseConvertKondisiRumah($newKondisiRumah),
+                            'status_kepemilikan' => $this->reverseConvertStatusKepemilikan($newStatusKepemilikan),
+                            'penghasilan_num' => $newPenghasilan
+                        ]);
                     }
                 }
 
-                // Simpan hasil clustering
+                if (!$centroidsMoved) {
+                    $converged = true;
+                }
+            }
+
+            // Save clustering results
+            foreach ($clusterAssignments as $pendudukId => $clusterIndex) {
+                $penduduk = Penduduk::find($pendudukId);
+                $centroid = $centroids[$clusterIndex];
+
                 HasilKmeans::create([
-                    'penduduk_id' => $p->id,
-                    'centroid_id' => $clusterTerdekat->id,
-                    'jarak' => $minJarak,
-                    'iterasi' => $iterasi,
-                    'tahun' => $request->tahun,
-                    'periode' => $request->periode
+                    'penduduk_id' => $pendudukId,
+                    'centroid_id' => $centroid->id,
+                    'cluster' => $clusterIndex + 1,
+                    'jarak' => sqrt(
+                        pow($penduduk->usia - $centroid->usia, 2) +
+                        pow($this->convertToNumeric($penduduk->tanggungan) - $centroid->tanggungan_num, 2) +
+                        pow($this->convertKondisiRumah($penduduk->kondisi_rumah) - $this->convertKondisiRumah($centroid->kondisi_rumah), 2) +
+                        pow($this->convertStatusKepemilikan($penduduk->status_kepemilikan) - $this->convertStatusKepemilikan($centroid->status_kepemilikan), 2) +
+                        pow($this->convertToNumeric($penduduk->penghasilan) - $centroid->penghasilan_num, 2)
+                    ),
+                    'iterasi' => $iteration,
+                    'tahun' => $penduduk->tahun,
+                    'periode' => 1
                 ]);
             }
 
-            // Update centroid
-            $konvergen = $this->updateCentroids($centroids, $kriteria);
-        }
+            return redirect()->route('admin.centroid.index')
+                ->with('success', 'Proses clustering berhasil dilakukan.');
 
-        return redirect()->route('admin.centroid.index')
-                        ->with('success', 'Proses clustering selesai dengan ' . $iterasi . ' iterasi');
+        } catch (\Exception $e) {
+            \Log::error('Clustering error: ' . $e->getMessage());
+            return redirect()->route('admin.clustering.index')
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 
-    private function calculateDistance($penduduk, $centroid, $kriteria)
+    private function initializeCentroids($jumlahCluster)
     {
-        $totalJarak = 0;
+        // Get random penduduk records for initial centroids
+        $randomPenduduk = Penduduk::inRandomOrder()->take($jumlahCluster)->get();
         
-        foreach ($kriteria as $k) {
-            $nilaiPenduduk = 0;
-            $nilaiCentroid = 0;
-            
-            switch ($k->nama_kriteria) {
-                case 'Usia':
-                    $nilaiPenduduk = (float) $penduduk->usia;
-                    $nilaiCentroid = (float) $centroid->usia;
-                    break;
-                case 'Jumlah Tanggungan':
-                    $nilaiPenduduk = (float) $penduduk->tanggungan;
-                    $nilaiCentroid = (float) $centroid->tanggungan_num;
-                    break;
-                case 'Kondisi Rumah':
-                    $nilaiPenduduk = $this->convertKondisiRumah($penduduk->kondisi_rumah);
-                    $nilaiCentroid = $this->convertKondisiRumah($centroid->kondisi_rumah);
-                    break;
-                case 'Status Kepemilikan':
-                    $nilaiPenduduk = $this->convertStatusKepemilikan($penduduk->status_kepemilikan);
-                    $nilaiCentroid = $this->convertStatusKepemilikan($centroid->status_kepemilikan);
-                    break;
-                case 'Penghasilan':
-                    $nilaiPenduduk = (float) $penduduk->penghasilan;
-                    $nilaiCentroid = (float) $centroid->penghasilan_num;
-                    break;
-            }
-            
-            // Normalisasi nilai berdasarkan min dan max kriteria
-            $nilaiPenduduk = ($nilaiPenduduk - $k->nilai_min) / ($k->nilai_max - $k->nilai_min);
-            $nilaiCentroid = ($nilaiCentroid - $k->nilai_min) / ($k->nilai_max - $k->nilai_min);
-            
-            // Hitung jarak Euclidean
-            $totalJarak += pow($nilaiPenduduk - $nilaiCentroid, 2);
+        foreach ($randomPenduduk as $index => $p) {
+            Centroid::create([
+                'nama_centroid' => 'C' . ($index + 1),
+                'usia' => $p->usia,
+                'tanggungan_num' => $p->tanggungan_num,
+                'kondisi_rumah' => $p->kondisi_rumah,
+                'status_kepemilikan' => $p->status_kepemilikan,
+                'penghasilan_num' => $p->penghasilan_num,
+                'tahun' => $p->tahun,
+                'periode' => 1
+            ]);
         }
-        
-        return sqrt($totalJarak);
     }
 
-    private function updateCentroids($centroids, $kriteria)
+    public function reset()
     {
-        $konvergen = true;
-        
-        foreach ($centroids as $centroid) {
-            $clusterPenduduk = HasilKmeans::where('centroid_id', $centroid->id)
-                                        ->where('iterasi', Iterasi::max('iterasi'))
-                                        ->with('penduduk')
-                                        ->get();
+        try {
+            // Delete all clustering results first (child table)
+            HasilKmeans::query()->delete();
             
-            if ($clusterPenduduk->isEmpty()) {
-                continue;
-            }
+            // Then delete all centroids (parent table)
+            Centroid::query()->delete();
             
-            $oldValues = [
-                'usia' => $centroid->usia,
-                'tanggungan_num' => $centroid->tanggungan_num,
-                'kondisi_rumah' => $centroid->kondisi_rumah,
-                'status_kepemilikan' => $centroid->status_kepemilikan,
-                'penghasilan_num' => $centroid->penghasilan_num
-            ];
-            
-            // Hitung rata-rata untuk setiap kriteria
-            $newValues = [
-                'usia' => $clusterPenduduk->avg('penduduk.usia'),
-                'tanggungan_num' => $clusterPenduduk->avg('penduduk.tanggungan'),
-                'kondisi_rumah' => $this->calculateAverageKondisiRumah($clusterPenduduk),
-                'status_kepemilikan' => $this->calculateAverageStatusKepemilikan($clusterPenduduk),
-                'penghasilan_num' => $clusterPenduduk->avg('penduduk.penghasilan')
-            ];
-            
-            // Update centroid
-            $centroid->update($newValues);
-            
-            // Cek konvergensi
-            foreach ($oldValues as $key => $oldValue) {
-                if (abs($oldValue - $newValues[$key]) > 0.0001) {
-                    $konvergen = false;
-                    break;
-                }
-            }
+            return redirect()->route('admin.clustering.index')
+                ->with('success', 'Semua data clustering telah direset.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.clustering.index')
+                ->with('error', 'Gagal mereset data: ' . $e->getMessage());
         }
-        
-        return $konvergen;
     }
 
-    private function convertKondisiRumah($kondisi)
+    private function convertKondisiRumah($value)
     {
-        return match($kondisi) {
+        return match(strtolower($value)) {
+            'sangat baik' => 4,
             'baik' => 3,
             'cukup' => 2,
-            'kurang' => 1,
-            default => 0
+            'buruk' => 1,
+            default => 2
         };
     }
 
-    private function convertStatusKepemilikan($status)
+    private function reverseConvertKondisiRumah($value)
     {
-        return match($status) {
+        return match((int)$value) {
+            4 => 'sangat baik',
+            3 => 'baik',
+            2 => 'cukup',
+            1 => 'buruk',
+            default => 'cukup'
+        };
+    }
+
+    private function convertStatusKepemilikan($value)
+    {
+        return match(strtolower($value)) {
             'hak milik' => 3,
             'sewa' => 2,
-            'numpang' => 1,
-            default => 0
+            'kontrak' => 1,
+            default => 1
         };
     }
 
-    private function calculateAverageKondisiRumah($penduduk)
+    private function reverseConvertStatusKepemilikan($value)
     {
-        $total = 0;
-        $count = 0;
-        
-        foreach ($penduduk as $p) {
-            $total += $this->convertKondisiRumah($p->penduduk->kondisi_rumah);
-            $count++;
-        }
-        
-        $average = $count > 0 ? $total / $count : 0;
-        
-        return match(true) {
-            $average >= 2.5 => 'baik',
-            $average >= 1.5 => 'cukup',
-            default => 'kurang'
+        return match((int)$value) {
+            3 => 'hak milik',
+            2 => 'sewa',
+            1 => 'kontrak',
+            default => 'kontrak'
         };
     }
 
-    private function calculateAverageStatusKepemilikan($penduduk)
+    private function convertToNumeric($value)
     {
-        $total = 0;
-        $count = 0;
-        
-        foreach ($penduduk as $p) {
-            $total += $this->convertStatusKepemilikan($p->penduduk->status_kepemilikan);
-            $count++;
+        if (is_numeric($value)) {
+            return (float)$value;
         }
-        
-        $average = $count > 0 ? $total / $count : 0;
-        
-        return match(true) {
-            $average >= 2.5 => 'hak milik',
-            $average >= 1.5 => 'sewa',
-            default => 'numpang'
-        };
+        // Remove any non-numeric characters except decimal point
+        $numeric = preg_replace('/[^0-9.]/', '', $value);
+        return $numeric ? (float)$numeric : 0;
     }
 }
