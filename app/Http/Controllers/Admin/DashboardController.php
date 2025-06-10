@@ -108,6 +108,11 @@ class DashboardController extends Controller
 
             $totalHasilKmeans = HasilKmeans::count();
             $recentActivities = Activity::latest()->take(5)->get();
+            $summary = HasilKmeans::select('cluster', DB::raw('count(*) as total'))
+                ->groupBy('cluster')
+                ->pluck('total', 'cluster')
+                ->toArray();
+            $penduduk = Penduduk::all();
 
             return view('admin.dashboard', compact(
                 'totalPenduduk',
@@ -126,7 +131,9 @@ class DashboardController extends Controller
                 'topScores',
                 'avgScore',
                 'totalHasilKmeans',
-                'recentActivities'
+                'recentActivities',
+                'summary',
+                'penduduk'
             ));
         } catch (\Exception $e) {
             // If any error occurs, return default values
@@ -154,7 +161,9 @@ class DashboardController extends Controller
                 'topScores' => collect(),
                 'avgScore' => 0,
                 'totalHasilKmeans' => 0,
-                'recentActivities' => collect()
+                'recentActivities' => collect(),
+                'summary' => [],
+                'penduduk' => collect()
             ]);
         }
     }

@@ -69,6 +69,92 @@
         </div>
     </div>
 
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Laporan Hasil K-Means</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Cluster</th>
+                                    <th>Jumlah Penerima</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($summary as $cluster => $total)
+                                <tr>
+                                    <td>{{ $cluster }}</td>
+                                    <td>{{ $total }}</td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="2" class="text-center">Data tidak ditemukan</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Hasil K-Means Clustering</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>NIK</th>
+                                    <th>Nama</th>
+                                    <th>Usia</th>
+                                    <th>Tanggungan</th>
+                                    <th>Kondisi Rumah</th>
+                                    <th>Status Kepemilikan</th>
+                                    <th>Penghasilan</th>
+                                    <th>Cluster</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($penduduk as $p)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $p->nik }}</td>
+                                    <td>{{ $p->nama }}</td>
+                                    <td>{{ $p->usia }}</td>
+                                    <td>{{ $p->tanggungan }}</td>
+                                    <td>{{ $p->kondisi_rumah }}</td>
+                                    <td>{{ $p->status_kepemilikan }}</td>
+                                    <td>Rp {{ number_format($p->penghasilan, 0, ',', '.') }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ $p->cluster == 1 ? 'success' : ($p->cluster == 2 ? 'warning' : 'danger') }}">
+                                            Cluster {{ $p->cluster }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="9" class="text-center">Tidak ada data</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-6">
             <div class="card">
