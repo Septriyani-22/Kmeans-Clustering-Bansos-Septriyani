@@ -39,9 +39,9 @@ class PendudukController extends Controller
         $direction = $request->get('direction', 'asc');
         $query->orderBy($sort, $direction);
 
-        $penduduk = $query->paginate(10);
+        $penduduks = $query->paginate(10);
 
-        return view('admin.penduduk.index', compact('penduduk'));
+        return view('admin.penduduk.index', compact('penduduks'));
     }
 
     public function create()
@@ -156,8 +156,8 @@ class PendudukController extends Controller
 
     public function cetak()
     {
-        $penduduk = Penduduk::all();
-        return view('admin.penduduk.cetak', compact('penduduk'));
+        $penduduks = Penduduk::all();
+        return view('admin.penduduk.cetak', compact('penduduks'));
     }
 
     public function massUpdate(Request $request)

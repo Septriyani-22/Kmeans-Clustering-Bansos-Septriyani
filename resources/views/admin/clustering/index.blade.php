@@ -3,9 +3,112 @@
 @section('title', 'Clustering - BANSOS KMEANS')
 
 @section('content')
-<div style="background:#fff; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.07); padding:24px; margin:0 auto;">
-    <h1 style="font-size:2rem; color:#888fa6; font-weight:400; margin-bottom:18px;">Proses Clustering</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Hasil Clustering K-Means</h3>
+                    <div class="card-tools">
+                        <form action="{{ route('admin.clustering.process') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-play"></i> Proses Clustering
+                            </button>
+                        </form>
+                        <form action="{{ route('admin.clustering.reset') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin mereset data clustering?')">
+                                <i class="fas fa-trash"></i> Reset
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
 
+                    @if(session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    @if($iterasi)
+                        <div class="alert alert-info">
+                            <h5>Informasi Iterasi</h5>
+                            <p>Jumlah Iterasi: {{ $iterasi->iterasi }}</p>
+                        </div>
+                    @endif
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Centroid Akhir</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Cluster</th>
+                                                    <th>Usia</th>
+                                                    <th>Tanggungan</th>
+                                                    <th>Kondisi Rumah</th>
+                                                    <th>Status Kepemilikan</th>
+                                                    <th>Penghasilan</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($centroids as $centroid)
+                                                <tr>
+                                                    <td>{{ $centroid->cluster_name }}</td>
+                                                    <td>{{ $centroid->usia }}</td>
+                                                    <td>{{ $centroid->tanggungan }}</td>
+                                                    <td>{{ $centroid->kondisi_rumah }}</td>
+                                                    <td>{{ $centroid->status_kepemilikan }}</td>
+                                                    <td>{{ $centroid->penghasilan }}</td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Statistik Cluster</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Cluster</th>
+                                                    <th>Jumlah Penduduk</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @php
+                                                    $clusterStats = $hasil->groupBy('cluster')->map->count();
+                                                @endphp
+                                                @foreach($clusterStats as $cluster => $count)
+                                                <tr>
+                                                    <td>{{ $cluster == 1 ? 'Membutuhkan' : ($cluster == 2 ? 'Tidak Membutuhkan' : 'Prioritas Sedang') }}</td>
+                                                    <td>{{ $count }}</td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
     @if(session('success'))
         <div style="background:#dcfce7; color:#166534; border:1px solid #bbf7d0; padding:12px 16px; border-radius:6px; margin-bottom:18px;">
             {{ session('success') }}

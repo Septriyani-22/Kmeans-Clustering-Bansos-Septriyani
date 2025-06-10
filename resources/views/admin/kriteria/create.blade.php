@@ -3,39 +3,137 @@
 @section('title', 'Tambah Kriteria - BANSOS KMEANS')
 
 @section('content')
-<div style="background:#fff; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.07); padding:24px; margin:0 auto;">
-    <h1 style="font-size:2rem; color:#888fa6; font-weight:400; margin-bottom:18px;">Tambah Kriteria</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Tambah Kriteria</h3>
+                    <div class="card-tools">
+                        <a href="{{ route('admin.kriteria.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            {{ session('error') }}
+                        </div>
+                    @endif
 
-    <form action="{{ route('admin.kriteria.store') }}" method="POST">
-        @csrf
-        <div style="margin-bottom:18px;">
-            <label style="display:block; margin-bottom:8px; color:#4b5563;">Nama Kriteria</label>
-            <input type="text" name="nama_kriteria" value="{{ old('nama_kriteria') }}" required style="width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:1rem;">
-            @error('nama_kriteria')
-                <p style="color:#ef4444; font-size:0.875rem; margin-top:4px;">{{ $message }}</p>
-            @enderror
-        </div>
+                    <form action="{{ route('admin.kriteria.store') }}" method="POST">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nama">Nama Kriteria <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama" value="{{ old('nama') }}" required>
+                                    @error('nama')
+                                        <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="kode">Kode <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control @error('kode') is-invalid @enderror" id="kode" name="kode" value="{{ old('kode') }}" required>
+                                    @error('kode')
+                                        <span class="invalid-feedback">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
 
-        <div style="margin-bottom:18px;">
-            <label style="display:block; margin-bottom:8px; color:#4b5563;">Nilai</label>
-            <input type="number" name="nilai" value="{{ old('nilai', 1) }}" required style="width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:1rem;">
-            @error('nilai')
-                <p style="color:#ef4444; font-size:0.875rem; margin-top:4px;">{{ $message }}</p>
-            @enderror
-        </div>
+                        <div class="form-group">
+                            <label for="deskripsi">Deskripsi</label>
+                            <textarea class="form-control @error('deskripsi') is-invalid @enderror" id="deskripsi" name="deskripsi" rows="3">{{ old('deskripsi') }}</textarea>
+                            @error('deskripsi')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-        <div style="margin-bottom:18px;">
-            <label style="display:block; margin-bottom:8px; color:#4b5563;">Keterangan</label>
-            <textarea name="keterangan" rows="3" style="width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:1rem;">{{ old('keterangan') }}</textarea>
-            @error('keterangan')
-                <p style="color:#ef4444; font-size:0.875rem; margin-top:4px;">{{ $message }}</p>
-            @enderror
-        </div>
+                        <div class="form-group">
+                            <label>Nilai Kriteria <span class="text-danger">*</span></label>
+                            <div id="nilai-container">
+                                <div class="row mb-2">
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" name="nilai[0][nama]" placeholder="Nama" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="number" class="form-control" name="nilai[0][nilai]" placeholder="Nilai" min="1" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" name="nilai[0][keterangan]" placeholder="Keterangan">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-danger btn-remove" style="display: none;">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-success mt-2" id="btn-add-nilai">
+                                <i class="fas fa-plus"></i> Tambah Nilai
+                            </button>
+                        </div>
 
-        <div style="display:flex; gap:8px;">
-            <button type="submit" style="background:#22c55e; color:#fff; border:none; border-radius:6px; padding:10px 18px; font-size:1rem; cursor:pointer;">Simpan</button>
-            <a href="{{ route('admin.kriteria.index') }}" style="background:#888fa6; color:#fff; border:none; border-radius:6px; padding:10px 18px; font-size:1rem; text-decoration:none;">Batal</a>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Simpan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-    </form>
+    </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        let nilaiCount = 1;
+
+        $('#btn-add-nilai').click(function() {
+            const template = `
+                <div class="row mb-2">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="nilai[${nilaiCount}][nama]" placeholder="Nama" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="number" class="form-control" name="nilai[${nilaiCount}][nilai]" placeholder="Nilai" min="1" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="nilai[${nilaiCount}][keterangan]" placeholder="Keterangan">
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-danger btn-remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            $('#nilai-container').append(template);
+            nilaiCount++;
+            updateRemoveButtons();
+        });
+
+        $(document).on('click', '.btn-remove', function() {
+            $(this).closest('.row').remove();
+            updateRemoveButtons();
+        });
+
+        function updateRemoveButtons() {
+            const rows = $('#nilai-container .row');
+            if (rows.length > 1) {
+                $('.btn-remove').show();
+            } else {
+                $('.btn-remove').hide();
+            }
+        }
+    });
+</script>
+@endpush

@@ -10,142 +10,217 @@
                 <div class="card-header">
                     <h3 class="card-title">Data Penduduk</h3>
                     <div class="card-tools">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#importModal">
-                                <i class="fas fa-file-import"></i> Import Data
-                            </button>
-                            <a href="{{ route('admin.penduduk.export') }}" class="btn btn-success">
-                                <i class="fas fa-file-export"></i> Export Data
-                            </a>
-                            <a href="{{ route('admin.penduduk.cetak') }}" target="_blank" class="btn btn-info">
-                                <i class="fas fa-print"></i> Cetak
-                            </a>
-                            <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#massUpdateModal">
-                                <i class="fas fa-edit"></i> Mass Update
-                            </button>
-                            <button type="button" class="btn btn-danger" id="massDeleteBtn">
-                                <i class="fas fa-trash"></i> Mass Delete
-                            </button>
-                        </div>
+                        <a href="{{ route('admin.penduduk.create') }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Tambah Data
+                        </a>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#importModal">
+                            <i class="fas fa-file-import"></i> Import
+                        </button>
+                        <a href="{{ route('admin.penduduk.export') }}" class="btn btn-info">
+                            <i class="fas fa-file-export"></i> Export
+                        </a>
+                        <button type="button" class="btn btn-secondary" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
-                    <!-- Search and Filter -->
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <form action="{{ route('admin.penduduk.index') }}" method="GET" class="form-inline">
-                                <div class="form-group mx-sm-3">
-                                    <input type="text" class="form-control" name="search" placeholder="Cari NIK/Nama..." value="{{ request('search') }}">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('admin.penduduk.index') }}" method="GET" class="mb-3">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="text" name="search" class="form-control" placeholder="Cari NIK/Nama..." value="{{ request('search') }}">
                                 </div>
-                                <div class="form-group mx-sm-3">
-                                    <select class="form-control" name="jenis_kelamin">
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <select name="jenis_kelamin" class="form-control">
                                         <option value="">Semua Jenis Kelamin</option>
                                         <option value="L" {{ request('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki</option>
                                         <option value="P" {{ request('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan</option>
                                     </select>
                                 </div>
-                                <div class="form-group mx-sm-3">
-                                    <input type="number" class="form-control" name="rt" placeholder="RT" value="{{ request('rt') }}">
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <select name="rt" class="form-control">
+                                        <option value="">Semua RT</option>
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <option value="{{ $i }}" {{ request('rt') == $i ? 'selected' : '' }}>RT {{ $i }}</option>
+                                        @endfor
+                                    </select>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Filter</button>
-                            </form>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <select name="sort" class="form-control">
+                                        <option value="id" {{ request('sort') == 'id' ? 'selected' : '' }}>ID</option>
+                                        <option value="nik" {{ request('sort') == 'nik' ? 'selected' : '' }}>NIK</option>
+                                        <option value="nama" {{ request('sort') == 'nama' ? 'selected' : '' }}>Nama</option>
+                                        <option value="usia" {{ request('sort') == 'usia' ? 'selected' : '' }}>Usia</option>
+                                        <option value="tanggungan" {{ request('sort') == 'tanggungan' ? 'selected' : '' }}>Tanggungan</option>
+                                        <option value="penghasilan" {{ request('sort') == 'penghasilan' ? 'selected' : '' }}>Penghasilan</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <select name="direction" class="form-control">
+                                        <option value="asc" {{ request('direction') == 'asc' ? 'selected' : '' }}>Ascending</option>
+                                        <option value="desc" {{ request('direction') == 'desc' ? 'selected' : '' }}>Descending</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
 
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th width="5%">
-                                        <input type="checkbox" id="selectAll">
-                                    </th>
-                                    <th>
-                                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'nik', 'direction' => request('sort') == 'nik' && request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="text-dark">
-                                            NIK
-                                            @if(request('sort') == 'nik')
-                                                @if(request('direction') == 'asc')
-                                                    <i class="fas fa-sort-up"></i>
-                                                @else
-                                                    <i class="fas fa-sort-down"></i>
-                                                @endif
+                    <form action="{{ route('admin.penduduk.mass-update') }}" method="POST" id="massUpdateForm">
+                        @csrf
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">
+                                            <input type="checkbox" id="selectAll">
+                                        </th>
+                                        <th>NIK</th>
+                                        <th>Nama</th>
+                                        <th>Jenis Kelamin</th>
+                                        <th>Usia</th>
+                                        <th>RT</th>
+                                        <th>Tanggungan</th>
+                                        <th>Kondisi Rumah</th>
+                                        <th>Status Kepemilikan</th>
+                                        <th>Penghasilan</th>
+                                        <th>Cluster</th>
+                                        <th width="10%">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($penduduks as $penduduk)
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="selected[]" value="{{ $penduduk->id }}">
+                                        </td>
+                                        <td>{{ $penduduk->nik }}</td>
+                                        <td>{{ $penduduk->nama }}</td>
+                                        <td>{{ $penduduk->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
+                                        <td>{{ $penduduk->usia }}</td>
+                                        <td>RT {{ $penduduk->rt }}</td>
+                                        <td>{{ $penduduk->tanggungan }}</td>
+                                        <td>
+                                            <span class="badge badge-{{ $penduduk->kondisi_rumah == 'baik' ? 'success' : ($penduduk->kondisi_rumah == 'cukup' ? 'warning' : 'danger') }}">
+                                                {{ ucfirst($penduduk->kondisi_rumah) }}
+                                            </span>
+                                        </td>
+                                        <td>{{ ucfirst($penduduk->status_kepemilikan) }}</td>
+                                        <td>Rp {{ number_format($penduduk->penghasilan, 0, ',', '.') }}</td>
+                                        <td>
+                                            @if($penduduk->cluster)
+                                                <span class="badge badge-info">Cluster {{ $penduduk->cluster }}</span>
+                                            @else
+                                                <span class="badge badge-secondary">-</span>
                                             @endif
-                                        </a>
-                                    </th>
-                                    <th>
-                                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'nama', 'direction' => request('sort') == 'nama' && request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="text-dark">
-                                            Nama
-                                            @if(request('sort') == 'nama')
-                                                @if(request('direction') == 'asc')
-                                                    <i class="fas fa-sort-up"></i>
-                                                @else
-                                                    <i class="fas fa-sort-down"></i>
-                                                @endif
-                                            @endif
-                                        </a>
-                                    </th>
-                                    <th>
-                                        <a href="{{ request()->fullUrlWithQuery(['sort' => 'tahun', 'direction' => request('sort') == 'tahun' && request('direction') == 'asc' ? 'desc' : 'asc']) }}" class="text-dark">
-                                            Tahun
-                                            @if(request('sort') == 'tahun')
-                                                @if(request('direction') == 'asc')
-                                                    <i class="fas fa-sort-up"></i>
-                                                @else
-                                                    <i class="fas fa-sort-down"></i>
-                                                @endif
-                                            @endif
-                                        </a>
-                                    </th>
-                                    <th>Jenis Kelamin</th>
-                                    <th>Usia</th>
-                                    <th>RT</th>
-                                    <th>Tanggungan</th>
-                                    <th>Penghasilan</th>
-                                    <th>Kondisi Rumah</th>
-                                    <th>Status Kepemilikan</th>
-                                    <th width="15%">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($penduduk as $p)
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" class="penduduk-checkbox" value="{{ $p->id }}">
-                                    </td>
-                                    <td>{{ $p->nik }}</td>
-                                    <td>{{ $p->nama }}</td>
-                                    <td>{{ $p->tahun }}</td>
-                                    <td>{{ $p->jenis_kelamin }}</td>
-                                    <td>{{ $p->usia }}</td>
-                                    <td>{{ $p->rt }}</td>
-                                    <td>{{ $p->tanggungan }}</td>
-                                    <td>Rp {{ number_format($p->penghasilan, 0, ',', '.') }}</td>
-                                    <td>{{ $p->kondisi_rumah }}</td>
-                                    <td>{{ $p->status_kepemilikan }}</td>
-                                    <td>
-                                        <a href="{{ route('admin.penduduk.edit', $p->id) }}" class="btn btn-sm btn-warning">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('admin.penduduk.destroy', $p->id) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="12" class="text-center">Tidak ada data</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="{{ route('admin.penduduk.edit', $penduduk) }}" class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form action="{{ route('admin.penduduk.destroy', $penduduk) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="12" class="text-center">Tidak ada data</td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
 
-                    <!-- Pagination -->
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <select name="action" class="form-control" required>
+                                        <option value="">Pilih Aksi</option>
+                                        <option value="delete">Hapus</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-danger" id="massUpdateBtn" disabled>
+                                    <i class="fas fa-trash"></i> Hapus Terpilih
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
                     <div class="mt-3">
-                        {{ $penduduk->appends(request()->query())->links() }}
+                        <style>
+                            .pagination {
+                                display: flex;
+                                justify-content: center;
+                                list-style: none;
+                                padding: 0;
+                                margin: 0;
+                            }
+                            .pagination li {
+                                margin: 0 5px;
+                            }
+                            .pagination li a,
+                            .pagination li span {
+                                display: inline-block;
+                                padding: 8px 16px;
+                                border: 1px solid #dee2e6;
+                                border-radius: 4px;
+                                text-decoration: none;
+                                color: #007bff;
+                                background-color: #fff;
+                                font-weight: 500;
+                            }
+                            .pagination li.disabled span {
+                                color: #6c757d;
+                                pointer-events: none;
+                                background-color: #fff;
+                                border-color: #dee2e6;
+                            }
+                            .pagination li a:hover {
+                                background-color: #e9ecef;
+                                border-color: #dee2e6;
+                            }
+                            /* Hide all pagination items except Previous and Next */
+                            .pagination li:not(:first-child):not(:last-child) {
+                                display: none;
+                            }
+                        </style>
+                        {{ $penduduks->appends(request()->query())->links() }}
                     </div>
                 </div>
             </div>
@@ -157,69 +232,29 @@
 <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="importModalLabel">Import Data Penduduk</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
             <form action="{{ route('admin.penduduk.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importModalLabel">Import Data Penduduk</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="file">Pilih File Excel/CSV</label>
-                        <input type="file" class="form-control-file" id="file" name="file" required>
-                        <small class="form-text text-muted">Format file: xlsx, xls, atau csv</small>
-                    </div>
-                    <div class="form-group">
-                        <a href="{{ route('admin.penduduk.format') }}" class="btn btn-info btn-sm">
-                            <i class="fas fa-download"></i> Download Template
-                        </a>
+                        <label for="file">File Excel/CSV</label>
+                        <input type="file" name="file" id="file" class="form-control" accept=".xlsx,.xls,.csv" required>
+                        <small class="form-text text-muted">
+                            Format file: Excel (.xlsx, .xls) atau CSV (.csv)<br>
+                            Kolom yang diperlukan: NIK, Nama, Usia, Tanggungan, Kondisi Rumah, Status Kepemilikan, Penghasilan
+                        </small>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary">Import</button>
                 </div>
             </form>
-        </div>
-    </div>
-</div>
-
-<!-- Mass Update Modal -->
-<div class="modal fade" id="massUpdateModal" tabindex="-1" role="dialog" aria-labelledby="massUpdateModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="massUpdateModalLabel">Mass Update Data</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="massUpdateForm">
-                    @csrf
-                    <div class="form-group">
-                        <label for="field">Field yang akan diupdate</label>
-                        <select class="form-control" id="field" name="field" required>
-                            <option value="">Pilih Field</option>
-                            <option value="tahun">Tahun</option>
-                            <option value="jenis_kelamin">Jenis Kelamin</option>
-                            <option value="rt">RT</option>
-                            <option value="kondisi_rumah">Kondisi Rumah</option>
-                            <option value="status_kepemilikan">Status Kepemilikan</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="value">Nilai Baru</label>
-                        <input type="text" class="form-control" id="value" name="value" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-primary" id="massUpdateBtn">Update</button>
-            </div>
         </div>
     </div>
 </div>
@@ -228,87 +263,28 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    // Select All Checkbox
-    $('#selectAll').change(function() {
-        $('.penduduk-checkbox').prop('checked', $(this).prop('checked'));
-    });
-
-    // Mass Update
-    $('#massUpdateBtn').click(function() {
-        var selectedIds = $('.penduduk-checkbox:checked').map(function() {
-            return $(this).val();
-        }).get();
-
-        if (selectedIds.length === 0) {
-            alert('Pilih minimal satu data untuk diupdate');
-            return;
-        }
-
-        var field = $('#field').val();
-        var value = $('#value').val();
-
-        if (!field || !value) {
-            alert('Field dan nilai harus diisi');
-            return;
-        }
-
-        $.ajax({
-            url: '{{ route("admin.penduduk.mass-update") }}',
-            type: 'POST',
-            data: {
-                ids: selectedIds,
-                field: field,
-                value: value,
-                _token: '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                if (response.success) {
-                    alert('Data berhasil diupdate');
-                    location.reload();
-                } else {
-                    alert('Gagal mengupdate data: ' + response.message);
-                }
-            },
-            error: function(xhr) {
-                alert('Terjadi kesalahan: ' + (xhr.responseJSON ? xhr.responseJSON.message : 'Unknown error'));
-            }
+    $(document).ready(function() {
+        // Select All Checkbox
+        $('#selectAll').change(function() {
+            $('input[name="selected[]"]').prop('checked', $(this).prop('checked'));
+            updateMassUpdateButton();
         });
-    });
 
-    // Mass Delete
-    $('#massDeleteBtn').click(function() {
-        var selectedIds = $('.penduduk-checkbox:checked').map(function() {
-            return $(this).val();
-        }).get();
+        // Individual Checkbox
+        $('input[name="selected[]"]').change(function() {
+            updateMassUpdateButton();
+        });
 
-        if (selectedIds.length === 0) {
-            alert('Pilih minimal satu data untuk dihapus');
-            return;
-        }
+        // Action Select
+        $('select[name="action"]').change(function() {
+            updateMassUpdateButton();
+        });
 
-        if (confirm('Apakah Anda yakin ingin menghapus ' + selectedIds.length + ' data yang dipilih?')) {
-            $.ajax({
-                url: '{{ route("admin.penduduk.mass-delete") }}',
-                type: 'POST',
-                data: {
-                    ids: selectedIds,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    if (response.success) {
-                        alert('Data berhasil dihapus');
-                        location.reload();
-                    } else {
-                        alert('Gagal menghapus data: ' + response.message);
-                    }
-                },
-                error: function(xhr) {
-                    alert('Terjadi kesalahan: ' + (xhr.responseJSON ? xhr.responseJSON.message : 'Unknown error'));
-                }
-            });
+        function updateMassUpdateButton() {
+            var checkedCount = $('input[name="selected[]"]:checked').length;
+            var actionSelected = $('select[name="action"]').val() !== '';
+            $('#massUpdateBtn').prop('disabled', !(checkedCount > 0 && actionSelected));
         }
     });
-});
 </script>
 @endpush

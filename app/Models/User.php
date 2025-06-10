@@ -48,4 +48,16 @@ class User extends Authenticatable
     {
         return 'username';
     }
+
+    // Check if user is admin
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    // Check if user is user
+    public function isUser()
+    {
+        return $this->role === 'user';
+    }
 }

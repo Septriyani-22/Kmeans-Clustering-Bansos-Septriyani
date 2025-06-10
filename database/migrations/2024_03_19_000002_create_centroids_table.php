@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -12,7 +11,7 @@ return new class extends Migration
         Schema::create('centroids', function (Blueprint $table) {
             $table->id();
             $table->string('nama_centroid');
-            $table->decimal('penghasilan_num', 12, 2);
+            $table->bigInteger('penghasilan_num');
             $table->integer('tanggungan_num');
             $table->integer('tahun');
             $table->integer('periode');
@@ -23,8 +22,6 @@ return new class extends Migration
 
     public function down()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
         Schema::dropIfExists('centroids');
-        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
 }; 

@@ -8,23 +8,18 @@ return new class extends Migration
 {
     public function up()
     {
-        // Ensure penduduk table exists first
-        if (!Schema::hasTable('penduduk')) {
-            throw new \Exception('The penduduk table must exist before creating hasil_kmeans table');
-        }
-
-        Schema::create('hasil_kmeans', function (Blueprint $table) {
+        Schema::create('hasil', function (Blueprint $table) {
             $table->id();
             $table->foreignId('penduduk_id')->constrained('penduduk')->onDelete('cascade');
             $table->integer('cluster');
-            $table->decimal('jarak', 10, 2);
-            $table->string('kelayakan')->nullable();
+            $table->decimal('jarak', 10, 4);
+            $table->integer('iterasi');
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('hasil_kmeans');
+        Schema::dropIfExists('hasil');
     }
 }; 

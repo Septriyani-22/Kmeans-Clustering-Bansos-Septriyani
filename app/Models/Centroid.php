@@ -9,16 +9,14 @@ class Centroid extends Model
 {
     use HasFactory;
 
+    protected $table = 'centroids';
     protected $fillable = [
-        'nama_centroid',
-        'penghasilan_num',
-        'tanggungan_num',
-        'usia_num',
-        'kondisi_rumah_num',
-        'status_kepemilikan_num',
-        'tahun',
-        'periode',
-        'keterangan'
+        'usia',
+        'tanggungan',
+        'kondisi_rumah',
+        'status_kepemilikan',
+        'penghasilan',
+        'cluster'
     ];
 
     protected $casts = [
@@ -121,5 +119,82 @@ class Centroid extends Model
     public function getPenghasilanFormattedAttribute()
     {
         return 'Rp ' . number_format($this->penghasilan_num, 0, ',', '.');
+    }
+
+    // Centroid awal berdasarkan teori
+    public static function getInitialCentroids()
+    {
+        return [
+            [
+                'usia' => 4,
+                'tanggungan' => 3,
+                'kondisi_rumah' => 3,
+                'status_kepemilikan' => 2,
+                'penghasilan' => 4,
+                'cluster' => 1 // Membutuhkan
+            ],
+            [
+                'usia' => 4,
+                'tanggungan' => 4,
+                'kondisi_rumah' => 2,
+                'status_kepemilikan' => 1,
+                'penghasilan' => 4,
+                'cluster' => 2 // Tidak Membutuhkan
+            ],
+            [
+                'usia' => 4,
+                'tanggungan' => 3,
+                'kondisi_rumah' => 1,
+                'status_kepemilikan' => 1,
+                'penghasilan' => 2,
+                'cluster' => 3 // Prioritas Sedang
+            ]
+        ];
+    }
+
+    // Hitung jarak Euclidean
+    public function calculateDistance($penduduk)
+    {
+        $usia = Kriteria::getNilaiUsia($penduduk->usia);
+        $tanggungan = Kriteria::getNilaiTanggungan($penduduk->tanggungan);
+        $kondisiRumah = Kriteria::getNilaiKondisiRumah($penduduk->kondisi_rumah);
+        $statusKepemilikan = Kriteria::getNilaiStatusKepemilikan($penduduk->status_kepemilikan);
+        $penghasilan = Kriteria::getNilaiPenghasilan($penduduk->penghasilan);
+
+        return sqrt(
+            pow($usia - $this->usia, 2) +
+            pow($tanggungan - $this->tanggungan, 2) +
+            pow($kondisiRumah - $this->kondisi_rumah, 2) +
+            pow($statusKepemilikan - $this->status_kepemilikan, 2) +
+            pow($penghasilan - $this->penghasilan, 2)
+        );
+    }
+
+    // Update centroid berdasarkan rata-rata cluster
+    public function updateCentroid($penduduks)
+    {
+        if ($penduduks->isEmpty()) return;
+
+        $this->usia = $penduduks->avg('usia');
+        $this->tanggungan = $penduduks->avg('tanggungan');
+        $this->kondisi_rumah = $penduduks->avg('kondisi_rumah');
+        $this->status_kepemilikan = $penduduks->avg('status_kepemilikan');
+        $this->penghasilan = $penduduks->avg('penghasilan');
+        $this->save();
+    }
+
+    // Get cluster name
+    public function getClusterNameAttribute()
+    {
+        switch ($this->cluster) {
+            case 1:
+                return 'Membutuhkan';
+            case 2:
+                return 'Tidak Membutuhkan';
+            case 3:
+                return 'Prioritas Sedang';
+            default:
+                return 'Unknown';
+        }
     }
 }
