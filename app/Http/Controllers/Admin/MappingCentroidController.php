@@ -72,7 +72,7 @@ class MappingCentroidController extends Controller
     public function update(Request $request, MappingCentroid $mapping)
     {
         $request->validate([
-            'penduduk_id' => 'required|exists:penduduks,id',
+            'penduduk_id' => 'required|exists:penduduk,id',
             'centroid_id' => 'required|exists:centroids,id',
             'jarak_euclidean' => 'required|numeric',
             'cluster' => 'required|integer|min:1'

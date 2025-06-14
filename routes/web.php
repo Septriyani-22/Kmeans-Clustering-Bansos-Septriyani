@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\ClusteringController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HasilKmeansController;
 use App\Http\Controllers\Admin\MappingCentroidController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminHasilKmeansController;
 
 use App\Http\Controllers\KepalaDesa\PendudukController as KepalaDesaPendudukController;
 use App\Http\Controllers\KepalaDesa\DataHasilController as KepalaDesaDataHasilController;
@@ -18,6 +20,8 @@ use App\Http\Controllers\KepalaDesa\LaporanHasilController as KepalaDesaLaporanH
 use App\Http\Controllers\KepalaDesa\UserController as KepalaDesaUserController; 
 use App\Http\Controllers\KepalaDesa\KriteriaController as KepalaDesaKriteriaController;
 use App\Http\Controllers\KepalaDesa\CentroidController as KepalaDesaCentroidController;
+use App\Http\Controllers\KepalaDesa\DashboardController as KepalaDesaDashboardController;
+use App\Http\Controllers\KepalaDesa\HasilKmeansController as KepalaDesaHasilKmeansController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -112,7 +116,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Mapping Centroid Routes
     Route::resource('mapping-centroid', MappingCentroidController::class);
-    Route::post('mapping-centroid/store-from-distance', [MappingCentroidController::class, 'storeFromDistanceResults'])
+    Route::post('mapping-centroid/store-from-distance', [MappingCentroidController::class, 'storeFromDistance'])
         ->name('mapping-centroid.store-from-distance');
 
     Route::get('/centroid/mapping/{mapping}/edit', [MappingCentroidController::class, 'edit'])->name('centroid.mapping.edit');
@@ -126,31 +130,26 @@ Route::middleware(['auth', 'kepala_desa'])->prefix('kepala_desa')->name('kepala_
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    // Users
-    Route::resource('users', KepalaDesaUserController::class);
-    
-    // Kriteria
-    Route::resource('kriteria', KepalaDesaKriteriaController::class);
-    
     // Penduduk
-    Route::post('penduduk/import', [KepalaDesaPendudukController::class, 'import'])->name('penduduk.import');
+    Route::get('penduduk', [KepalaDesaPendudukController::class, 'index'])->name('penduduk.index');
     Route::get('penduduk/export', [KepalaDesaPendudukController::class, 'export'])->name('penduduk.export');
-    Route::get('penduduk/format', [KepalaDesaPendudukController::class, 'format'])->name('penduduk.format');
     Route::get('penduduk/cetak', [KepalaDesaPendudukController::class, 'cetak'])->name('penduduk.cetak');
-    Route::resource('penduduk', KepalaDesaPendudukController::class)->except(['show']);
 
-    // Data Hasil
-    Route::get('datahasil', [KepalaDesaDataHasilController::class, 'index'])->name('datahasil.index');
-    Route::get('datahasil/export', [KepalaDesaDataHasilController::class, 'export'])->name('datahasil.export');
-    Route::get('datahasil/proses', [KepalaDesaDataHasilController::class, 'proses'])->name('datahasil.proses');
+    // Hasil Kmeans
+    Route::get('/hasil-kmeans', [HasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
+    Route::get('/hasil-kmeans/print', [HasilKmeansController::class, 'print'])->name('hasil-kmeans.print');
+    Route::get('/hasil-kmeans/export', [HasilKmeansController::class, 'export'])->name('hasil-kmeans.export');
+});
+
+// Kepala Desa Routes
+Route::middleware(['auth', 'role:kepala_desa'])->prefix('kepala-desa')->name('kepala_desa.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     
-    // Laporan Hasil
-    Route::get('laporanhasil', [KepalaDesaLaporanHasilController::class, 'index'])->name('laporanhasil.index');
-    Route::get('laporanhasil/export', [KepalaDesaLaporanHasilController::class, 'export'])->name('laporanhasil.export');
-
-    // Centroid
-    Route::get('centroid', [KepalaDesaCentroidController::class, 'index'])->name('centroid.index');
-    Route::get('centroid/create', [KepalaDesaCentroidController::class, 'create'])->name('centroid.create');
-    Route::post('centroid', [KepalaDesaCentroidController::class, 'store'])->name('centroid.store');
-    Route::delete('centroid/{id}', [KepalaDesaCentroidController::class, 'destroy'])->name('centroid.destroy');
+    // Penduduk Management
+    Route::resource('penduduk', \App\Http\Controllers\Admin\PendudukController::class);
+    Route::post('penduduk/import', [\App\Http\Controllers\Admin\PendudukController::class, 'import'])->name('penduduk.import');
+    Route::get('penduduk/format', [\App\Http\Controllers\Admin\PendudukController::class, 'format'])->name('penduduk.format');
+    
+    // Hasil Kmeans
+    Route::get('hasil-kmeans', [\App\Http\Controllers\Admin\HasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
 });
