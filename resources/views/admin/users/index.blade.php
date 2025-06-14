@@ -57,9 +57,9 @@
                             <thead>
                                 <tr>
                                     <th style="width: 3%">No</th>
-                                    <th style="width: 15%">Username</th>
                                     <th style="width: 15%">Nama</th>
                                     <th style="width: 20%">Email</th>
+                                    <th style="width: 15%">Username</th>
                                     <th style="width: 10%">Role</th>
                                     <th style="width: 10%">Status</th>
                                     <th style="width: 27%">Aksi</th>
@@ -69,9 +69,9 @@
                                 @forelse($users as $index => $user)
                                     <tr>
                                         <td>{{ $users->firstItem() + $index }}</td>
-                                        <td>{{ $user->username }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
+                                        <td>{{ $user->username }}</td>
                                         <td>
                                             <span class="badge badge-{{ $user->role === 'admin' ? 'danger' : 'info' }}">
                                                 {{ strtoupper($user->role) }}
@@ -86,9 +86,9 @@
                                             <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">
                                                 <i class="fas fa-edit"></i> Edit
                                             </a>
-                                            <button type="button" class="btn btn-sm btn-info" onclick="resetPassword({{ $user->id }})">
+                                            <!-- <button type="button" class="btn btn-sm btn-info" onclick="resetPassword({{ $user->id }})">
                                                 <i class="fas fa-key"></i> Reset Password
-                                            </button>
+                                            </button> -->
                                             <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
