@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Penduduk;
 use App\Models\Centroid;
+use PDF;
 
 class HasilKmeansController extends Controller
 {
@@ -15,7 +16,6 @@ class HasilKmeansController extends Controller
     {
         $hasilKmeans = HasilKmeans::with(['penduduk', 'centroid'])
             ->orderBy('cluster')
-            ->orderBy('jarak')
             ->get();
 
         // Count total data
@@ -28,16 +28,12 @@ class HasilKmeansController extends Controller
         $tidakLayak = $clusterCounts[2] ?? 0;   // C2 - Tidak Membutuhkan
         $prioritasSedang = $clusterCounts[3] ?? 0; // C3 - Prioritas Sedang
 
-        // Calculate average score
-        $avgScore = $hasilKmeans->avg('jarak');
-
         return view('admin.hasil-kmeans.index', compact(
             'hasilKmeans',
             'totalData',
             'layakBantuan',
             'tidakLayak',
-            'prioritasSedang',
-            'avgScore'
+            'prioritasSedang'
         ));
     }
 
@@ -89,5 +85,37 @@ class HasilKmeansController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function print(Request $request)
+    {
+        $clusters = $request->input('clusters', [1, 2, 3]);
+
+        $hasilKmeans = HasilKmeans::with(['penduduk', 'centroid'])
+            ->whereIn('cluster', $clusters)
+            ->orderBy('cluster')
+            ->get();
+
+        // Count total data
+        $totalData = $hasilKmeans->count();
+
+        // Count by cluster
+        $clusterCounts = $hasilKmeans->groupBy('cluster')->map->count();
+        
+        $layakBantuan = $clusterCounts[1] ?? 0; // C1 - Membutuhkan
+        $tidakLayak = $clusterCounts[2] ?? 0;   // C2 - Tidak Membutuhkan
+        $prioritasSedang = $clusterCounts[3] ?? 0; // C3 - Prioritas Sedang
+
+        $data = [
+            'hasilKmeans' => $hasilKmeans,
+            'totalData' => $totalData,
+            'layakBantuan' => $layakBantuan,
+            'tidakLayak' => $tidakLayak,
+            'prioritasSedang' => $prioritasSedang,
+            'selectedClusters' => $clusters
+        ];
+
+        $pdf = PDF::loadView('admin.hasil-kmeans.print', $data);
+        return $pdf->stream('hasil-kmeans.pdf');
     }
 } 

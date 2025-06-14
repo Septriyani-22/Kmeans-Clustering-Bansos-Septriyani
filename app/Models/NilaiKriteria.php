@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class NilaiKriteria extends Model
 {
     protected $table = 'nilai_kriteria';
-    protected $fillable = ['kriteria_id', 'nama', 'nilai', 'keterangan'];
+    protected $fillable = ['kriteria_id', 'nama', 'nilai'];
 
     public function kriteria()
     {

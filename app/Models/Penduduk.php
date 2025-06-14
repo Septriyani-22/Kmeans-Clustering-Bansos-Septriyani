@@ -21,8 +21,7 @@ class Penduduk extends Model
         'tanggungan',
         'kondisi_rumah',
         'status_kepemilikan',
-        'penghasilan',
-        'cluster'
+        'penghasilan'
     ];
 
     protected $casts = [
@@ -30,24 +29,8 @@ class Penduduk extends Model
         'usia' => 'integer',
         'rt' => 'integer',
         'tanggungan' => 'integer',
-        'penghasilan' => 'float',
-        'cluster' => 'integer'
+        'penghasilan' => 'float'
     ];
-
-    // Get cluster name
-    public function getClusterNameAttribute()
-    {
-        switch ($this->cluster) {
-            case 1:
-                return 'Membutuhkan';
-            case 2:
-                return 'Tidak Membutuhkan';
-            case 3:
-                return 'Prioritas Sedang';
-            default:
-                return 'Unknown';
-        }
-    }
 
     // Get formatted penghasilan
     public function getFormattedPenghasilanAttribute()

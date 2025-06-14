@@ -36,10 +36,9 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Kriteria</th>
-                                    <th>Kode</th>
                                     <th>Deskripsi</th>
                                     <th>Nilai</th>
-                                    <th width="10%">Aksi</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,7 +46,6 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->nama }}</td>
-                                    <td>{{ $item->kode }}</td>
                                     <td>{{ $item->deskripsi }}</td>
                                     <td>
                                         <table class="table table-sm table-bordered mb-0">
@@ -57,7 +55,6 @@
                                                     <th>Nilai</th>
                                                     <th>Min</th>
                                                     <th>Max</th>
-                                                    <th>Keterangan</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -67,7 +64,6 @@
                                                     <td>{{ $nilai->nilai }}</td>
                                                     <td>{{ $nilai->nilai_min }}</td>
                                                     <td>{{ $nilai->nilai_max }}</td>
-                                                    <td>{{ $nilai->keterangan }}</td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -90,7 +86,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">Tidak ada data</td>
+                                    <td colspan="5" class="text-center">Tidak ada data</td>
                                 </tr>
                                 @endforelse
                             </tbody>

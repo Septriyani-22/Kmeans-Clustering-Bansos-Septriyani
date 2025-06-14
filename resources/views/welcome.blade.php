@@ -335,7 +335,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="logo-section">
-                        <img src="/images/tabalong.png" alt="Tabalong Logo" onerror="this.onerror=null;this.src='https://upload.wikimedia.org/wikipedia/commons/6/65/Lambang_Kabupaten_Tabalong.png';">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo" style="width:100px; height:100px; border-radius:50%; background:none;">
                     </div>
                     <div class="welcome-text">
                         <h1>Selamat Datang</h1>

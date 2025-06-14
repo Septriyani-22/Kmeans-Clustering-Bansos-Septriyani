@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\CentroidController;
 use App\Http\Controllers\Admin\ClusteringController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HasilKmeansController;
+use App\Http\Controllers\Admin\MappingCentroidController;
 
 use App\Http\Controllers\KepalaDesa\PendudukController as KepalaDesaPendudukController;
 use App\Http\Controllers\KepalaDesa\DataHasilController as KepalaDesaDataHasilController;
@@ -47,6 +48,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Users
     Route::resource('users', AdminUserController::class);
+    Route::put('users/{user}/reset-password', [AdminUserController::class, 'resetPassword'])->name('users.reset-password');
     
     // Kriteria
     Route::prefix('kriteria')->name('kriteria.')->group(function () {
@@ -64,6 +66,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/penduduk/format', [App\Http\Controllers\Admin\PendudukController::class, 'format'])->name('penduduk.format');
     Route::get('penduduk/cetak', [AdminPendudukController::class, 'cetak'])->name('penduduk.cetak');
     Route::resource('penduduk', AdminPendudukController::class)->except(['show']);
+    Route::get('penduduk/autocomplete', [AdminPendudukController::class, 'autocomplete'])->name('penduduk.autocomplete');
 
     // Data Hasil
     Route::get('datahasil', [AdminDataHasilController::class, 'index'])->name('datahasil.index');
@@ -85,8 +88,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     });
 
     // Hasil Kmeans
-    Route::get('hasil-kmeans', [HasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
-    Route::get('hasil-kmeans/export', [HasilKmeansController::class, 'export'])->name('hasil-kmeans.export');
+    Route::get('/hasil-kmeans', [HasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
+    Route::get('/hasil-kmeans/print', [HasilKmeansController::class, 'print'])->name('hasil-kmeans.print');
+    Route::get('/hasil-kmeans/export', [HasilKmeansController::class, 'export'])->name('hasil-kmeans.export');
 
     Route::post('/penduduk/mass-update', [App\Http\Controllers\Admin\PendudukController::class, 'massUpdate'])->name('penduduk.mass-update');
     Route::post('/penduduk/mass-delete', [App\Http\Controllers\Admin\PendudukController::class, 'massDelete'])->name('penduduk.mass-delete');
@@ -105,6 +109,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/template', [AdminPendudukController::class, 'template'])->name('template');
         Route::post('/clear-clusters', [AdminPendudukController::class, 'clearClusters'])->name('clear-clusters');
     });
+
+    // Mapping Centroid Routes
+    Route::resource('mapping-centroid', MappingCentroidController::class);
+    Route::post('mapping-centroid/store-from-distance', [MappingCentroidController::class, 'storeFromDistanceResults'])
+        ->name('mapping-centroid.store-from-distance');
+
+    Route::get('/centroid/mapping/{mapping}/edit', [MappingCentroidController::class, 'edit'])->name('centroid.mapping.edit');
+    Route::put('/centroid/mapping/{mapping}', [MappingCentroidController::class, 'update'])->name('centroid.mapping.update');
+    Route::delete('/centroid/mapping/{mapping}', [MappingCentroidController::class, 'destroy'])->name('centroid.mapping.destroy');
+    Route::post('/centroid/mapping/store-from-distance', [MappingCentroidController::class, 'storeFromDistance'])->name('centroid.mapping.store-from-distance');
 });
 
 Route::middleware(['auth', 'kepala_desa'])->prefix('kepala_desa')->name('kepala_desa.')->group(function () {

@@ -15,7 +15,6 @@ return new class extends Migration
             $table->integer('nilai');
             $table->decimal('nilai_min', 10, 2)->nullable();
             $table->decimal('nilai_max', 10, 2)->nullable();
-            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }

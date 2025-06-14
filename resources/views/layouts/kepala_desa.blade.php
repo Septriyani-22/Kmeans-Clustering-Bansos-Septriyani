@@ -131,11 +131,11 @@
         <li class="@if(request()->is('kepala_desa/penduduk')) active @endif">
           <a href="/kepala_desa/penduduk">📋 Data Penduduk</a>
         </li>
-        <li class="@if(request()->is('kepala_desa/centroid')) active @endif">
-          <a href="/kepala_desa/centroid">📍 Centroid</a>
-        </li>
         <li class="@if(request()->is('kepala_desa/clustering')) active @endif">
           <a href="/kepala_desa/clustering">🔄 Clustering</a>
+        </li>
+        <li class="@if(request()->is('kepala_desa/centroid')) active @endif">
+          <a href="/kepala_desa/centroid">📍 Centroid</a>
         </li>
         <li class="@if(request()->is('kepala_desa/datahasil')) active @endif">
           <a href="/kepala_desa/datahasil">📊 Data Hasil</a>

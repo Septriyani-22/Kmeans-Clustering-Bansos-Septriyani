@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('kriteria', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('kode')->unique();
             $table->text('deskripsi')->nullable();
+            $table->string('tipe_kriteria')->nullable();
             $table->timestamps();
         });
 

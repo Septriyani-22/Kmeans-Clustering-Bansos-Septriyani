@@ -35,15 +35,6 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="kode">Kode <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('kode') is-invalid @enderror" id="kode" name="kode" value="{{ old('kode') }}" required>
-                                    @error('kode')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
                         </div>
 
                         <div class="form-group">
@@ -69,9 +60,6 @@
                                     </div>
                                     <div class="col-md-2">
                                         <input type="number" class="form-control" name="nilai[0][nilai_max]" placeholder="Max" step="0.01">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="text" class="form-control" name="nilai[0][keterangan]" placeholder="Keterangan">
                                     </div>
                                     <div class="col-md-1">
                                         <button type="button" class="btn btn-danger btn-remove" style="display: none;">
@@ -117,9 +105,6 @@
                     </div>
                     <div class="col-md-2">
                         <input type="number" class="form-control" name="nilai[${nilaiCount}][nilai_max]" placeholder="Max" step="0.01">
-                    </div>
-                    <div class="col-md-2">
-                        <input type="text" class="form-control" name="nilai[${nilaiCount}][keterangan]" placeholder="Keterangan">
                     </div>
                     <div class="col-md-1">
                         <button type="button" class="btn btn-danger btn-remove">

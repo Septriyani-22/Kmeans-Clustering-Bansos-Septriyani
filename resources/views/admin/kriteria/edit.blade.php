@@ -29,8 +29,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="nama">Nama Kriteria <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama" value="{{ old('nama', $kriteria->nama) }}" required>
+                                    <label for="nama">Nama Kriteria</label>
+                                    <input type="text" name="nama" id="nama" class="form-control @error('nama') is-invalid @enderror" value="{{ old('nama', $kriteria->nama) }}" required>
                                     @error('nama')
                                         <span class="invalid-feedback">{{ $message }}</span>
                                     @enderror
@@ -38,9 +38,16 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="kode">Kode <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('kode') is-invalid @enderror" id="kode" name="kode" value="{{ old('kode', $kriteria->kode) }}" required>
-                                    @error('kode')
+                                    <label for="tipe_kriteria">Tipe Kriteria</label>
+                                    <select name="tipe_kriteria" id="tipe_kriteria" class="form-control @error('tipe_kriteria') is-invalid @enderror" required>
+                                        <option value="">Pilih Tipe Kriteria</option>
+                                        @foreach(\App\Models\Kriteria::getTipeKriteria() as $tipe)
+                                            <option value="{{ $tipe }}" {{ old('tipe_kriteria', $kriteria->tipe_kriteria) == $tipe ? 'selected' : '' }}>
+                                                {{ $tipe }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('tipe_kriteria')
                                         <span class="invalid-feedback">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -71,9 +78,6 @@
                                     </div>
                                     <div class="col-md-2">
                                         <input type="number" class="form-control" name="nilai[{{ $index }}][nilai_max]" placeholder="Max" step="0.01" value="{{ $nilai->nilai_max }}">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="text" class="form-control" name="nilai[{{ $index }}][keterangan]" placeholder="Keterangan" value="{{ $nilai->keterangan }}">
                                     </div>
                                     <div class="col-md-1">
                                         <button type="button" class="btn btn-danger btn-remove" @if($index === 0) style="display: none;" @endif>
@@ -120,9 +124,6 @@
                     </div>
                     <div class="col-md-2">
                         <input type="number" class="form-control" name="nilai[${nilaiCount}][nilai_max]" placeholder="Max" step="0.01">
-                    </div>
-                    <div class="col-md-2">
-                        <input type="text" class="form-control" name="nilai[${nilaiCount}][keterangan]" placeholder="Keterangan">
                     </div>
                     <div class="col-md-1">
                         <button type="button" class="btn btn-danger btn-remove">

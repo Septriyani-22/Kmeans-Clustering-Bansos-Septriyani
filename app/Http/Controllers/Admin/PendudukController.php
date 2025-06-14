@@ -18,11 +18,19 @@ class PendudukController extends Controller
         $query = Penduduk::query();
 
         // Search
-        if ($request->has('search')) {
+        if ($request->has('search') && $request->search !== '') {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('nik', 'like', "%{$search}%")
-                  ->orWhere('nama', 'like', "%{$search}%");
+                  ->orWhere('nama', 'like', "%{$search}%")
+                  ->orWhere('tahun', 'like', "%{$search}%")
+                  ->orWhere('jenis_kelamin', 'like', "%{$search}%")
+                  ->orWhere('usia', 'like', "%{$search}%")
+                  ->orWhere('rt', 'like', "%{$search}%")
+                  ->orWhere('tanggungan', 'like', "%{$search}%")
+                  ->orWhere('kondisi_rumah', 'like', "%{$search}%")
+                  ->orWhere('status_kepemilikan', 'like', "%{$search}%")
+                  ->orWhere('penghasilan', 'like', "%{$search}%");
             });
         }
 
@@ -41,21 +49,59 @@ class PendudukController extends Controller
             $query->where('cluster', $request->cluster);
         }
 
+        // Filter by tahun
+        if ($request->filled('tahun')) {
+            $query->where('tahun', $request->tahun);
+        }
+
+        // Filter by usia min/max
+        if ($request->filled('usia_min')) {
+            $query->where('usia', '>=', $request->usia_min);
+        }
+        if ($request->filled('usia_max')) {
+            $query->where('usia', '<=', $request->usia_max);
+        }
+
+        // Filter by tanggungan min/max
+        if ($request->filled('tanggungan_min')) {
+            $query->where('tanggungan', '>=', $request->tanggungan_min);
+        }
+        if ($request->filled('tanggungan_max')) {
+            $query->where('tanggungan', '<=', $request->tanggungan_max);
+        }
+
+        // Filter by kondisi rumah
+        if ($request->filled('kondisi_rumah')) {
+            $query->where('kondisi_rumah', $request->kondisi_rumah);
+        }
+
+        // Filter by status kepemilikan
+        if ($request->filled('status_kepemilikan')) {
+            $query->where('status_kepemilikan', $request->status_kepemilikan);
+        }
+
+        // Filter by penghasilan min/max
+        if ($request->filled('penghasilan_min')) {
+            $query->where('penghasilan', '>=', $request->penghasilan_min);
+        }
+        if ($request->filled('penghasilan_max')) {
+            $query->where('penghasilan', '<=', $request->penghasilan_max);
+        }
+
         // Sorting
         if ($request->has('sort')) {
-            switch ($request->sort) {
-                case 'nama_asc':
-                    $query->orderBy('nama', 'asc');
+            $sort = $request->sort;
+            $sorts = [
+                'no', 'nik', 'nama', 'tahun', 'jenis_kelamin', 'usia', 'rt', 'tanggungan', 'kondisi_rumah', 'status_kepemilikan', 'penghasilan'
+            ];
+            foreach ($sorts as $field) {
+                if ($sort === $field.'_asc') {
+                    $query->orderBy($field, 'asc');
                     break;
-                case 'nama_desc':
-                    $query->orderBy('nama', 'desc');
+                } elseif ($sort === $field.'_desc') {
+                    $query->orderBy($field, 'desc');
                     break;
-                case 'usia_asc':
-                    $query->orderBy('usia', 'asc');
-                    break;
-                case 'usia_desc':
-                    $query->orderBy('usia', 'desc');
-                    break;
+                }
             }
         } else {
             $query->orderBy('no', 'asc');
@@ -152,12 +198,6 @@ class PendudukController extends Controller
         return response()->download(public_path('templates/template-penduduk.xlsx'));
     }
 
-    public function clearClusters()
-    {
-        Penduduk::query()->update(['cluster' => null]);
-        return redirect()->route('admin.penduduk.index')->with('success', 'Semua data cluster berhasil dihapus!');
-    }
-
     public function format()
     {
         try {
@@ -231,5 +271,32 @@ class PendudukController extends Controller
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function autocomplete(Request $request)
+    {
+        $q = $request->get('q', '');
+        $query = Penduduk::query();
+        if ($q !== '') {
+            $query->where(function($sub) use ($q) {
+                $sub->where('nik', 'like', "%{$q}%")
+                    ->orWhere('nama', 'like', "%{$q}%")
+                    ->orWhere('tahun', 'like', "%{$q}%")
+                    ->orWhere('jenis_kelamin', 'like', "%{$q}%")
+                    ->orWhere('usia', 'like', "%{$q}%")
+                    ->orWhere('rt', 'like', "%{$q}%")
+                    ->orWhere('tanggungan', 'like', "%{$q}%")
+                    ->orWhere('kondisi_rumah', 'like', "%{$q}%")
+                    ->orWhere('status_kepemilikan', 'like', "%{$q}%")
+                    ->orWhere('penghasilan', 'like', "%{$q}%");
+            });
+        }
+        $results = $query->limit(10)->get();
+        $suggestions = $results->map(function($item) {
+            return [
+                'display' => $item->nik.' | '.$item->nama.' | '.$item->tahun.' | '.$item->jenis_kelamin.' | '.$item->usia.' | '.$item->rt.' | '.$item->tanggungan.' | '.$item->kondisi_rumah.' | '.$item->status_kepemilikan.' | '.$item->penghasilan
+            ];
+        });
+        return response()->json($suggestions);
     }
 }

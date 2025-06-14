@@ -48,12 +48,14 @@
                 <th>No</th>
                 <th>NIK</th>
                 <th>Nama</th>
+                <th>Tahun</th>
+                <th>Jenis Kelamin</th>
                 <th>Usia</th>
+                <th>Rt</th>
                 <th>Tanggungan</th>
                 <th>Kondisi Rumah</th>
                 <th>Status Kepemilikan</th>
                 <th>Penghasilan</th>
-                <th>Cluster</th>
             </tr>
         </thead>
         <tbody>
@@ -62,12 +64,14 @@
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $p->nik }}</td>
                     <td>{{ $p->nama }}</td>
+                    <td>{{ $p->tahun }}</td>
+                    <td>{{ $p->jenis_kelamin }}</td>
                     <td>{{ $p->usia }}</td>
+                    <td>{{ $p->rt }}</td>
                     <td>{{ $p->tanggungan }}</td>
                     <td>{{ $p->kondisi_rumah }}</td>
                     <td>{{ $p->status_kepemilikan }}</td>
                     <td>Rp {{ number_format($p->penghasilan, 0, ',', '.') }}</td>
-                    <td>{{ $p->cluster ? 'Cluster ' . $p->cluster : '-' }}</td>
                 </tr>
             @empty
                 <tr>

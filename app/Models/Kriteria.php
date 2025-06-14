@@ -13,14 +13,36 @@ class Kriteria extends Model
 
     protected $fillable = [
         'nama',
-        'kode',
-        'deskripsi'
+        'deskripsi',
+        'nama_kriteria',
+        'tipe_kriteria',
+        'min',
+        'max',
+        'nilai',
+        'is_aktif'
     ];
 
     protected $casts = [
         'nilai' => 'integer',
         'is_aktif' => 'boolean'
     ];
+
+    const TIPE_USIA = 'Usia';
+    const TIPE_TANGGUNGAN = 'Jumlah Tanggungan';
+    const TIPE_KONDISI_RUMAH = 'Kondisi Rumah';
+    const TIPE_STATUS_KEPEMILIKAN = 'Status Kepemilikan';
+    const TIPE_PENGHASILAN = 'Penghasilan';
+
+    public static function getTipeKriteria()
+    {
+        return [
+            self::TIPE_USIA,
+            self::TIPE_TANGGUNGAN,
+            self::TIPE_KONDISI_RUMAH,
+            self::TIPE_STATUS_KEPEMILIKAN,
+            self::TIPE_PENGHASILAN
+        ];
+    }
 
     // Konversi usia ke nilai numerik
     public static function getNilaiUsia($usia)

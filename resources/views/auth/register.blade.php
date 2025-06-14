@@ -176,7 +176,7 @@
 <body>
     <div class="register-box">
         <div class="register-logo">
-            <img src="/images/tabalong.png" alt="Tabalong Logo" onerror="this.onerror=null;this.src='https://upload.wikimedia.org/wikipedia/commons/6/65/Lambang_Kabupaten_Tabalong.png';">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" style="width:100px; height:100px; margin-bottom:1rem; border-radius:50%; background:none;">
             <h2><b>BANSOS</b><span>KMEANS</span></h2>
         </div>
         <div class="card">

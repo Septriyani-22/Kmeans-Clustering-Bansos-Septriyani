@@ -1,23 +1,21 @@
 @extends('layouts.admin')
 
-@section('title', 'Edit Centroid')
+@section('title', 'Tambah Centroid')
 
 @section('content')
 <div class="container">
     <div class="header">
-        <h1>Edit Centroid</h1>
+        <h1>Tambah Centroid</h1>
     </div>
 
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('admin.centroid.update', $centroid->id) }}" method="POST">
+            <form action="{{ route('admin.centroid.store') }}" method="POST">
                 @csrf
-                @method('PUT')
-                
                 <div class="form-group">
                     <label for="nama_centroid">Nama Centroid</label>
                     <input type="text" class="form-control @error('nama_centroid') is-invalid @enderror" 
-                           id="nama_centroid" name="nama_centroid" value="{{ old('nama_centroid', $centroid->nama_centroid) }}" required>
+                           id="nama_centroid" name="nama_centroid" value="{{ old('nama_centroid') }}" required>
                     @error('nama_centroid')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -27,10 +25,11 @@
                     <label for="penghasilan_num">Penghasilan</label>
                     <select class="form-control @error('penghasilan_num') is-invalid @enderror" 
                             id="penghasilan_num" name="penghasilan_num" required>
-                        <option value="1" {{ $centroid->penghasilan_num == 1 ? 'selected' : '' }}>Kurang Dari 500</option>
-                        <option value="2" {{ $centroid->penghasilan_num == 2 ? 'selected' : '' }}>500 s/d 1 juta</option>
-                        <option value="3" {{ $centroid->penghasilan_num == 3 ? 'selected' : '' }}>Lebih Dari 1 juta</option>
-                        <option value="4" {{ $centroid->penghasilan_num == 4 ? 'selected' : '' }}>Lebih Dari 2 juta</option>
+                        <option value="">Pilih Penghasilan</option>
+                        <option value="1" {{ old('penghasilan_num') == 1 ? 'selected' : '' }}>Kurang Dari 500</option>
+                        <option value="2" {{ old('penghasilan_num') == 2 ? 'selected' : '' }}>500 s/d 1 juta</option>
+                        <option value="3" {{ old('penghasilan_num') == 3 ? 'selected' : '' }}>Lebih Dari 1 juta</option>
+                        <option value="4" {{ old('penghasilan_num') == 4 ? 'selected' : '' }}>Lebih Dari 2 juta</option>
                     </select>
                     @error('penghasilan_num')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -41,11 +40,12 @@
                     <label for="tanggungan_num">Tanggungan</label>
                     <select class="form-control @error('tanggungan_num') is-invalid @enderror" 
                             id="tanggungan_num" name="tanggungan_num" required>
-                        <option value="1" {{ $centroid->tanggungan_num == 1 ? 'selected' : '' }}>1</option>
-                        <option value="2" {{ $centroid->tanggungan_num == 2 ? 'selected' : '' }}>2</option>
-                        <option value="3" {{ $centroid->tanggungan_num == 3 ? 'selected' : '' }}>3</option>
-                        <option value="4" {{ $centroid->tanggungan_num == 4 ? 'selected' : '' }}>4</option>
-                        <option value="5" {{ $centroid->tanggungan_num == 5 ? 'selected' : '' }}>5 lebih</option>
+                        <option value="">Pilih Tanggungan</option>
+                        <option value="1" {{ old('tanggungan_num') == 1 ? 'selected' : '' }}>1</option>
+                        <option value="2" {{ old('tanggungan_num') == 2 ? 'selected' : '' }}>2</option>
+                        <option value="3" {{ old('tanggungan_num') == 3 ? 'selected' : '' }}>3</option>
+                        <option value="4" {{ old('tanggungan_num') == 4 ? 'selected' : '' }}>4</option>
+                        <option value="5" {{ old('tanggungan_num') == 5 ? 'selected' : '' }}>5 lebih</option>
                     </select>
                     @error('tanggungan_num')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -55,7 +55,7 @@
                 <div class="form-group">
                     <label for="keterangan">Keterangan</label>
                     <textarea class="form-control @error('keterangan') is-invalid @enderror" 
-                              id="keterangan" name="keterangan" rows="3">{{ old('keterangan', $centroid->keterangan) }}</textarea>
+                              id="keterangan" name="keterangan" rows="3">{{ old('keterangan') }}</textarea>
                     @error('keterangan')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -64,7 +64,7 @@
                 <div class="form-group">
                     <label for="usia">Usia</label>
                     <input type="number" class="form-control @error('usia') is-invalid @enderror" 
-                           id="usia" name="usia" value="{{ old('usia', $centroid->usia) }}" required>
+                           id="usia" name="usia" value="{{ old('usia') }}" required>
                     @error('usia')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -75,9 +75,9 @@
                     <select class="form-control @error('kondisi_rumah') is-invalid @enderror" 
                             id="kondisi_rumah" name="kondisi_rumah" required>
                         <option value="">Pilih Kondisi Rumah</option>
-                        <option value="baik" {{ old('kondisi_rumah', $centroid->kondisi_rumah) == 'baik' ? 'selected' : '' }}>Baik</option>
-                        <option value="cukup" {{ old('kondisi_rumah', $centroid->kondisi_rumah) == 'cukup' ? 'selected' : '' }}>Cukup</option>
-                        <option value="kurang" {{ old('kondisi_rumah', $centroid->kondisi_rumah) == 'kurang' ? 'selected' : '' }}>Kurang</option>
+                        <option value="baik" {{ old('kondisi_rumah') == 'baik' ? 'selected' : '' }}>Baik</option>
+                        <option value="cukup" {{ old('kondisi_rumah') == 'cukup' ? 'selected' : '' }}>Cukup</option>
+                        <option value="kurang" {{ old('kondisi_rumah') == 'kurang' ? 'selected' : '' }}>Kurang</option>
                     </select>
                     @error('kondisi_rumah')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -89,9 +89,9 @@
                     <select class="form-control @error('status_kepemilikan') is-invalid @enderror" 
                             id="status_kepemilikan" name="status_kepemilikan" required>
                         <option value="">Pilih Status Kepemilikan</option>
-                        <option value="hak milik" {{ old('status_kepemilikan', $centroid->status_kepemilikan) == 'hak milik' ? 'selected' : '' }}>Hak Milik</option>
-                        <option value="sewa" {{ old('status_kepemilikan', $centroid->status_kepemilikan) == 'sewa' ? 'selected' : '' }}>Sewa</option>
-                        <option value="numpang" {{ old('status_kepemilikan', $centroid->status_kepemilikan) == 'numpang' ? 'selected' : '' }}>Numpang</option>
+                        <option value="hak milik" {{ old('status_kepemilikan') == 'hak milik' ? 'selected' : '' }}>Hak Milik</option>
+                        <option value="sewa" {{ old('status_kepemilikan') == 'sewa' ? 'selected' : '' }}>Sewa</option>
+                        <option value="numpang" {{ old('status_kepemilikan') == 'numpang' ? 'selected' : '' }}>Numpang</option>
                     </select>
                     @error('status_kepemilikan')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -99,7 +99,7 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Update</button>
+                    <button type="submit" class="btn btn-success">Simpan</button>
                     <a href="{{ route('admin.centroid.index') }}" class="btn btn-secondary">Kembali</a>
                 </div>
             </form>
@@ -190,16 +190,16 @@
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.btn-primary {
+.btn-success {
     color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #28a745;
+    border-color: #28a745;
 }
 
-.btn-primary:hover {
+.btn-success:hover {
     color: #fff;
-    background-color: #0069d9;
-    border-color: #0062cc;
+    background-color: #218838;
+    border-color: #1e7e34;
 }
 
 .btn-secondary {

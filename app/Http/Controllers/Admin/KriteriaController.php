@@ -23,32 +23,15 @@ class KriteriaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'kode' => 'required|string|max:50|unique:kriteria',
-            'deskripsi' => 'nullable|string',
-            'nilai' => 'required|array',
-            'nilai.*.nama' => 'required|string|max:255',
-            'nilai.*.nilai' => 'required|integer|min:1',
-            'nilai.*.nilai_min' => 'nullable|numeric',
-            'nilai.*.nilai_max' => 'nullable|numeric',
-            'nilai.*.keterangan' => 'nullable|string|max:255',
+            'tipe_kriteria' => 'required|string|in:' . implode(',', Kriteria::getTipeKriteria()),
+            'nama_kriteria' => 'required|string|max:255',
+            'min' => 'required|numeric',
+            'max' => 'required|numeric',
+            'nilai' => 'required|numeric',
+            'nama' => 'required|string|max:255'
         ]);
 
-        $kriteria = Kriteria::create([
-            'nama' => $request->nama,
-            'kode' => $request->kode,
-            'deskripsi' => $request->deskripsi,
-        ]);
-
-        foreach ($request->nilai as $nilai) {
-            $kriteria->nilaiKriteria()->create([
-                'nama' => $nilai['nama'],
-                'nilai' => $nilai['nilai'],
-                'nilai_min' => $nilai['nilai_min'] ?? null,
-                'nilai_max' => $nilai['nilai_max'] ?? null,
-                'keterangan' => $nilai['keterangan'] ?? null,
-            ]);
-        }
+        Kriteria::create($request->all());
 
         return redirect()->route('admin.kriteria.index')
             ->with('success', 'Kriteria berhasil ditambahkan');
@@ -63,36 +46,15 @@ class KriteriaController extends Controller
     public function update(Request $request, Kriteria $kriteria)
     {
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'kode' => 'required|string|max:50|unique:kriteria,kode,' . $kriteria->id,
-            'deskripsi' => 'nullable|string',
-            'nilai' => 'required|array',
-            'nilai.*.nama' => 'required|string|max:255',
-            'nilai.*.nilai' => 'required|integer|min:1',
-            'nilai.*.nilai_min' => 'nullable|numeric',
-            'nilai.*.nilai_max' => 'nullable|numeric',
-            'nilai.*.keterangan' => 'nullable|string|max:255',
+            'tipe_kriteria' => 'required|string|in:' . implode(',', Kriteria::getTipeKriteria()),
+            'nama_kriteria' => 'required|string|max:255',
+            'min' => 'required|numeric',
+            'max' => 'required|numeric',
+            'nilai' => 'required|numeric',
+            'nama' => 'required|string|max:255'
         ]);
 
-        $kriteria->update([
-            'nama' => $request->nama,
-            'kode' => $request->kode,
-            'deskripsi' => $request->deskripsi,
-        ]);
-
-        // Hapus nilai kriteria yang lama
-        $kriteria->nilaiKriteria()->delete();
-
-        // Tambah nilai kriteria yang baru
-        foreach ($request->nilai as $nilai) {
-            $kriteria->nilaiKriteria()->create([
-                'nama' => $nilai['nama'],
-                'nilai' => $nilai['nilai'],
-                'nilai_min' => $nilai['nilai_min'] ?? null,
-                'nilai_max' => $nilai['nilai_max'] ?? null,
-                'keterangan' => $nilai['keterangan'] ?? null,
-            ]);
-        }
+        $kriteria->update($request->all());
 
         return redirect()->route('admin.kriteria.index')
             ->with('success', 'Kriteria berhasil diperbarui');

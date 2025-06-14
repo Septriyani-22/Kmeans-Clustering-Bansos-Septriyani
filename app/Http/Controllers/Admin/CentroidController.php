@@ -6,64 +6,85 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Centroid;
 use App\Models\Penduduk;
+use App\Models\Kriteria;
+use App\Http\Controllers\Admin\ClusteringController;
+use App\Models\MappingCentroid;
 
 class CentroidController extends Controller
 {
+    protected $clusteringController;
+
+    public function __construct(ClusteringController $clusteringController)
+    {
+        $this->clusteringController = $clusteringController;
+    }
+
     public function index()
     {
         $centroids = Centroid::all();
         $penduduks = Penduduk::all();
+        $kriteria = Kriteria::all();
         $distanceResults = [];
+        $mappings = MappingCentroid::with(['penduduk', 'centroid'])->get();
+
+        // Validate required data
+        if ($penduduks->isEmpty()) {
+            return view('admin.centroid.index', compact('centroids', 'distanceResults', 'mappings'))
+                ->with('warning', 'Data penduduk masih kosong. Silakan tambahkan data penduduk terlebih dahulu.');
+        }
+
+        if ($kriteria->isEmpty()) {
+            return view('admin.centroid.index', compact('centroids', 'distanceResults', 'mappings'))
+                ->with('warning', 'Data kriteria masih kosong. Silakan tambahkan data kriteria terlebih dahulu.');
+        }
 
         // Only calculate distances if there are centroids
         if ($centroids->isNotEmpty()) {
-            foreach ($penduduks as $penduduk) {
-                $distances = [];
-                foreach ($centroids as $centroid) {
-                    $dist = sqrt(
-                        pow($penduduk->usia - $centroid->usia, 2) +
-                        pow($penduduk->tanggungan - $centroid->tanggungan_num, 2) +
-                        pow($this->convertKondisiRumah($penduduk->kondisi_rumah) - $this->convertKondisiRumah($centroid->kondisi_rumah), 2) +
-                        pow($this->convertStatusKepemilikan($penduduk->status_kepemilikan) - $this->convertStatusKepemilikan($centroid->status_kepemilikan), 2) +
-                        pow($penduduk->penghasilan - $centroid->penghasilan_num, 2)
-                    );
-                    $distances[] = $dist;
+            try {
+                foreach ($penduduks as $penduduk) {
+                    $distances = [];
+                    foreach ($centroids as $centroid) {
+                        $usia = $penduduk->usia;
+                        $usiaValue = $this->clusteringController->getUsiaValue($usia, $kriteria);
+                        $tanggunganValue = $this->clusteringController->getTanggunganValue($penduduk->tanggungan, $kriteria);
+                        $kondisiRumahValue = $this->clusteringController->getKondisiRumahValue($penduduk->kondisi_rumah, $kriteria);
+                        $statusKepemilikanValue = $this->clusteringController->getStatusKepemilikanValue($penduduk->status_kepemilikan, $kriteria);
+                        $penghasilanValue = $this->clusteringController->getPenghasilanValue($penduduk->penghasilan, $kriteria);
+                        
+                        $dist = sqrt(
+                            pow($usiaValue - $centroid->usia, 2) +
+                            pow($tanggunganValue - $centroid->tanggungan_num, 2) +
+                            pow($kondisiRumahValue - $this->clusteringController->convertKondisiRumah($centroid->kondisi_rumah), 2) +
+                            pow($statusKepemilikanValue - $this->clusteringController->convertStatusKepemilikan($centroid->status_kepemilikan), 2) +
+                            pow($penghasilanValue - $centroid->penghasilan_num, 2)
+                        );
+                        $distances[] = $dist;
+                    }
+                    $min = min($distances);
+                    $nearestCluster = array_search($min, $distances) + 1;
+                    $distanceResults[] = [
+                        'penduduk' => $penduduk,
+                        'usia' => $usiaValue,
+                        'tanggungan' => $tanggunganValue,
+                        'kondisi_rumah' => $kondisiRumahValue,
+                        'status_kepemilikan' => $statusKepemilikanValue,
+                        'penghasilan' => $penghasilanValue,
+                        'distances' => $distances,
+                        'nearest_cluster' => $nearestCluster
+                    ];
                 }
-                $min = min($distances);
-                $nearestCluster = array_search($min, $distances) + 1;
-                $distanceResults[] = [
-                    'penduduk' => $penduduk,
-                    'distances' => $distances,
-                    'nearest_cluster' => $nearestCluster
-                ];
+            } catch (\Exception $e) {
+                return view('admin.centroid.index', compact('centroids', 'distanceResults', 'mappings'))
+                    ->with('error', 'Terjadi kesalahan saat menghitung jarak: ' . $e->getMessage());
             }
         }
 
-        return view('admin.centroid.index', compact('centroids', 'distanceResults'));
-    }
-
-    private function convertKondisiRumah($kondisi)
-    {
-        return match($kondisi) {
-            'baik' => 3,
-            'cukup' => 2,
-            'kurang' => 1,
-            default => 0
-        };
-    }
-    private function convertStatusKepemilikan($status)
-    {
-        return match($status) {
-            'hak milik' => 3,
-            'sewa' => 2,
-            'numpang' => 1,
-            default => 0
-        };
+        return view('admin.centroid.index', compact('centroids', 'distanceResults', 'mappings'));
     }
 
     public function create()
     {
-        return view('admin.centroid_create');
+        return view('admin.centroid.create');
     }
 
     public function store(Request $request)
@@ -131,5 +152,10 @@ class CentroidController extends Controller
         $centroid->delete();
         return redirect()->route('admin.centroid.index')
             ->with('success', 'Centroid berhasil dihapus');
+    }
+
+    public function edit(Centroid $centroid)
+    {
+        return view('admin.centroid.edit', compact('centroid'));
     }
 } 

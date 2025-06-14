@@ -8,35 +8,47 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Data Penduduk</h3>
-                    <div class="card-tools">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a href="{{ route('admin.penduduk.create') }}" class="dropdown-item">
+                    <div class="row align-items-end">
+                        <div class="col-md-8">
+                            <form action="{{ route('admin.penduduk.index') }}" method="GET" class="form-row align-items-end">
+                                <div class="form-group col-md-6 mb-2 position-relative">
+                                    <input type="text" id="search-input" name="search" class="form-control" placeholder="Cari NIK/Nama/Tahun/JK/Usia/RT/Tanggungan/Kondisi/Status/Penghasilan..." value="{{ request('search') }}" autocomplete="off">
+                                    <div id="autocomplete-list" class="autocomplete-items" style="position:absolute;z-index:1000;width:100%;background:#fff;border:1px solid #ccc;display:none;"></div>
+                                </div>
+                                <div class="form-group col-md-2 mb-2">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-filter"></i> Cari
+                                    </button>
+                                </div>
+                                @if(request()->has('search'))
+                                    <div class="form-group col-md-2 mb-2">
+                                        <a href="{{ route('admin.penduduk.index') }}" class="btn btn-secondary w-100">
+                                            <i class="fas fa-times"></i> Reset
+                                        </a>
+                                    </div>
+                                @endif
+                            </form>
+                        </div>
+                        <div class="col-md-4 d-flex flex-wrap justify-content-md-end mt-2 mt-md-0">
+                            <div class="btn-group" role="group" aria-label="Aksi Penduduk">
+                                <a href="{{ route('admin.penduduk.create') }}" class="btn btn-success mr-2 mb-2 mb-md-0">
                                     <i class="fas fa-plus"></i> Tambah Data
                                 </a>
-                                <a href="#" class="dropdown-item" data-toggle="modal" data-target="#importModal">
+                                <a href="#" class="btn btn-info mr-2 mb-2 mb-md-0" data-toggle="modal" data-target="#importModal">
                                     <i class="fas fa-file-import"></i> Import Excel
                                 </a>
-                                <a href="{{ route('admin.penduduk.export') }}" class="dropdown-item">
+                                <a href="{{ route('admin.penduduk.export') }}" class="btn btn-primary mr-2 mb-2 mb-md-0">
                                     <i class="fas fa-file-export"></i> Export Excel
                                 </a>
-                                <a href="{{ route('admin.penduduk.print') }}" class="dropdown-item" target="_blank">
+                                <a href="{{ route('admin.penduduk.print') }}" class="btn btn-secondary mb-2 mb-md-0" target="_blank">
                                     <i class="fas fa-print"></i> Print Data
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a href="#" class="dropdown-item text-danger" onclick="event.preventDefault(); document.getElementById('clear-clusters-form').submit();">
-                                    <i class="fas fa-trash"></i> Hapus Semua Cluster
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    @if(session('success'))
+                    @if(session('success') && session('success') !== 'Semua data cluster berhasil dihapus!')
                         <div class="alert alert-success alert-dismissible">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             {{ session('success') }}
@@ -50,75 +62,21 @@
                         </div>
                     @endif
 
-                    <!-- Filter Section -->
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <form action="{{ route('admin.penduduk.index') }}" method="GET" class="form-inline">
-                                <div class="form-group mr-2">
-                                    <input type="text" name="search" class="form-control" placeholder="Cari NIK/Nama..." value="{{ request('search') }}">
-                                </div>
-                                <div class="form-group mr-2">
-                                    <select name="jenis_kelamin" class="form-control">
-                                        <option value="">Semua Jenis Kelamin</option>
-                                        <option value="L" {{ request('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                                        <option value="P" {{ request('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan</option>
-                                    </select>
-                                </div>
-                                <div class="form-group mr-2">
-                                    <select name="rt" class="form-control">
-                                        <option value="">Semua RT</option>
-                                        @for($i = 1; $i <= 5; $i++)
-                                            <option value="{{ $i }}" {{ request('rt') == $i ? 'selected' : '' }}>RT {{ $i }}</option>
-                                        @endfor
-                                    </select>
-                                </div>
-                                <div class="form-group mr-2">
-                                    <select name="cluster" class="form-control">
-                                        <option value="">Semua Cluster</option>
-                                        @for($i = 1; $i <= 3; $i++)
-                                            <option value="{{ $i }}" {{ request('cluster') == $i ? 'selected' : '' }}>
-                                                Cluster {{ $i }}
-                                            </option>
-                                        @endfor
-                                    </select>
-                                </div>
-                                <div class="form-group mr-2">
-                                    <select name="sort" class="form-control">
-                                        <option value="">Urutkan</option>
-                                        <option value="nama_asc" {{ request('sort') == 'nama_asc' ? 'selected' : '' }}>Nama (A-Z)</option>
-                                        <option value="nama_desc" {{ request('sort') == 'nama_desc' ? 'selected' : '' }}>Nama (Z-A)</option>
-                                        <option value="usia_asc" {{ request('sort') == 'usia_asc' ? 'selected' : '' }}>Usia (Rendah-Tinggi)</option>
-                                        <option value="usia_desc" {{ request('sort') == 'usia_desc' ? 'selected' : '' }}>Usia (Tinggi-Rendah)</option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-filter"></i> Filter
-                                </button>
-                                @if(request()->hasAny(['search', 'jenis_kelamin', 'rt', 'cluster', 'sort']))
-                                    <a href="{{ route('admin.penduduk.index') }}" class="btn btn-secondary ml-2">
-                                        <i class="fas fa-times"></i> Reset
-                                    </a>
-                                @endif
-                            </form>
-                        </div>
-                    </div>
-
-
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>NIK</th>
-                                    <th>Nama</th>
-                                    <th>Tahun</th>
-                                    <th>Jenis Kelamin</th>
-                                    <th>Usia</th>
-                                    <th>Rt</th>
-                                    <th>Tanggungan</th>
-                                    <th>Kondisi Rumah</th>
-                                    <th>Status Kepemilikan</th>
-                                    <th>Penghasilan</th>
+                                    <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'no_asc' ? 'no_desc' : 'no_asc'])) }}">No{!! request('sort') == 'no_asc' ? ' ▲' : (request('sort') == 'no_desc' ? ' ▼' : '') !!}</a></th>
+                                    <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'nik_asc' ? 'nik_desc' : 'nik_asc'])) }}">NIK{!! request('sort') == 'nik_asc' ? ' ▲' : (request('sort') == 'nik_desc' ? ' ▼' : '') !!}</a></th>
+                                    <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'nama_asc' ? 'nama_desc' : 'nama_asc'])) }}">Nama{!! request('sort') == 'nama_asc' ? ' ▲' : (request('sort') == 'nama_desc' ? ' ▼' : '') !!}</a></th>
+                                    <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'tahun_asc' ? 'tahun_desc' : 'tahun_asc'])) }}">Tahun{!! request('sort') == 'tahun_asc' ? ' ▲' : (request('sort') == 'tahun_desc' ? ' ▼' : '') !!}</a></th>
+                                    <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'jenis_kelamin_asc' ? 'jenis_kelamin_desc' : 'jenis_kelamin_asc'])) }}">Jenis Kelamin{!! request('sort') == 'jenis_kelamin_asc' ? ' ▲' : (request('sort') == 'jenis_kelamin_desc' ? ' ▼' : '') !!}</a></th>
+                                    <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'usia_asc' ? 'usia_desc' : 'usia_asc'])) }}">Usia{!! request('sort') == 'usia_asc' ? ' ▲' : (request('sort') == 'usia_desc' ? ' ▼' : '') !!}</a></th>
+                                    <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'rt_asc' ? 'rt_desc' : 'rt_asc'])) }}">Rt{!! request('sort') == 'rt_asc' ? ' ▲' : (request('sort') == 'rt_desc' ? ' ▼' : '') !!}</a></th>
+                                    <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'tanggungan_asc' ? 'tanggungan_desc' : 'tanggungan_asc'])) }}">Tanggungan{!! request('sort') == 'tanggungan_asc' ? ' ▲' : (request('sort') == 'tanggungan_desc' ? ' ▼' : '') !!}</a></th>
+                                    <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'kondisi_rumah_asc' ? 'kondisi_rumah_desc' : 'kondisi_rumah_asc'])) }}">Kondisi Rumah{!! request('sort') == 'kondisi_rumah_asc' ? ' ▲' : (request('sort') == 'kondisi_rumah_desc' ? ' ▼' : '') !!}</a></th>
+                                    <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'status_kepemilikan_asc' ? 'status_kepemilikan_desc' : 'status_kepemilikan_asc'])) }}">Status Kepemilikan{!! request('sort') == 'status_kepemilikan_asc' ? ' ▲' : (request('sort') == 'status_kepemilikan_desc' ? ' ▼' : '') !!}</a></th>
+                                    <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'penghasilan_asc' ? 'penghasilan_desc' : 'penghasilan_asc'])) }}">Penghasilan{!! request('sort') == 'penghasilan_asc' ? ' ▲' : (request('sort') == 'penghasilan_desc' ? ' ▼' : '') !!}</a></th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -157,7 +115,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="13" class="text-center">Tidak ada data</td>
+                                        <td colspan="12" class="text-center">Tidak ada data</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -205,25 +163,47 @@
     </div>
 </div>
 
-<!-- Hidden form for clearing clusters -->
-<form id="clear-clusters-form" action="{{ route('admin.penduduk.clear-clusters') }}" method="POST" style="display: none;">
-    @csrf
-    @method('POST')
-</form>
 @endsection
 
 @push('scripts')
 <script>
     $(document).ready(function() {
-        // Initialize DataTables
-        $('.table').DataTable({
-            "paging": false,
-            "searching": false,
-            "ordering": true,
-            "info": false,
-            "autoWidth": false,
-            "responsive": true,
+        let timer = null;
+        $('#search-input').on('input', function() {
+            clearTimeout(timer);
+            const query = $(this).val();
+            if (query.length < 1) {
+                $('#autocomplete-list').hide();
+                return;
+            }
+            timer = setTimeout(function() {
+                $.get("{{ route('admin.penduduk.autocomplete') }}", { q: query }, function(data) {
+                    let html = '';
+                    if (data.length > 0) {
+                        data.forEach(function(item) {
+                            html += `<div class='autocomplete-suggestion' style='padding:8px;cursor:pointer;'>${item.display}</div>`;
+                        });
+                        $('#autocomplete-list').html(html).show();
+                    } else {
+                        $('#autocomplete-list').hide();
+                    }
+                });
+            }, 200);
+        });
+        $(document).on('click', '.autocomplete-suggestion', function() {
+            $('#search-input').val($(this).text());
+            $('#autocomplete-list').hide();
+            $('form').submit();
+        });
+        $(document).click(function(e) {
+            if (!$(e.target).closest('#search-input, #autocomplete-list').length) {
+                $('#autocomplete-list').hide();
+            }
         });
     });
 </script>
+<style>
+.autocomplete-items { max-height: 200px; overflow-y: auto; border-radius: 0 0 6px 6px; }
+.autocomplete-suggestion:hover { background: #f1f1f1; }
+</style>
 @endpush

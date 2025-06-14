@@ -21,7 +21,6 @@ return new class extends Migration
             $table->enum('kondisi_rumah', ['baik', 'cukup', 'kurang']);
             $table->enum('status_kepemilikan', ['hak milik', 'numpang', 'sewa']);
             $table->decimal('penghasilan', 12, 2);
-            $table->integer('cluster')->nullable();
             $table->timestamps();
         });
     }

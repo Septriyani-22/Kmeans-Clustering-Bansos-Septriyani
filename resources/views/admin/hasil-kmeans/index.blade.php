@@ -8,7 +8,12 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Hasil Clustering K-Means</h3>
+                    <h3 class="card-title">Hasil K-Means Clustering</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#printWizardModal">
+                            <i class="fas fa-print"></i> Cetak Clustering
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info">
@@ -75,50 +80,86 @@
                                     <th>No</th>
                                     <th>Nama</th>
                                     <th>Usia</th>
-                                    <th>Tanggungan</th>
+                                    <th>Jumlah Tanggungan</th>
                                     <th>Kondisi Rumah</th>
                                     <th>Status Kepemilikan</th>
-                                    <th>Penghasilan</th>
+                                    <th>Jumlah Penghasilan</th>
                                     <th>Cluster</th>
-                                    <th>Jarak</th>
+                                    <th>Kelayakan</th>
+                                    <th>Keterangan</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($hasilKmeans as $index => $hasil)
-                                <tr>
-                                    <td>{{ $index + 1 }}</td>
-                                    <td>{{ $hasil->penduduk->nama }}</td>
-                                    <td>{{ $hasil->penduduk->usia }}</td>
-                                    <td>{{ $hasil->penduduk->tanggungan }}</td>
-                                    <td>{{ $hasil->penduduk->kondisi_rumah }}</td>
-                                    <td>{{ $hasil->penduduk->status_kepemilikan }}</td>
-                                    <td>Rp {{ number_format($hasil->penduduk->penghasilan, 0, ',', '.') }}</td>
-                                    <td>
-                                        @php
-                                            $clusterName = match($hasil->cluster) {
-                                                1 => 'Membutuhkan',
-                                                2 => 'Tidak Membutuhkan',
-                                                3 => 'Prioritas Sedang',
-                                                default => 'Tidak Diketahui'
-                                            };
-                                            $badgeClass = match($hasil->cluster) {
-                                                1 => 'danger',
-                                                2 => 'success',
-                                                3 => 'warning',
-                                                default => 'secondary'
-                                            };
-                                        @endphp
-                                        <span class="badge bg-{{ $badgeClass }}">
-                                            C{{ $hasil->cluster }} - {{ $clusterName }}
-                                        </span>
-                                    </td>
-                                    <td>{{ number_format($hasil->jarak, 2) }}</td>
-                                </tr>
-                                @endforeach
+                                @forelse($hasilKmeans as $result)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $result->penduduk->nama }}</td>
+                                        <td>{{ $result->penduduk->usia }}</td>
+                                        <td>{{ $result->penduduk->tanggungan }}</td>
+                                        <td>{{ $result->penduduk->kondisi_rumah }}</td>
+                                        <td>{{ $result->penduduk->status_kepemilikan }}</td>
+                                        <td>Rp {{ number_format($result->penduduk->penghasilan, 0, ',', '.') }}</td>
+                                        <td>Cluster {{ $result->cluster }}</td>
+                                        <td>
+                                            <span class="badge badge-{{ $result->kelayakan == 'Layak' ? 'success' : 'danger' }}">
+                                                {{ $result->kelayakan }}
+                                            </span>
+                                        </td>
+                                        <td>{{ $result->keterangan }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="10" class="text-center">Tidak ada data hasil clustering</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Print Wizard Modal -->
+<div class="modal fade" id="printWizardModal" tabindex="-1" role="dialog" aria-labelledby="printWizardModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="printWizardModalLabel">Cetak Hasil Clustering</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="printForm" action="{{ route('admin.hasil-kmeans.print') }}" method="GET" target="_blank">
+                    <div class="form-group">
+                        <label>Pilih Cluster yang akan dicetak:</label>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="cluster1" name="clusters[]" value="1">
+                            <label class="custom-control-label" for="cluster1">Cluster 1</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="cluster2" name="clusters[]" value="2">
+                            <label class="custom-control-label" for="cluster2">Cluster 2</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="cluster3" name="clusters[]" value="3">
+                            <label class="custom-control-label" for="cluster3">Cluster 3</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Format Output:</label>
+                        <select class="form-control" name="format">
+                            <option value="pdf">PDF</option>
+                            <option value="excel">Excel</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" onclick="document.getElementById('printForm').submit()">Cetak</button>
             </div>
         </div>
     </div>
@@ -141,4 +182,17 @@
     }
 </style>
 @endpush
-@endsection 
+@endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Ensure at least one cluster is selected
+    $('input[name="clusters[]"]').change(function() {
+        if($('input[name="clusters[]"]:checked').length === 0) {
+            $(this).prop('checked', true);
+        }
+    });
+});
+</script>
+@endpush 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login - Sistem Bantuan Sosial</title>
+    <title>Login Sistem Bansos</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -176,7 +176,7 @@
 <body>
     <div class="login-box">
         <div class="login-logo">
-            <img src="{{ asset('images/tabalong.png') }}" alt="Tabalong Logo" onerror="this.onerror=null;this.src='https://upload.wikimedia.org/wikipedia/commons/6/65/Lambang_Kabupaten_Tabalong.png';">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" style="width:100px; height:100px; margin-bottom:1rem; border-radius:50%; background:none;">
             <h2><b>BANSOS</b><span>KMEANS</span></h2>
         </div>
         <div class="card">
