@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('mapping_centroids', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('penduduk_id')->constrained('penduduk')->onDelete('cascade');
-            $table->foreignId('centroid_id')->constrained('centroids')->onDelete('cascade');
-            $table->float('jarak_euclidean');
-            $table->integer('cluster');
-            $table->string('status_kelayakan')->default('Belum Ditentukan');
-            $table->text('keterangan')->nullable();
+            $table->integer('data_ke');
+            $table->string('nama_penduduk');
+            $table->string('cluster');
+            $table->integer('usia');
+            $table->integer('jumlah_tanggungan');
+            $table->string('kondisi_rumah');
+            $table->string('status_kepemilikan');
+            $table->decimal('jumlah_penghasilan', 12, 2);
             $table->timestamps();
         });
     }

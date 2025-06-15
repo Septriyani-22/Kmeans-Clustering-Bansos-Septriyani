@@ -1,181 +1,190 @@
 @extends('layouts.admin')
 
+@section('title', 'Centroid - BANSOS KMEANS')
+
 @section('content')
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="card-header">
                     <h3 class="card-title">Data Centroid</h3>
                 </div>
                 <div class="card-body">
-                    <!-- Nav tabs -->
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    @if(session('warning'))
+                        <div class="alert alert-warning">
+                            {{ session('warning') }}
+                        </div>
+                    @endif
+
+                    <!-- Tab Navigation -->
                     <ul class="nav nav-tabs" id="centroidTabs" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link" id="mapping-tab" data-toggle="tab" href="#mapping" role="tab" aria-controls="mapping" aria-selected="false">
-                                Mapping Centroid
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="centroid-tab" data-toggle="tab" href="#centroid" role="tab" aria-controls="centroid" aria-selected="false">
+                            <a class="nav-link active" id="data-tab" data-toggle="tab" href="#data" role="tab">
                                 Data Centroid
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" id="pengelompokan-tab" data-toggle="tab" href="#pengelompokan" role="tab" aria-controls="pengelompokan" aria-selected="true">
-                                Hasil Pengelompokan Data
+                            <a class="nav-link" id="mapping-tab" data-toggle="tab" href="#mapping" role="tab">
+                                Mapping Centroid
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="clustering-tab" data-toggle="tab" href="#clustering" role="tab">
+                                Clustering
                             </a>
                         </li>
                     </ul>
 
-                    <!-- Tab content -->
-                    <div class="tab-content mt-3" id="centroidTabsContent">
+                    <!-- Tab Content -->
+                    <div class="tab-content mt-3" id="centroidTabContent">
                         <!-- Data Centroid Tab -->
-                        <div class="tab-pane fade" id="centroid" role="tabpanel" aria-labelledby="centroid-tab">
-                            @if($centroids->isEmpty())
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle"></i> Belum ada data centroid. Silakan lakukan proses clustering terlebih dahulu.
-                                </div>
-                            @else
-                                @if(!empty($distanceResults))
-                                    <h4 class="mt-4">Perhitungan Jarak Euclidean dan Penentuan Cluster</h4>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>Nama Orang</th>
-                                                    <th>Usia</th>
-                                                    <th>Tanggungan</th>
-                                                    <th>Kondisi Rumah</th>
-                                                    <th>Status Kepemilikan</th>
-                                                    <th>Penghasilan</th>
-                                                    <th>Aksi</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($distanceResults as $result)
-                                                <tr>
-                                                    <td>{{ $result['penduduk']->nama }}</td>
-                                                    <td>{{ $result['usia'] }}</td>
-                                                    <td>{{ $result['tanggungan'] }}</td>
-                                                    <td>{{ $result['kondisi_rumah'] }}</td>
-                                                    <td>{{ $result['status_kepemilikan'] }}</td>
-                                                    <td>{{ $result['penghasilan'] }}</td>
-                                                    <td>
-                                                        <form action="{{ route('admin.mapping-centroid.store-from-distance') }}" method="POST" class="d-inline">
-                                                            @csrf
-                                                            <input type="hidden" name="penduduk_id" value="{{ $result['penduduk']->id }}">
-                                                            <input type="hidden" name="centroid_id" value="{{ $centroids[$result['nearest_cluster'] - 1]->id }}">
-                                                            <input type="hidden" name="jarak_euclidean" value="{{ min($result['distances']) }}">
-                                                            <input type="hidden" name="cluster" value="{{ $result['nearest_cluster'] }}">
-                                                            <button type="submit" class="btn btn-success btn-sm" title="Tambah ke Mapping">
-                                                                <i class="fas fa-plus"></i>
-                                                            </button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                @endif
-                            @endif
-                        </div>
-
-                        <!-- Mapping Centroid Tab -->
-                        <div class="tab-pane fade" id="mapping" role="tabpanel" aria-labelledby="mapping-tab">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Data Mapping Centroid</h3>
-                                </div>
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h4>Data Mapping Centroid</h4>
-                                        <a href="{{ route('admin.mapping-centroid.create') }}" class="btn btn-success btn-sm">
-                                            <i class="fas fa-plus"></i> Tambah Mapping
-                                        </a>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>Data ke-</th>
-                                                    <th>Cluster</th>
-                                                    <th>Usia</th>
-                                                    <th>Jumlah Tanggungan</th>
-                                                    <th>Kondisi Rumah</th>
-                                                    <th>Status Kepemilikan</th>
-                                                    <th>Jumlah Penghasilan</th>
-                                                    <th>Aksi</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse($mappings as $mapping)
-                                                    <tr>
-                                                        <td>{{ $loop->iteration }}</td>
-                                                        <td>Cluster {{ $mapping->cluster }}</td>
-                                                        <td>{{ $mapping->penduduk->usia }}</td>
-                                                        <td>{{ $mapping->penduduk->tanggungan }}</td>
-                                                        <td>{{ $mapping->penduduk->kondisi_rumah }}</td>
-                                                        <td>{{ $mapping->penduduk->status_kepemilikan }}</td>
-                                                        <td>Rp {{ number_format($mapping->penduduk->penghasilan, 0, ',', '.') }}</td>
-                                                        <td>
-                                                            <a href="{{ route('admin.centroid.mapping.edit', $mapping) }}" class="btn btn-sm btn-warning">
-                                                                <i class="fas fa-edit"></i> Edit
-                                                            </a>
-                                                            <form action="{{ route('admin.centroid.mapping.destroy', $mapping) }}" method="POST" class="d-inline">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                                                    <i class="fas fa-trash"></i> Hapus
-                                                                </button>
-                                                            </form>
-                                                        </td>
-                                                    </tr>
-                                                @empty
-                                                    <tr>
-                                                        <td colspan="8" class="text-center">Tidak ada data mapping centroid</td>
-                                                    </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Hasil Pengelompokan Data Tab -->
-                        <div class="tab-pane fade show active" id="pengelompokan" role="tabpanel" aria-labelledby="pengelompokan-tab">
+                        <div class="tab-pane fade show active" id="data" role="tabpanel">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped">
+                                <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th>Data ke-</th>
                                             <th>Nama Penduduk</th>
-                                            <th>Jarak ke Centroid 1</th>
-                                            <th>Jarak ke Centroid 2</th>
-                                            <th>Jarak ke Centroid 3</th>
-                                            <th>Penentuan Cluster</th>
+                                            <th>Usia</th>
+                                            <th>Jumlah Tanggungan</th>
+                                            <th>Kondisi Rumah</th>
+                                            <th>Status Kepemilikan</th>
+                                            <th>Jumlah Penghasilan</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($distanceResults ?? [] as $index => $result)
+                                        @foreach($convertedPenduduks as $penduduk)
                                         <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $result['penduduk']->nama }}</td>
-                                            <td>{{ number_format($result['distances'][0], 4) }}</td>
-                                            <td>{{ number_format($result['distances'][1], 4) }}</td>
-                                            <td>{{ number_format($result['distances'][2], 4) }}</td>
-                                            <td>Cluster {{ $result['nearest_cluster'] }}</td>
+                                            <td>{{ $penduduk['id'] }}</td>
+                                            <td>{{ $penduduk['nama'] }}</td>
+                                            <td>{{ $penduduk['usia'] }}</td>
+                                            <td>{{ $penduduk['jumlah_tanggungan'] }}</td>
+                                            <td>{{ $penduduk['kondisi_rumah'] }}</td>
+                                            <td>{{ $penduduk['status_kepemilikan'] }}</td>
+                                            <td>{{ $penduduk['jumlah_penghasilan'] }}</td>
                                         </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center">Belum ada hasil pengelompokan data</td>
-                                        </tr>
-                                        @endforelse
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+
+                        <!-- Mapping Centroid Tab -->
+                        <div class="tab-pane fade" id="mapping" role="tabpanel">
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMappingModal">
+                                    Tambah Mapping
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Data ke-</th>
+                                            <th>Nama Penduduk</th>
+                                            <th>Cluster</th>
+                                            <th>Usia</th>
+                                            <th>Jumlah Tanggungan</th>
+                                            <th>Kondisi Rumah</th>
+                                            <th>Status Kepemilikan</th>
+                                            <th>Jumlah Penghasilan</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($mappings as $mapping)
+                                        <tr>
+                                            <td>
+                                                <select class="form-control data-ke-select" data-id="{{ $mapping->id }}">
+                                                    @foreach($convertedPenduduks as $penduduk)
+                                                    <option value="{{ $penduduk['id'] }}" {{ $mapping->data_ke == $penduduk['id'] ? 'selected' : '' }}>
+                                                        {{ $penduduk['id'] }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>{{ $mapping->nama_penduduk }}</td>
+                                            <td>
+                                                <select class="form-control cluster-select" data-id="{{ $mapping->id }}">
+                                                    <option value="C1" {{ $mapping->cluster == 'C1' ? 'selected' : '' }}>C1</option>
+                                                    <option value="C2" {{ $mapping->cluster == 'C2' ? 'selected' : '' }}>C2</option>
+                                                    <option value="C3" {{ $mapping->cluster == 'C3' ? 'selected' : '' }}>C3</option>
+                                                </select>
+                                            </td>
+                                            <td>{{ $mapping->usia }}</td>
+                                            <td>{{ $mapping->jumlah_tanggungan }}</td>
+                                            <td>{{ $mapping->kondisi_rumah }}</td>
+                                            <td>{{ $mapping->status_kepemilikan }}</td>
+                                            <td>{{ $mapping->jumlah_penghasilan }}</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-danger delete-mapping" data-id="{{ $mapping->id }}">Hapus</button>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Clustering Tab -->
+                        <div class="tab-pane fade" id="clustering" role="tabpanel">
+                            <div class="mb-3">
+                                <form action="{{ route('admin.centroid.calculate') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-primary">Hitung Jarak</button>
+                                </form>
+                            </div>
+                            @if(!empty($distanceResults))
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Data ke-</th>
+                                            <th>Nama Penduduk</th>
+                                            <th>Usia</th>
+                                            <th>Jumlah Tanggungan</th>
+                                            <th>Kondisi Rumah</th>
+                                            <th>Status Kepemilikan</th>
+                                            <th>Jumlah Penghasilan</th>
+                                            <th>Jarak ke C1</th>
+                                            <th>Jarak ke C2</th>
+                                            <th>Jarak ke C3</th>
+                                            <th>Cluster</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($distanceResults as $result)
+                                        <tr>
+                                            <td>{{ $result['penduduk']->id }}</td>
+                                            <td>{{ $result['penduduk']->nama }}</td>
+                                            <td>{{ $result['penduduk']->usia }}</td>
+                                            <td>{{ $result['penduduk']->jumlah_tanggungan }}</td>
+                                            <td>{{ $result['penduduk']->kondisi_rumah }}</td>
+                                            <td>{{ $result['penduduk']->status_kepemilikan }}</td>
+                                            <td>{{ $result['penduduk']->jumlah_penghasilan }}</td>
+                                            @foreach($result['distances'] as $distance)
+                                            <td>{{ number_format($distance, 2) }}</td>
+                                            @endforeach
+                                            <td>C{{ array_search(min($result['distances']), $result['distances']) + 1 }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -183,4 +192,131 @@
         </div>
     </div>
 </div>
-@endsection 
+
+<!-- Add Mapping Modal -->
+<div class="modal fade" id="addMappingModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Mapping</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('admin.centroid.mapping.store') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Data ke-</label>
+                        <select name="data_ke" class="form-control" required>
+                            @foreach($convertedPenduduks as $penduduk)
+                            <option value="{{ $penduduk['id'] }}">{{ $penduduk['id'] }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Cluster</label>
+                        <select name="cluster" class="form-control" required>
+                            <option value="C1">C1</option>
+                            <option value="C2">C2</option>
+                            <option value="C3">C3</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Initialize Select2 for dropdowns
+    $('.data-ke-select, .cluster-select').select2({
+        width: '100%'
+    });
+
+    // Update Mapping
+    $('.data-ke-select').change(function() {
+        var id = $(this).data('id');
+        var dataKe = $(this).val();
+        var selectedPenduduk = @json($convertedPenduduks).find(p => p.id == dataKe);
+        
+        if (selectedPenduduk) {
+            var row = $(this).closest('tr');
+            row.find('td:eq(1)').text(selectedPenduduk.nama);
+            row.find('td:eq(3)').text(selectedPenduduk.usia);
+            row.find('td:eq(4)').text(selectedPenduduk.jumlah_tanggungan);
+            row.find('td:eq(5)').text(selectedPenduduk.kondisi_rumah);
+            row.find('td:eq(6)').text(selectedPenduduk.status_kepemilikan);
+            row.find('td:eq(7)').text(selectedPenduduk.jumlah_penghasilan);
+
+            $.ajax({
+                url: '/admin/centroid/mapping/' + id,
+                type: 'PUT',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    data_ke: dataKe,
+                    nama_penduduk: selectedPenduduk.nama,
+                    usia: selectedPenduduk.usia,
+                    jumlah_tanggungan: selectedPenduduk.jumlah_tanggungan,
+                    kondisi_rumah: selectedPenduduk.kondisi_rumah,
+                    status_kepemilikan: selectedPenduduk.status_kepemilikan,
+                    jumlah_penghasilan: selectedPenduduk.jumlah_penghasilan
+                },
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success('Mapping berhasil diperbarui');
+                    }
+                }
+            });
+        }
+    });
+
+    $('.cluster-select').change(function() {
+        var id = $(this).data('id');
+        var cluster = $(this).val();
+
+        $.ajax({
+            url: '/admin/centroid/mapping/' + id,
+            type: 'PUT',
+            data: {
+                _token: '{{ csrf_token() }}',
+                cluster: cluster
+            },
+            success: function(response) {
+                if (response.success) {
+                    toastr.success('Cluster berhasil diperbarui');
+                }
+            }
+        });
+    });
+
+    // Delete Mapping
+    $('.delete-mapping').click(function() {
+        var id = $(this).data('id');
+        if (confirm('Apakah Anda yakin ingin menghapus mapping ini?')) {
+            $.ajax({
+                url: '/admin/centroid/mapping/' + id,
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $(this).closest('tr').remove();
+                        toastr.success('Mapping berhasil dihapus');
+                    }
+                }.bind(this)
+            });
+        }
+    });
+});
+</script>
+@endpush 

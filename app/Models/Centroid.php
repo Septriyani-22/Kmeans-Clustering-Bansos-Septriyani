@@ -11,15 +11,13 @@ class Centroid extends Model
 
     protected $table = 'centroids';
     protected $fillable = [
-        'nama_centroid',
         'usia',
         'tanggungan_num',
         'kondisi_rumah',
         'status_kepemilikan',
         'penghasilan_num',
         'tahun',
-        'periode',
-        'keterangan'
+        'periode'
     ];
 
     protected $casts = [
@@ -35,7 +33,7 @@ class Centroid extends Model
         return $this->hasMany(HasilKmeans::class);
     }
 
-    public static function mapKondisiRumah($kondisiRumah)
+    public function mappings()
     {
         switch (strtolower($kondisiRumah)) {
             case 'baik': return 1;

@@ -4,21 +4,19 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateCentroidsTable extends Migration
 {
     public function up()
     {
         Schema::create('centroids', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_centroid');
-            $table->float('usia');
-            $table->float('tanggungan_num');
-            $table->enum('kondisi_rumah', ['baik', 'cukup', 'kurang']);
-            $table->enum('status_kepemilikan', ['hak milik', 'numpang', 'sewa']);
-            $table->bigInteger('penghasilan_num');
-            $table->integer('tahun');
-            $table->integer('periode');
-            $table->string('keterangan')->nullable();
+            $table->integer('usia');
+            $table->integer('tanggungan_num');
+            $table->string('kondisi_rumah');
+            $table->string('status_kepemilikan');
+            $table->integer('penghasilan_num');
+            $table->integer('tahun')->nullable();
+            $table->integer('periode')->nullable();
             $table->timestamps();
         });
     }
@@ -27,4 +25,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('centroids');
     }
-}; 
+} 

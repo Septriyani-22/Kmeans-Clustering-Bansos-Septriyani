@@ -82,7 +82,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('laporanhasil/export', [AdminLaporanHasilController::class, 'export'])->name('laporanhasil.export');
 
     // Centroid
-    Route::resource('centroid', CentroidController::class);
+    Route::get('/centroid', [CentroidController::class, 'index'])->name('centroid.index');
+    Route::post('/centroid', [CentroidController::class, 'store'])->name('centroid.store');
+    Route::put('/centroid/{centroid}', [CentroidController::class, 'update'])->name('centroid.update');
+    Route::delete('/centroid/{centroid}', [CentroidController::class, 'destroy'])->name('centroid.destroy');
+    Route::post('/centroid/calculate', [CentroidController::class, 'calculateDistances'])->name('centroid.calculate');
+
+    // Mapping routes under centroid
+    Route::post('/centroid/mapping', [CentroidController::class, 'storeMapping'])->name('centroid.mapping.store');
+    Route::put('/centroid/mapping/{mapping}', [CentroidController::class, 'updateMapping'])->name('centroid.mapping.update');
+    Route::delete('/centroid/mapping/{mapping}', [CentroidController::class, 'destroyMapping'])->name('centroid.mapping.destroy');
 
     // Clustering
     Route::prefix('clustering')->name('clustering.')->group(function () {
