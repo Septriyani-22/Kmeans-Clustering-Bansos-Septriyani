@@ -44,8 +44,8 @@ class DashboardController extends Controller
                         'nama' => $penduduk->nama,
                         'usia' => $penduduk->usia . ' tahun',
                         'tanggungan' => $penduduk->tanggungan . ' orang',
-                        'kondisi_rumah' => $this->formatKondisiRumah($penduduk->kondisi_rumah),
-                        'status_kepemilikan' => $this->formatStatusKepemilikan($penduduk->status_kepemilikan),
+                        'kondisi_rumah' => $penduduk->kondisi_rumah,
+                        'status_kepemilikan' => $penduduk->status_kepemilikan,
                         'penghasilan' => 'Rp ' . number_format($penduduk->penghasilan, 0, ',', '.'),
                         'cluster' => $cluster,
                         'kelayakan' => $cluster === 'C1' ? 'Layak' : 'Tidak Layak',
@@ -99,23 +99,4 @@ class DashboardController extends Controller
         ));
     }
 
-    private function formatKondisiRumah($kondisi)
-    {
-        $kondisiMap = [
-            1 => 'Layak',
-            2 => 'Tidak Layak',
-            3 => 'Sangat Tidak Layak'
-        ];
-        return $kondisiMap[$kondisi] ?? 'Tidak Diketahui';
-    }
-
-    private function formatStatusKepemilikan($status)
-    {
-        $statusMap = [
-            1 => 'Milik Sendiri',
-            2 => 'Kontrak',
-            3 => 'Sewa'
-        ];
-        return $statusMap[$status] ?? 'Tidak Diketahui';
-    }
 } 
