@@ -152,11 +152,6 @@
                                         <tr>
                                             <th>Data ke-</th>
                                             <th>Nama Penduduk</th>
-                                            <th>Usia</th>
-                                            <th>Jumlah Tanggungan</th>
-                                            <th>Kondisi Rumah</th>
-                                            <th>Status Kepemilikan</th>
-                                            <th>Jumlah Penghasilan</th>
                                             <th>Jarak ke C1</th>
                                             <th>Jarak ke C2</th>
                                             <th>Jarak ke C3</th>
@@ -168,11 +163,6 @@
                                         <tr>
                                             <td>{{ $result['penduduk']->id }}</td>
                                             <td>{{ $result['penduduk']->nama }}</td>
-                                            <td>{{ $result['penduduk']->usia }}</td>
-                                            <td>{{ $result['penduduk']->jumlah_tanggungan }}</td>
-                                            <td>{{ $result['penduduk']->kondisi_rumah }}</td>
-                                            <td>{{ $result['penduduk']->status_kepemilikan }}</td>
-                                            <td>{{ $result['penduduk']->jumlah_penghasilan }}</td>
                                             @foreach($result['distances'] as $distance)
                                             <td>{{ number_format($distance, 2) }}</td>
                                             @endforeach
