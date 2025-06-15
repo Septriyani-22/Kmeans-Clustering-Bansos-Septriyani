@@ -69,13 +69,13 @@
             @foreach($hasilKmeans as $result)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $result->penduduk->nama }}</td>
-                    <td>{{ $result->penduduk->usia }}</td>
-                    <td>{{ $result->penduduk->tanggungan }}</td>
-                    <td>{{ $result->penduduk->kondisi_rumah }}</td>
-                    <td>{{ $result->penduduk->status_kepemilikan }}</td>
-                    <td>Rp {{ number_format($result->penduduk->penghasilan, 0, ',', '.') }}</td>
-                    <td>Cluster {{ $result->cluster }}</td>
+                    <td>{{ $result->nama_penduduk }}</td>
+                    <td>{{ $result->usia }}</td>
+                    <td>{{ $result->jumlah_tanggungan }}</td>
+                    <td>{{ $result->kondisi_rumah }}</td>
+                    <td>{{ $result->status_kepemilikan }}</td>
+                    <td>Rp {{ number_format($result->jumlah_penghasilan, 0, ',', '.') }}</td>
+                    <td>{{ $result->cluster }}</td>
                     <td>{{ $result->kelayakan }}</td>
                     <td>{{ $result->keterangan }}</td>
                 </tr>
