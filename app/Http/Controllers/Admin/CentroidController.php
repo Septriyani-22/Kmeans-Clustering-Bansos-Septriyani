@@ -22,6 +22,7 @@ class CentroidController extends Controller
         $this->clusteringController = $clusteringController;
     }
 
+    // Perhitungan Kriteria dan proses clustering
     private function getNilaiKriteria($tipe, $value)
     {
         // Get parent kriteria
@@ -42,7 +43,44 @@ class CentroidController extends Controller
 
         return $nilaiKriteria ? $nilaiKriteria->nilai : null;
     }
-
+    public function prosesClustering(Request $request, $penduduks, $kriteria)
+    {
+        try {
+            // Inisialisasi centroid awal dengan nilai dari kriteria
+            $centroids = [];
+            $jumlahCluster = $request->jumlah_cluster;
+            
+            // Ambil beberapa data penduduk secara acak untuk centroid awal
+            $randomPenduduks = $penduduks->random($jumlahCluster);
+            
+            foreach ($randomPenduduks as $index => $penduduk) {
+                $centroids[] = [
+                    'usia' => $this->getNilaiKriteria('Usia', $penduduk->usia) ?? 1,
+                    'tanggungan_num' => $this->getNilaiKriteria('Jumlah Tanggungan', $penduduk->tanggungan) ?? 1,
+                    'kondisi_rumah' => $this->getNilaiKriteria('Kondisi Rumah', strtolower($penduduk->kondisi_rumah)) ?? 1,
+                    'status_kepemilikan' => $this->getNilaiKriteria('Status Kepemilikan', strtolower($penduduk->status_kepemilikan)) ?? 1,
+                    'penghasilan_num' => $this->getNilaiKriteria('Penghasilan', $penduduk->penghasilan) ?? 1,
+                    'tahun' => date('Y'),
+                    'periode' => 1
+                ];
+            }
+            
+            // Simpan centroid awal ke database
+            foreach ($centroids as $centroid) {
+                Centroid::create($centroid);
+            }
+            
+            // Hitung jarak
+            $this->calculateDistances();
+            
+            return redirect()->route('admin.centroid.index')
+                ->with('success', 'Clustering berhasil dilakukan');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+    //  Another case
     public function index()
     {
         $centroids = Centroid::all();
@@ -50,21 +88,20 @@ class CentroidController extends Controller
         $penduduks = Penduduk::all();
         $distanceResults = session('distanceResults', []);
 
-        // Convert raw data to numerical values
         $convertedPenduduks = $penduduks->map(function($penduduk) {
             return [
                 'id' => $penduduk->id,
                 'nama' => $penduduk->nama,
                 'usia' => $this->getNilaiKriteria('Usia', $penduduk->usia),
-                'jumlah_tanggungan' => $this->getNilaiKriteria('Jumlah Tanggungan', $penduduk->jumlah_tanggungan),
+                'jumlah_tanggungan' => $this->getNilaiKriteria('Jumlah Tanggungan', $penduduk->tanggungan),
                 'kondisi_rumah' => $this->getNilaiKriteria('Kondisi Rumah', strtolower($penduduk->kondisi_rumah)),
                 'status_kepemilikan' => $this->getNilaiKriteria('Status Kepemilikan', strtolower($penduduk->status_kepemilikan)),
-                'jumlah_penghasilan' => $this->getNilaiKriteria('Penghasilan', $penduduk->jumlah_penghasilan),
+                'jumlah_penghasilan' => $this->getNilaiKriteria('Penghasilan', $penduduk->penghasilan),
                 'usia_raw' => $penduduk->usia,
-                'jumlah_tanggungan_raw' => $penduduk->jumlah_tanggungan,
+                'tanggungan_raw' => $penduduk->tanggungan,
                 'kondisi_rumah_raw' => $penduduk->kondisi_rumah,
                 'status_kepemilikan_raw' => $penduduk->status_kepemilikan,
-                'jumlah_penghasilan_raw' => $penduduk->jumlah_penghasilan
+                'penghasilan_raw' => $penduduk->penghasilan
             ];
         });
 
@@ -135,58 +172,6 @@ class CentroidController extends Controller
         return view('admin.centroid.edit', compact('centroid'));
     }
 
-    public function storeMapping(Request $request)
-    {
-        $request->validate([
-            'data_ke' => 'required|exists:penduduks,id',
-            'cluster' => 'required|in:C1,C2,C3'
-        ]);
-
-        $penduduk = Penduduk::findOrFail($request->data_ke);
-
-        MappingCentroid::create([
-            'data_ke' => $penduduk->id,
-            'nama_penduduk' => $penduduk->nama,
-            'cluster' => $request->cluster,
-            'usia' => $penduduk->usia,
-            'jumlah_tanggungan' => $penduduk->jumlah_tanggungan,
-            'kondisi_rumah' => $penduduk->kondisi_rumah,
-            'status_kepemilikan' => $penduduk->status_kepemilikan,
-            'jumlah_penghasilan' => $penduduk->jumlah_penghasilan
-        ]);
-
-        return response()->json(['success' => true]);
-    }
-
-    public function updateMapping(Request $request, MappingCentroid $mapping)
-    {
-        $request->validate([
-            'data_ke' => 'required|exists:penduduks,id',
-            'cluster' => 'required|in:C1,C2,C3'
-        ]);
-
-        $penduduk = Penduduk::findOrFail($request->data_ke);
-
-        $mapping->update([
-            'data_ke' => $penduduk->id,
-            'nama_penduduk' => $penduduk->nama,
-            'cluster' => $request->cluster,
-            'usia' => $penduduk->usia,
-            'jumlah_tanggungan' => $penduduk->jumlah_tanggungan,
-            'kondisi_rumah' => $penduduk->kondisi_rumah,
-            'status_kepemilikan' => $penduduk->status_kepemilikan,
-            'jumlah_penghasilan' => $penduduk->jumlah_penghasilan
-        ]);
-
-        return response()->json(['success' => true]);
-    }
-
-    public function destroyMapping(MappingCentroid $mapping)
-    {
-        $mapping->delete();
-        return response()->json(['success' => true]);
-    }
-
     public function calculateDistances()
     {
         $centroids = Centroid::all();
@@ -196,12 +181,12 @@ class CentroidController extends Controller
         foreach ($penduduks as $penduduk) {
             $distances = [];
             foreach ($centroids as $centroid) {
-                // Convert string values to numeric
-                $usiaPenduduk = floatval($penduduk->usia);
+                // Convert string values to numeric using kriteria
+                $usiaPenduduk = $this->getNilaiKriteria('Usia', $penduduk->usia) ?? 1;
                 $usiaCentroid = floatval($centroid->usia);
                 
-                // Gunakan nilai sebenarnya untuk tanggungan
-                $tanggunganPenduduk = floatval($penduduk->jumlah_tanggungan);
+                // Gunakan getNilaiKriteria untuk tanggungan
+                $tanggunganPenduduk = $this->getNilaiKriteria('Jumlah Tanggungan', $penduduk->tanggungan) ?? 1;
                 $tanggunganCentroid = floatval($centroid->tanggungan_num);
                 
                 $kondisiRumahPenduduk = $this->getNilaiKriteria('Kondisi Rumah', strtolower($penduduk->kondisi_rumah)) ?? 1;
@@ -210,8 +195,8 @@ class CentroidController extends Controller
                 $statusKepemilikanPenduduk = $this->getNilaiKriteria('Status Kepemilikan', strtolower($penduduk->status_kepemilikan)) ?? 1;
                 $statusKepemilikanCentroid = $this->getNilaiKriteria('Status Kepemilikan', strtolower($centroid->status_kepemilikan)) ?? 1;
                 
-                // Gunakan nilai sebenarnya untuk penghasilan
-                $penghasilanPenduduk = floatval($penduduk->jumlah_penghasilan);
+                // Gunakan getNilaiKriteria untuk penghasilan
+                $penghasilanPenduduk = $this->getNilaiKriteria('Penghasilan', $penduduk->penghasilan) ?? 1;
                 $penghasilanCentroid = floatval($centroid->penghasilan_num);
 
                 $distance = sqrt(
@@ -235,106 +220,5 @@ class CentroidController extends Controller
             ->with('success', 'Jarak berhasil dihitung');
     }
 
-    public function prosesClustering(Request $request, $penduduks, $kriteria)
-    {
-        try {
-            // Inisialisasi centroid awal dengan nilai dari kriteria
-            $centroids = [];
-            $jumlahCluster = $request->jumlah_cluster;
-            
-            // Ambil beberapa data penduduk secara acak untuk centroid awal
-            $randomPenduduks = $penduduks->random($jumlahCluster);
-            
-            foreach ($randomPenduduks as $index => $penduduk) {
-                $centroids[] = [
-                    'usia' => floatval($penduduk->usia),
-                    'tanggungan_num' => floatval($penduduk->jumlah_tanggungan),
-                    'kondisi_rumah' => $this->getNilaiKriteria('Kondisi Rumah', strtolower($penduduk->kondisi_rumah)) ?? 1,
-                    'status_kepemilikan' => $this->getNilaiKriteria('Status Kepemilikan', strtolower($penduduk->status_kepemilikan)) ?? 1,
-                    'penghasilan_num' => floatval($penduduk->jumlah_penghasilan),
-                    'tahun' => date('Y'),
-                    'periode' => 1
-                ];
-            }
-            
-            // Simpan centroid awal ke database
-            foreach ($centroids as $centroid) {
-                Centroid::create($centroid);
-            }
-            
-            // Hitung jarak
-            $this->calculateDistances();
-            
-            return redirect()->route('admin.centroid.index')
-                ->with('success', 'Clustering berhasil dilakukan');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
 
-    private function getKondisiRumahText($nilai)
-    {
-        switch ($nilai) {
-            case 1:
-                return 'baik';
-            case 2:
-                return 'cukup';
-            case 3:
-                return 'kurang';
-            default:
-                return 'cukup';
-        }
-    }
-
-    private function getStatusKepemilikanText($nilai)
-    {
-        switch ($nilai) {
-            case 1:
-                return 'hak milik';
-            case 2:
-                return 'numpang';
-            case 3:
-                return 'sewa';
-            default:
-                return 'hak milik';
-        }
-    }
-
-    private function tentukanKelayakan($cluster)
-    {
-        switch ($cluster) {
-            case 1:
-                return 'Layak';
-            case 2:
-                return 'Tidak Layak';
-            case 3:
-                return 'Layak';
-            default:
-                return 'Tidak Layak';
-        }
-    }
-
-    private function hitungJarak(
-        $usia1, $tanggungan1, $kondisiRumah1, $statusKepemilikan1, $penghasilan1,
-        $usia2, $tanggungan2, $kondisiRumah2, $statusKepemilikan2, $penghasilan2
-    ) {
-        return sqrt(
-            pow($usia1 - $usia2, 2) +
-            pow($tanggungan1 - $tanggungan2, 2) +
-            pow($kondisiRumah1 - $kondisiRumah2, 2) +
-            pow($statusKepemilikan1 - $statusKepemilikan2, 2) +
-            pow($penghasilan1 - $penghasilan2, 2)
-        );
-    }
-
-    private function adaPerubahan($centroidLama, $centroidBaru)
-    {
-        $threshold = 0.0001;
-        return abs($centroidLama['usia'] - $centroidBaru['usia']) > $threshold ||
-               abs($centroidLama['jumlah_tanggungan'] - $centroidBaru['jumlah_tanggungan']) > $threshold ||
-               abs($centroidLama['kondisi_rumah'] - $centroidBaru['kondisi_rumah']) > $threshold ||
-               abs($centroidLama['status_kepemilikan'] - $centroidBaru['status_kepemilikan']) > $threshold ||
-               abs($centroidLama['penghasilan'] - $centroidBaru['penghasilan']) > $threshold;
-    }
 } 
