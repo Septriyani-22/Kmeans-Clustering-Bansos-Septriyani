@@ -349,7 +349,7 @@
                 </div>
                 <div class="card-body">
                     <div class="search-section">
-                        <h2>LIHAT INFORMASI PENERIMAAN BANTUAN BERAS</h2>
+                        <h2>LIHAT INFORMASI PENERIMAAN BANTUAN SOSIAL</h2>
                         <form method="GET" action="{{ route('search.result') }}" class="search-form">
                             <input type="text" id="nik" name="nik" class="search-input" placeholder="Masukkan NIK" required>
                             <button type="submit" class="search-button">
@@ -358,41 +358,41 @@
                         </form>
                     </div>
 
-                    @if(isset($result))
+                    @if(isset($data))
                     <div class="result-section">
                         <div class="result-card">
                             <div class="result-header">
                                 <div class="result-title">
-                                    {{ $result->penduduk->nama }} ({{ $result->penduduk->nik }})
+                                    {{ $data['nama'] }} ({{ $data['nik'] }})
                                 </div>
-                                <div class="result-status {{ $result->kelayakan === 'Layak' ? 'status-layak' : 'status-tidak-layak' }}">
-                                    {{ $result->kelayakan }}
+                                <div class="result-status {{ $data['kelayakan'] === 'Layak' ? 'status-layak' : 'status-tidak-layak' }}">
+                                    {{ $data['kelayakan'] }}
                                 </div>
                             </div>
                             <div class="result-details">
                                 <div class="detail-item">
                                     <div class="detail-label">Cluster</div>
-                                    <div class="detail-value">{{ $result->cluster }}</div>
+                                    <div class="detail-value">{{ $data['cluster'] }}</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Skor Kelayakan</div>
-                                    <div class="detail-value">{{ number_format($result->skor_kelayakan, 2) }}</div>
+                                    <div class="detail-label">Keterangan</div>
+                                    <div class="detail-value">{{ $data['keterangan'] }}</div>
                                 </div>
                                 <div class="detail-item">
                                     <div class="detail-label">Penghasilan</div>
-                                    <div class="detail-value">{{ $result->penduduk->penghasilan }}</div>
+                                    <div class="detail-value">{{ $data['penghasilan'] }}</div>
                                 </div>
                                 <div class="detail-item">
                                     <div class="detail-label">Tanggungan</div>
-                                    <div class="detail-value">{{ $result->penduduk->tanggungan }}</div>
+                                    <div class="detail-value">{{ $data['tanggungan'] }}</div>
                                 </div>
                                 <div class="detail-item">
                                     <div class="detail-label">Kondisi Rumah</div>
-                                    <div class="detail-value">{{ $result->penduduk->kondisi_rumah }}</div>
+                                    <div class="detail-value">{{ $data['kondisi_rumah'] }}</div>
                                 </div>
                                 <div class="detail-item">
                                     <div class="detail-label">Status Kepemilikan</div>
-                                    <div class="detail-value">{{ $result->penduduk->status_kepemilikan_rumah }}</div>
+                                    <div class="detail-value">{{ $data['status_kepemilikan'] }}</div>
                                 </div>
                             </div>
                         </div>
@@ -407,11 +407,6 @@
             </div>
         </main>
     </div>
-
-    <footer>
-        Copyright © Pengelompokkan Penerima Bantuan Sosial Beras Untuk Masyarakat Miskin
-        Di Desa Burum Kabupaten Tabalong Menggunakan Metode K-Means
-    </footer>
 </body>
 
 </html>

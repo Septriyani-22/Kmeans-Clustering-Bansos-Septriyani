@@ -24,26 +24,37 @@ use App\Http\Controllers\KepalaDesa\DashboardController as KepalaDesaDashboardCo
 use App\Http\Controllers\KepalaDesa\HasilKmeansController as KepalaDesaHasilKmeansController;
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\SearchController;
 
+// Public routes
 Route::get('/', function () {
-    return redirect()->route('login');
-});
+    return view('welcome');
+})->name('welcome');
 
+Route::get('/search/result', [SearchController::class, 'search'])->name('search.result');
+
+Route::get('/informasi', function () {
+    return view('informasi');
+})->name('informasi');
+
+// Auth routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/search/result', [App\Http\Controllers\SearchController::class, 'search'])->name('search.result');
-
-Route::get('/informasi', function () {
-    return view('informasi');
-})->name('informasi');
-
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+// Admin routes
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::resource('penduduk', AdminPendudukController::class);
+    Route::resource('centroid', CentroidController::class);
+    Route::resource('hasil-kmeans', HasilKmeansController::class);
+    Route::resource('mapping-centroid', MappingCentroidController::class);
+    Route::post('/calculate-distances', [HasilKmeansController::class, 'calculateDistances'])->name('calculate.distances');
+    Route::get('/print/{cluster}', [HasilKmeansController::class, 'print'])->name('print.cluster');
+});
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
