@@ -1,166 +1,175 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard - Sistem Bantuan Sosial')
-
-@push('styles')
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
-@endpush
-
 @section('content')
 <div class="container-fluid">
-    <!-- Info Boxes -->
-    <div class="row">
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>{{ $totalPenduduk }}</h3>
-                    <p>Total Penduduk</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-users"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-danger">
-                <div class="inner">
-                    <h3>{{ $layakBantuan }}</h3>
-                    <p>C1 - Membutuhkan</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-heart"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3>{{ $tidakLayak }}</h3>
-                    <p>C2 - Tidak Membutuhkan</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-check"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3>{{ $prioritasSedang }}</h3>
-                    <p>C3 - Prioritas Sedang</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-clock"></i>
-                </div>
-            </div>
-        </div>
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
     </div>
 
-    <!-- Informasi Cluster -->
+    <!-- Content Row -->
     <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Informasi Cluster</h3>
-                </div>
+        <!-- Total Penduduk Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
-                    <div class="alert alert-info">
-                        <h5><i class="fas fa-info-circle"></i> Penjelasan Cluster</h5>
-                        <p>Jumlah cluster yang ditetapkan adalah 3 cluster berdasarkan hasil data penduduk:</p>
-                        <ul>
-                            <li><strong>C1 (Cluster Membutuhkan)</strong> - Kelompok yang sangat membutuhkan bantuan</li>
-                            <li><strong>C2 (Cluster Tidak Membutuhkan)</strong> - Kelompok yang tidak membutuhkan bantuan</li>
-                            <li><strong>C3 (Prioritas Sedang)</strong> - Kelompok dengan prioritas bantuan sedang</li>
-                        </ul>
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Penduduk</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalPenduduk }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Data Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Data Clustering</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalData }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-pie fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- C1 Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                C1 (Membutuhkan)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $clusterCounts['C1'] }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- C2 Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                C2 (Tidak Membutuhkan)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $clusterCounts['C2'] }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Charts -->
+    <!-- Content Row -->
     <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Distribusi Cluster</h3>
+        <!-- Pie Chart -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Distribusi Cluster</h6>
                 </div>
                 <div class="card-body">
-                    <canvas id="clusterChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    <div class="chart-pie pt-4">
+                        <canvas id="clusterChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Distribusi Penghasilan per Cluster</h3>
+
+        <!-- Recent Penduduk -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Penduduk Terbaru</h6>
                 </div>
                 <div class="card-body">
-                    <canvas id="incomeChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>NIK</th>
+                                    <th>Nama</th>
+                                    <th>Usia</th>
+                                    <th>Tanggungan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($recentPenduduk as $penduduk)
+                                <tr>
+                                    <td>{{ $penduduk['nik'] }}</td>
+                                    <td>{{ $penduduk['nama'] }}</td>
+                                    <td>{{ $penduduk['usia'] }}</td>
+                                    <td>{{ $penduduk['tanggungan'] }}</td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">Tidak ada data penduduk</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Hasil Clustering -->
+    <!-- Content Row -->
     <div class="row">
+        <!-- Centroid Table -->
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Hasil Clustering K-Means</h3>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Centroid Terakhir</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>NIK</th>
-                                    <th>Nama</th>
+                                    <th>Cluster</th>
                                     <th>Usia</th>
-                                    <th>Tanggungan</th>
+                                    <th>Jumlah Tanggungan</th>
                                     <th>Kondisi Rumah</th>
                                     <th>Status Kepemilikan</th>
-                                    <th>Penghasilan</th>
-                                    <th>Cluster</th>
-                                    <th>Jarak</th>
+                                    <th>Jumlah Penghasilan</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($hasilKmeans as $index => $hasil)
+                                @forelse($centroids as $centroid)
                                 <tr>
-                                    <td>{{ $index + 1 }}</td>
-                                    <td>{{ $hasil->penduduk->nik }}</td>
-                                    <td>{{ $hasil->penduduk->nama }}</td>
-                                    <td>{{ $hasil->penduduk->usia }}</td>
-                                    <td>{{ $hasil->penduduk->tanggungan }}</td>
-                                    <td>{{ $hasil->penduduk->kondisi_rumah }}</td>
-                                    <td>{{ $hasil->penduduk->status_kepemilikan }}</td>
-                                    <td>Rp {{ number_format($hasil->penduduk->penghasilan, 0, ',', '.') }}</td>
-                                    <td>
-                                        @php
-                                            $clusterName = match($hasil->cluster) {
-                                                1 => 'Membutuhkan',
-                                                2 => 'Tidak Membutuhkan',
-                                                3 => 'Prioritas Sedang',
-                                                default => 'Tidak Diketahui'
-                                            };
-                                            $badgeClass = match($hasil->cluster) {
-                                                1 => 'danger',
-                                                2 => 'success',
-                                                3 => 'warning',
-                                                default => 'secondary'
-                                            };
-                                        @endphp
-                                        <span class="badge bg-{{ $badgeClass }}">
-                                            C{{ $hasil->cluster }} - {{ $clusterName }}
-                                        </span>
-                                    </td>
-                                    <td>{{ number_format($hasil->jarak, 2) }}</td>
+                                    <td>{{ $centroid['cluster'] }}</td>
+                                    <td>{{ $centroid['usia'] }}</td>
+                                    <td>{{ $centroid['jumlah_tanggungan'] }}</td>
+                                    <td>{{ $centroid['kondisi_rumah'] }}</td>
+                                    <td>{{ $centroid['status_kepemilikan'] }}</td>
+                                    <td>{{ $centroid['jumlah_penghasilan'] }}</td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="10" class="text-center">Belum ada data hasil clustering</td>
+                                    <td colspan="6" class="text-center">Tidak ada data centroid</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -173,83 +182,42 @@
 </div>
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    window.addEventListener('load', function() {
-        // Cluster Distribution Chart
-        var ctx = document.getElementById('clusterChart');
-        if (ctx) {
-            var clusterChart = new Chart(ctx.getContext('2d'), {
-                type: 'pie',
-                data: {
-                    labels: {!! json_encode($clusterLabels) !!},
-                    datasets: [{
-                        data: {!! json_encode($clusterValues) !!},
-                        backgroundColor: ['#dc3545', '#28a745', '#ffc107']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Distribusi Cluster',
-                            font: {
-                                size: 16
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Income Distribution Chart
-        var incomeCtx = document.getElementById('incomeChart');
-        if (incomeCtx) {
-            var incomeChart = new Chart(incomeCtx.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: ['C1 - Membutuhkan', 'C2 - Tidak Membutuhkan', 'C3 - Prioritas Sedang'],
-                    datasets: [{
-                        label: 'Rata-rata Penghasilan',
-                        data: [
-                            {{ $avgIncomeC1 }},
-                            {{ $avgIncomeC2 }},
-                            {{ $avgIncomeC3 }}
-                        ],
-                        backgroundColor: ['#dc3545', '#28a745', '#ffc107']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        title: {
-                            display: true,
-                            text: 'Rata-rata Penghasilan per Cluster',
-                            font: {
-                                size: 16
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return 'Rp ' + value.toLocaleString('id-ID');
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
+document.addEventListener('DOMContentLoaded', function() {
+    // Pie Chart
+    var ctx = document.getElementById('clusterChart').getContext('2d');
+    var myPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: {!! json_encode($chartData['labels']) !!},
+            datasets: [{
+                data: {!! json_encode($chartData['data']) !!},
+                backgroundColor: ['#e74a3b', '#1cc88a', '#36b9cc'],
+                hoverBackgroundColor: ['#d63c2e', '#17a673', '#2c9faf'],
+                hoverBorderColor: "rgba(234, 236, 244, 1)",
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            tooltips: {
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+            },
+            legend: {
+                display: true,
+                position: 'bottom'
+            },
+            cutoutPercentage: 0,
+        },
     });
+});
 </script>
 @endpush
 @endsection 

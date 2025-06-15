@@ -152,8 +152,6 @@ Route::middleware(['auth', 'kepala_desa'])->prefix('kepala_desa')->name('kepala_
     
 // Kepala Desa Routes
 Route::middleware(['auth', 'role:kepala_desa'])->prefix('kepala-desa')->name('kepala_desa.')->group(function () {
-    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-
     // Penduduk Management
     Route::resource('penduduk', \App\Http\Controllers\Admin\PendudukController::class);
     Route::post('penduduk/import', [\App\Http\Controllers\Admin\PendudukController::class, 'import'])->name('penduduk.import');

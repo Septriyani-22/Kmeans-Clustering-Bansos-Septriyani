@@ -14,6 +14,7 @@ class MappingCentroid extends Model
     protected $fillable = [
         'data_ke',
         'cluster',
+        'jarak',
         'nama_penduduk',
         'usia',
         'jumlah_tanggungan',
