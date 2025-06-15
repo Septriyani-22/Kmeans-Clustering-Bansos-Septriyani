@@ -7,6 +7,8 @@ use App\Models\Penduduk;
 use App\Models\Centroid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -16,7 +18,7 @@ class DashboardController extends Controller
         $totalPenduduk = Penduduk::count();
         
         // Get distance results from session
-        $distanceResults = Session::get('distanceResults', []);
+        $distanceResults = session('distanceResults', []);
         
         // Initialize cluster counts
         $clusterCounts = [
@@ -25,29 +27,51 @@ class DashboardController extends Controller
             'C3' => 0
         ];
         
-        // Process distance results to get cluster counts
+        // Process distance results to get cluster counts and prepare data for pagination
+        $results = [];
         if (!empty($distanceResults)) {
             foreach ($distanceResults as $result) {
                 $minDistance = min($result['distances']);
                 $clusterIndex = array_search($minDistance, $result['distances']);
-                $clusterCounts['C' . ($clusterIndex + 1)]++;
+                $cluster = 'C' . ($clusterIndex + 1);
+                $clusterCounts[$cluster]++;
+                
+                // Get penduduk data
+                $penduduk = Penduduk::find($result['penduduk']->id);
+                if ($penduduk) {
+                    $results[] = [
+                        'nik' => $penduduk->nik,
+                        'nama' => $penduduk->nama,
+                        'usia' => $penduduk->usia . ' tahun',
+                        'tanggungan' => $penduduk->tanggungan . ' orang',
+                        'kondisi_rumah' => $this->formatKondisiRumah($penduduk->kondisi_rumah),
+                        'status_kepemilikan' => $this->formatStatusKepemilikan($penduduk->status_kepemilikan),
+                        'penghasilan' => 'Rp ' . number_format($penduduk->penghasilan, 0, ',', '.'),
+                        'cluster' => $cluster,
+                        'kelayakan' => $cluster === 'C1' ? 'Layak' : 'Tidak Layak',
+                        'keterangan' => $cluster === 'C1' ? 
+                            'Sangat membutuhkan bantuan' : 
+                            ($cluster === 'C2' ? 'Tidak membutuhkan bantuan' : 'Prioritas sedang')
+                    ];
+                }
             }
         }
         
         // Calculate total data
         $totalData = array_sum($clusterCounts);
         
-        // Get latest centroids with proper formatting
-        $centroids = Centroid::latest()->take(3)->get()->map(function ($centroid) {
-            return [
-                'cluster' => $centroid->cluster,
-                'usia' => $centroid->usia . ' tahun',
-                'jumlah_tanggungan' => $centroid->jumlah_tanggungan . ' orang',
-                'kondisi_rumah' => $this->formatKondisiRumah($centroid->kondisi_rumah),
-                'status_kepemilikan' => $this->formatStatusKepemilikan($centroid->status_kepemilikan),
-                'jumlah_penghasilan' => 'Rp ' . number_format($centroid->jumlah_penghasilan, 0, ',', '.')
-            ];
-        });
+        // Paginate results
+        $page = request()->get('page', 1);
+        $perPage = 10;
+        $offset = ($page - 1) * $perPage;
+        
+        $paginatedResults = new LengthAwarePaginator(
+            array_slice($results, $offset, $perPage),
+            count($results),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
         
         // Get recent penduduk with proper formatting
         $recentPenduduk = Penduduk::latest()->take(5)->get()->map(function ($penduduk) {
@@ -69,7 +93,7 @@ class DashboardController extends Controller
             'totalPenduduk',
             'clusterCounts',
             'totalData',
-            'centroids',
+            'paginatedResults',
             'chartData',
             'recentPenduduk'
         ));

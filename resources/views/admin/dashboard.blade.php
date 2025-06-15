@@ -26,25 +26,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Total Data Card -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Total Data Clustering</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalData }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-chart-pie fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- C1 Card -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-danger shadow h-100 py-2">
@@ -72,6 +53,24 @@
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                 C2 (Tidak Membutuhkan)</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $clusterCounts['C2'] }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <!-- C3 Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                C3 (Prioritas Sedang)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $clusterCounts['C3'] }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-check-circle fa-2x text-gray-300"></i>
@@ -138,42 +137,65 @@
 
     <!-- Content Row -->
     <div class="row">
-        <!-- Centroid Table -->
+        <!-- Hasil K-Means Table -->
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Centroid Terakhir</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Hasil K-Means Clustering</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Cluster</th>
+                                    <th>NIK</th>
+                                    <th>Nama</th>
                                     <th>Usia</th>
-                                    <th>Jumlah Tanggungan</th>
+                                    <th>Tanggungan</th>
                                     <th>Kondisi Rumah</th>
                                     <th>Status Kepemilikan</th>
-                                    <th>Jumlah Penghasilan</th>
+                                    <th>Penghasilan</th>
+                                    <th>Cluster</th>
+                                    <th>Kelayakan</th>
+                                    <th>Keterangan</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($centroids as $centroid)
+                                @forelse($paginatedResults as $result)
                                 <tr>
-                                    <td>{{ $centroid['cluster'] }}</td>
-                                    <td>{{ $centroid['usia'] }}</td>
-                                    <td>{{ $centroid['jumlah_tanggungan'] }}</td>
-                                    <td>{{ $centroid['kondisi_rumah'] }}</td>
-                                    <td>{{ $centroid['status_kepemilikan'] }}</td>
-                                    <td>{{ $centroid['jumlah_penghasilan'] }}</td>
+                                    <td>{{ $result['nik'] }}</td>
+                                    <td>{{ $result['nama'] }}</td>
+                                    <td>{{ $result['usia'] }}</td>
+                                    <td>{{ $result['tanggungan'] }}</td>
+                                    <td>{{ $result['kondisi_rumah'] }}</td>
+                                    <td>{{ $result['status_kepemilikan'] }}</td>
+                                    <td>{{ $result['penghasilan'] }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ $result['cluster'] == 'C1' ? 'danger' : ($result['cluster'] == 'C2' ? 'success' : 'info') }}">
+                                            {{ $result['cluster'] }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $result['kelayakan'] }}</td>
+                                    <td>{{ $result['keterangan'] }}</td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">Tidak ada data centroid</td>
+                                    <td colspan="10" class="text-center">Tidak ada data hasil clustering</td>
                                 </tr>
                                 @endforelse
                             </tbody>
                         </table>
+                    </div>
+                    <div class="d-flex justify-content-center mt-4">
+                        @if($paginatedResults->hasPages())
+                            <div class="pagination">
+                                @foreach($paginatedResults->getUrlRange(1, $paginatedResults->lastPage()) as $page => $url)
+                                    <a href="{{ $url }}" class="btn btn-sm {{ $page == $paginatedResults->currentPage() ? 'btn-primary' : 'btn-outline-primary' }} mr-1">
+                                        {{ $page }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
