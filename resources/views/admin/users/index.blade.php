@@ -8,9 +8,9 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Data Users</h3>
+                    <h3 class="card-title">Daftar User</h3>
                     <div class="card-tools">
-                        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                        <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus"></i> Tambah User
                         </a>
                     </div>
@@ -40,81 +40,74 @@
                                 <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Aktif</option>
                                 <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Nonaktif</option>
                             </select>
-                        </div>
+            </div>
                         <div class="col-md-2">
                             <div class="d-flex justify-content-end">
                                 <select class="form-control" id="entries" onchange="this.form.submit()">
-                                    <option value="10" {{ request('entries', 10) == 10 ? 'selected' : '' }}>10</option>
-                                    <option value="25" {{ request('entries') == 25 ? 'selected' : '' }}>25</option>
-                                    <option value="50" {{ request('entries') == 50 ? 'selected' : '' }}>50</option>
-                                    <option value="100" {{ request('entries') == 100 ? 'selected' : '' }}>100</option>
-                                </select>
+                <option value="10" {{ request('entries', 10) == 10 ? 'selected' : '' }}>10</option>
+                <option value="25" {{ request('entries') == 25 ? 'selected' : '' }}>25</option>
+                <option value="50" {{ request('entries') == 50 ? 'selected' : '' }}>50</option>
+                <option value="100" {{ request('entries') == 100 ? 'selected' : '' }}>100</option>
+            </select>
                             </div>
                         </div>
-                    </div>
+        </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped w-100">
-                            <thead>
+                        <table class="table table-bordered table-striped">
+            <thead>
                                 <tr>
-                                    <th style="width: 3%">No</th>
-                                    <th style="width: 15%">Nama</th>
-                                    <th style="width: 20%">Email</th>
-                                    <th style="width: 15%">Username</th>
-                                    <th style="width: 10%">Role</th>
-                                    <th style="width: 10%">Status</th>
-                                    <th style="width: 27%">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                                    <th style="width: 5%">No</th>
+                                    <th style="width: 20%">Username</th>
+                                    <th style="width: 20%">Nama</th>
+                                    <th style="width: 25%">Email</th>
+                                    <th style="width: 15%">Role</th>
+                                    <th style="width: 15%">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
                                 @forelse($users as $index => $user)
-                                    <tr>
+                    <tr>
                                         <td>{{ $users->firstItem() + $index }}</td>
+                                        <td>{{ $user->username }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
-                                        <td>{{ $user->username }}</td>
                                         <td>
-                                            <span class="badge badge-{{ $user->role === 'admin' ? 'danger' : 'info' }}">
-                                                {{ strtoupper($user->role) }}
-                                            </span>
-                                        </td>
+                                            @if($user->role === 'admin')
+                                                <span class="badge badge-primary">Admin</span>
+                                            @else
+                                                <span class="badge badge-info">Kepala Desa</span>
+                                            @endif
+                        </td>
                                         <td>
-                                            <span class="badge badge-{{ $user->is_active ? 'success' : 'warning' }}">
-                                                {{ $user->is_active ? 'Aktif' : 'Nonaktif' }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">
-                                                <i class="fas fa-edit"></i> Edit
+                                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i>
                                             </a>
-                                            <!-- <button type="button" class="btn btn-sm btn-info" onclick="resetPassword({{ $user->id }})">
-                                                <i class="fas fa-key"></i> Reset Password
-                                            </button> -->
                                             <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this user?')">
-                                                    <i class="fas fa-trash"></i> Hapus
+                                @csrf
+                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus user ini?')">
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
                                         <td colspan="7" class="text-center">No users found.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-6">
                             <p class="text-muted">
-                                Showing {{ $users->firstItem() }} to {{ $users->lastItem() }} of {{ $users->total() }} entries
+                Showing {{ $users->firstItem() }} to {{ $users->lastItem() }} of {{ $users->total() }} entries
                             </p>
-                        </div>
+            </div>
                         <div class="col-md-6">
                             <div class="d-flex justify-content-end">
-                                {{ $users->links('pagination::simple-tailwind') }}
+                {{ $users->links('pagination::simple-tailwind') }}
                             </div>
                         </div>
                     </div>
@@ -192,12 +185,12 @@
 <!-- SweetAlert2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 
-<script>
-    function searchUsers(value) {
-        const url = new URL(window.location.href);
-        url.searchParams.set('search', value);
-        window.location.href = url.toString();
-    }
+    <script>
+        function searchUsers(value) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('search', value);
+            window.location.href = url.toString();
+        }
 
     function filterUsers(value) {
         const url = new URL(window.location.href);
@@ -423,5 +416,5 @@
         $('#new_password, #password_confirmation').attr('type', 'password');
         $('#togglePassword, #toggleConfirmPassword').find('i').removeClass('fa-eye-slash').addClass('fa-eye');
     });
-</script>
+    </script>
 @endsection

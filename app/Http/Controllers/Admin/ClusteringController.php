@@ -196,7 +196,7 @@ class ClusteringController extends Controller
                 }
             }
 
-            return redirect()->route('admin.clustering.index')
+            return redirect()->route('admin.centroid.index')
                 ->with('success', 'Proses clustering berhasil dilakukan.');
 
         } catch (\Exception $e) {

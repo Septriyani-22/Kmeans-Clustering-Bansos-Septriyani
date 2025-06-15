@@ -62,23 +62,21 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id],
-            'role' => ['required', 'in:admin,user'],
-            'is_active' => ['boolean'],
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'role' => 'required|in:admin,users'
         ]);
 
         $user->update([
+            'username' => $request->username,
             'name' => $request->name,
             'email' => $request->email,
-            'username' => $request->username,
-            'role' => $request->role,
-            'is_active' => $request->boolean('is_active'),
+            'role' => $request->role
         ]);
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'User updated successfully.');
+            ->with('success', 'User berhasil diperbarui');
     }
 
     public function destroy(User $user)

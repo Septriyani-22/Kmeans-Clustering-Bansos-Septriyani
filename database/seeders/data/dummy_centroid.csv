@@ -1,4 +1,0 @@
-nama_centroid,penghasilan,tanggungan,tahun,periode,keterangan
-Cluster 1,1500000,5,2024,1,Kelompok dengan penghasilan rendah dan tanggungan banyak
-Cluster 2,3000000,3,2024,1,Kelompok dengan penghasilan menengah dan tanggungan sedang
-Cluster 3,5000000,1,2024,1,Kelompok dengan penghasilan tinggi dan tanggungan sedikit 

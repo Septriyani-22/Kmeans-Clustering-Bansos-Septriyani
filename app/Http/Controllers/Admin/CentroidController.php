@@ -41,37 +41,37 @@ class CentroidController extends Controller
         // Only calculate distances if there are centroids
         if ($centroids->isNotEmpty()) {
             try {
-                foreach ($penduduks as $penduduk) {
-                    $distances = [];
-                    foreach ($centroids as $centroid) {
-                        $usia = $penduduk->usia;
-                        $usiaValue = $this->clusteringController->getUsiaValue($usia, $kriteria);
-                        $tanggunganValue = $this->clusteringController->getTanggunganValue($penduduk->tanggungan, $kriteria);
-                        $kondisiRumahValue = $this->clusteringController->getKondisiRumahValue($penduduk->kondisi_rumah, $kriteria);
-                        $statusKepemilikanValue = $this->clusteringController->getStatusKepemilikanValue($penduduk->status_kepemilikan, $kriteria);
-                        $penghasilanValue = $this->clusteringController->getPenghasilanValue($penduduk->penghasilan, $kriteria);
+            foreach ($penduduks as $penduduk) {
+                $distances = [];
+                foreach ($centroids as $centroid) {
+                    $usia = $penduduk->usia;
+                    $usiaValue = $this->clusteringController->getUsiaValue($usia, $kriteria);
+                    $tanggunganValue = $this->clusteringController->getTanggunganValue($penduduk->tanggungan, $kriteria);
+                    $kondisiRumahValue = $this->clusteringController->getKondisiRumahValue($penduduk->kondisi_rumah, $kriteria);
+                    $statusKepemilikanValue = $this->clusteringController->getStatusKepemilikanValue($penduduk->status_kepemilikan, $kriteria);
+                    $penghasilanValue = $this->clusteringController->getPenghasilanValue($penduduk->penghasilan, $kriteria);
                         
-                        $dist = sqrt(
-                            pow($usiaValue - $centroid->usia, 2) +
-                            pow($tanggunganValue - $centroid->tanggungan_num, 2) +
-                            pow($kondisiRumahValue - $this->clusteringController->convertKondisiRumah($centroid->kondisi_rumah), 2) +
-                            pow($statusKepemilikanValue - $this->clusteringController->convertStatusKepemilikan($centroid->status_kepemilikan), 2) +
-                            pow($penghasilanValue - $centroid->penghasilan_num, 2)
-                        );
-                        $distances[] = $dist;
-                    }
-                    $min = min($distances);
-                    $nearestCluster = array_search($min, $distances) + 1;
-                    $distanceResults[] = [
-                        'penduduk' => $penduduk,
-                        'usia' => $usiaValue,
-                        'tanggungan' => $tanggunganValue,
-                        'kondisi_rumah' => $kondisiRumahValue,
-                        'status_kepemilikan' => $statusKepemilikanValue,
-                        'penghasilan' => $penghasilanValue,
-                        'distances' => $distances,
-                        'nearest_cluster' => $nearestCluster
-                    ];
+                    $dist = sqrt(
+                        pow($usiaValue - $centroid->usia, 2) +
+                        pow($tanggunganValue - $centroid->tanggungan_num, 2) +
+                        pow($kondisiRumahValue - $this->clusteringController->convertKondisiRumah($centroid->kondisi_rumah), 2) +
+                        pow($statusKepemilikanValue - $this->clusteringController->convertStatusKepemilikan($centroid->status_kepemilikan), 2) +
+                        pow($penghasilanValue - $centroid->penghasilan_num, 2)
+                    );
+                    $distances[] = $dist;
+                }
+                $min = min($distances);
+                $nearestCluster = array_search($min, $distances) + 1;
+                $distanceResults[] = [
+                    'penduduk' => $penduduk,
+                    'usia' => $usiaValue,
+                    'tanggungan' => $tanggunganValue,
+                    'kondisi_rumah' => $kondisiRumahValue,
+                    'status_kepemilikan' => $statusKepemilikanValue,
+                    'penghasilan' => $penghasilanValue,
+                    'distances' => $distances,
+                    'nearest_cluster' => $nearestCluster
+                ];
                 }
             } catch (\Exception $e) {
                 return view('admin.centroid.index', compact('centroids', 'distanceResults', 'mappings'))

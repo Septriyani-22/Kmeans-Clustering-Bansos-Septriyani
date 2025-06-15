@@ -91,7 +91,7 @@
                             </thead>
                             <tbody>
                                 @forelse($hasilKmeans as $result)
-                                    <tr>
+                                <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $result->penduduk->nama }}</td>
                                         <td>{{ $result->penduduk->usia }}</td>
@@ -103,14 +103,14 @@
                                         <td>
                                             <span class="badge badge-{{ $result->kelayakan == 'Layak' ? 'success' : 'danger' }}">
                                                 {{ $result->kelayakan }}
-                                            </span>
-                                        </td>
+                                        </span>
+                                    </td>
                                         <td>{{ $result->keterangan }}</td>
                                     </tr>
                                 @empty
                                     <tr>
                                         <td colspan="10" class="text-center">Tidak ada data hasil clustering</td>
-                                    </tr>
+                                </tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -182,7 +182,7 @@
     }
 </style>
 @endpush
-@endsection
+@endsection 
 
 @push('scripts')
 <script>
