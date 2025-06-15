@@ -24,7 +24,7 @@
         <div class="col-lg-3 col-6">
             <div class="small-box bg-danger">
                 <div class="inner">
-                    <h3>{{ $layakBantuan }}</h3>
+                    <h3>{{ $layakBantuan ?? 0 }}</h3>
                     <p>C1 - Membutuhkan</p>
                 </div>
                 <div class="icon">
@@ -35,7 +35,7 @@
         <div class="col-lg-3 col-6">
             <div class="small-box bg-success">
                 <div class="inner">
-                    <h3>{{ $tidakLayak }}</h3>
+                    <h3>{{ $tidakLayak ?? 0 }}</h3>
                     <p>C2 - Tidak Membutuhkan</p>
                 </div>
                 <div class="icon">
@@ -46,7 +46,7 @@
         <div class="col-lg-3 col-6">
             <div class="small-box bg-warning">
                 <div class="inner">
-                    <h3>{{ $prioritasSedang }}</h3>
+                    <h3>{{ $prioritasSedang ?? 0 }}</h3>
                     <p>C3 - Prioritas Sedang</p>
                 </div>
                 <div class="icon">
@@ -181,9 +181,13 @@
             var clusterChart = new Chart(ctx.getContext('2d'), {
                 type: 'pie',
                 data: {
-                    labels: {!! json_encode($clusterLabels) !!},
+                    labels: ['C1 - Membutuhkan', 'C2 - Tidak Membutuhkan', 'C3 - Prioritas Sedang'],
                     datasets: [{
-                        data: {!! json_encode($clusterValues) !!},
+                        data: [
+                            {{ $layakBantuan ?? 0 }},
+                            {{ $tidakLayak ?? 0 }},
+                            {{ $prioritasSedang ?? 0 }}
+                        ],
                         backgroundColor: ['#dc3545', '#28a745', '#ffc107']
                     }]
                 },
@@ -215,9 +219,9 @@
                     datasets: [{
                         label: 'Rata-rata Penghasilan',
                         data: [
-                            {{ $avgIncomeC1 }},
-                            {{ $avgIncomeC2 }},
-                            {{ $avgIncomeC3 }}
+                            {{ $avgIncomeC1 ?? 0 }},
+                            {{ $avgIncomeC2 ?? 0 }},
+                            {{ $avgIncomeC3 ?? 0 }}
                         ],
                         backgroundColor: ['#dc3545', '#28a745', '#ffc107']
                     }]
@@ -252,4 +256,4 @@
     });
 </script>
 @endpush
-@endsection 
+@endsection
