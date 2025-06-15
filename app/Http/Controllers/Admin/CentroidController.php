@@ -88,6 +88,7 @@ class CentroidController extends Controller
         $penduduks = Penduduk::all();
         $distanceResults = session('distanceResults', []);
 
+        // Convert raw data to numerical values
         $convertedPenduduks = $penduduks->map(function($penduduk) {
             return [
                 'id' => $penduduk->id,
@@ -105,7 +106,23 @@ class CentroidController extends Controller
             ];
         });
 
-        return view('admin.centroid.index', compact('centroids', 'mappings', 'penduduks', 'convertedPenduduks', 'distanceResults'));
+        // Convert mappings to use convertedPenduduks data
+        $convertedMappings = $mappings->map(function($mapping) use ($convertedPenduduks) {
+            $penduduk = $convertedPenduduks->firstWhere('id', $mapping->data_ke);
+            return [
+                'id' => $mapping->id,
+                'data_ke' => $mapping->data_ke,
+                'nama_penduduk' => $penduduk['nama'],
+                'cluster' => $mapping->cluster,
+                'usia' => $penduduk['usia'],
+                'jumlah_tanggungan' => $penduduk['jumlah_tanggungan'],
+                'kondisi_rumah' => $penduduk['kondisi_rumah'],
+                'status_kepemilikan' => $penduduk['status_kepemilikan'],
+                'jumlah_penghasilan' => $penduduk['jumlah_penghasilan']
+            ];
+        });
+
+        return view('admin.centroid.index', compact('centroids', 'mappings', 'penduduks', 'convertedPenduduks', 'convertedMappings', 'distanceResults'));
     }
 
     public function create()

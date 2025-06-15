@@ -105,32 +105,30 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($mappings as $mapping)
+                                        @foreach($convertedMappings as $mapping)
                                         <tr>
+                                            <td>{{ $mapping['data_ke'] }}</td>
+                                            <td>{{ $mapping['nama_penduduk'] }}</td>
                                             <td>
-                                                <select class="form-control data-ke-select" data-id="{{ $mapping->id }}">
-                                                    @foreach($convertedPenduduks as $penduduk)
-                                                    <option value="{{ $penduduk['id'] }}" {{ $mapping->data_ke == $penduduk['id'] ? 'selected' : '' }}>
-                                                        {{ $penduduk['id'] }}
-                                                    </option>
-                                                    @endforeach
+                                                <select class="form-control cluster-select" data-id="{{ $mapping['id'] }}">
+                                                    <option value="C1" {{ $mapping['cluster'] == 'C1' ? 'selected' : '' }}>C1</option>
+                                                    <option value="C2" {{ $mapping['cluster'] == 'C2' ? 'selected' : '' }}>C2</option>
+                                                    <option value="C3" {{ $mapping['cluster'] == 'C3' ? 'selected' : '' }}>C3</option>
                                                 </select>
                                             </td>
-                                            <td>{{ $mapping->nama_penduduk }}</td>
+                                            <td>{{ $mapping['usia'] }}</td>
+                                            <td>{{ $mapping['jumlah_tanggungan'] }}</td>
+                                            <td>{{ $mapping['kondisi_rumah'] }}</td>
+                                            <td>{{ $mapping['status_kepemilikan'] }}</td>
+                                            <td>{{ $mapping['jumlah_penghasilan'] }}</td>
                                             <td>
-                                                <select class="form-control cluster-select" data-id="{{ $mapping->id }}">
-                                                    <option value="C1" {{ $mapping->cluster == 'C1' ? 'selected' : '' }}>C1</option>
-                                                    <option value="C2" {{ $mapping->cluster == 'C2' ? 'selected' : '' }}>C2</option>
-                                                    <option value="C3" {{ $mapping->cluster == 'C3' ? 'selected' : '' }}>C3</option>
-                                                </select>
-                                            </td>
-                                            <td>{{ $mapping->usia }}</td>
-                                            <td>{{ $mapping->jumlah_tanggungan }}</td>
-                                            <td>{{ $mapping->kondisi_rumah }}</td>
-                                            <td>{{ $mapping->status_kepemilikan }}</td>
-                                            <td>{{ $mapping->jumlah_penghasilan }}</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-danger delete-mapping" data-id="{{ $mapping->id }}">Hapus</button>
+                                                <form action="{{ route('admin.mapping-centroid.destroy', $mapping['id']) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -203,20 +201,36 @@
                     <span>&times;</span>
                 </button>
             </div>
-            <form action="{{ route('admin.centroid.mapping.store') }}" method="POST">
+            <form action="{{ route('admin.mapping-centroid.store') }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Data ke-</label>
-                        <select name="data_ke" class="form-control" required>
+                        <label>Pilih Penduduk</label>
+                        <select name="data_ke" class="form-control" id="penduduk-select" required>
+                            <option value="">Pilih Penduduk</option>
                             @foreach($convertedPenduduks as $penduduk)
-                            <option value="{{ $penduduk['id'] }}">{{ $penduduk['id'] }}</option>
+                                <option value="{{ $penduduk['id'] }}" 
+                                    data-nama="{{ $penduduk['nama'] }}"
+                                    data-usia="{{ $penduduk['usia'] }}"
+                                    data-tanggungan="{{ $penduduk['jumlah_tanggungan'] }}"
+                                    data-kondisi-rumah="{{ $penduduk['kondisi_rumah'] }}"
+                                    data-status-kepemilikan="{{ $penduduk['status_kepemilikan'] }}"
+                                    data-penghasilan="{{ $penduduk['jumlah_penghasilan'] }}">
+                                    {{ $penduduk['nama'] }}
+                                </option>
                             @endforeach
                         </select>
+                        <input type="hidden" name="nama_penduduk" id="nama_penduduk">
+                        <input type="hidden" name="usia" id="usia">
+                        <input type="hidden" name="jumlah_tanggungan" id="jumlah_tanggungan">
+                        <input type="hidden" name="kondisi_rumah" id="kondisi_rumah">
+                        <input type="hidden" name="status_kepemilikan" id="status_kepemilikan">
+                        <input type="hidden" name="jumlah_penghasilan" id="jumlah_penghasilan">
                     </div>
                     <div class="form-group">
                         <label>Cluster</label>
                         <select name="cluster" class="form-control" required>
+                            <option value="">Pilih Cluster</option>
                             <option value="C1">C1</option>
                             <option value="C2">C2</option>
                             <option value="C3">C3</option>
@@ -237,85 +251,42 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Initialize Select2 for dropdowns
-    $('.data-ke-select, .cluster-select').select2({
-        width: '100%'
-    });
-
-    // Update Mapping
-    $('.data-ke-select').change(function() {
-        var id = $(this).data('id');
-        var dataKe = $(this).val();
-        var selectedPenduduk = @json($convertedPenduduks).find(p => p.id == dataKe);
-        
-        if (selectedPenduduk) {
-            var row = $(this).closest('tr');
-            row.find('td:eq(1)').text(selectedPenduduk.nama);
-            row.find('td:eq(3)').text(selectedPenduduk.usia);
-            row.find('td:eq(4)').text(selectedPenduduk.jumlah_tanggungan);
-            row.find('td:eq(5)').text(selectedPenduduk.kondisi_rumah);
-            row.find('td:eq(6)').text(selectedPenduduk.status_kepemilikan);
-            row.find('td:eq(7)').text(selectedPenduduk.jumlah_penghasilan);
-
-            $.ajax({
-                url: '/admin/centroid/mapping/' + id,
-                type: 'PUT',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    data_ke: dataKe,
-                    nama_penduduk: selectedPenduduk.nama,
-                    usia: selectedPenduduk.usia,
-                    jumlah_tanggungan: selectedPenduduk.jumlah_tanggungan,
-                    kondisi_rumah: selectedPenduduk.kondisi_rumah,
-                    status_kepemilikan: selectedPenduduk.status_kepemilikan,
-                    jumlah_penghasilan: selectedPenduduk.jumlah_penghasilan
-                },
-                success: function(response) {
-                    if (response.success) {
-                        toastr.success('Mapping berhasil diperbarui');
-                    }
-                }
-            });
+    // Handle penduduk selection in modal
+    $('#penduduk-select').change(function() {
+        var selectedOption = $(this).find('option:selected');
+        if (selectedOption.val()) {
+            // Set all hidden input values
+            $('#nama_penduduk').val(selectedOption.data('nama'));
+            $('#usia').val(selectedOption.data('usia'));
+            $('#jumlah_tanggungan').val(selectedOption.data('tanggungan'));
+            $('#kondisi_rumah').val(selectedOption.data('kondisi-rumah'));
+            $('#status_kepemilikan').val(selectedOption.data('status-kepemilikan'));
+            $('#jumlah_penghasilan').val(selectedOption.data('penghasilan'));
+            
+            // Show preview of selected data
+            toastr.info('Data penduduk terpilih: ' + selectedOption.text());
         }
     });
 
+    // Handle cluster change
     $('.cluster-select').change(function() {
         var id = $(this).data('id');
         var cluster = $(this).val();
-
+        
         $.ajax({
-            url: '/admin/centroid/mapping/' + id,
-            type: 'PUT',
+            url: '/admin/mapping-centroid/' + id,
+            method: 'PUT',
             data: {
                 _token: '{{ csrf_token() }}',
                 cluster: cluster
             },
             success: function(response) {
-                if (response.success) {
-                    toastr.success('Cluster berhasil diperbarui');
-                }
+                toastr.success('Cluster berhasil diperbarui');
+            },
+            error: function(xhr) {
+                toastr.error('Terjadi kesalahan saat memperbarui cluster');
             }
         });
-    });
-
-    // Delete Mapping
-    $('.delete-mapping').click(function() {
-        var id = $(this).data('id');
-        if (confirm('Apakah Anda yakin ingin menghapus mapping ini?')) {
-            $.ajax({
-                url: '/admin/centroid/mapping/' + id,
-                type: 'DELETE',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    if (response.success) {
-                        $(this).closest('tr').remove();
-                        toastr.success('Mapping berhasil dihapus');
-                    }
-                }.bind(this)
-            });
-        }
     });
 });
 </script>

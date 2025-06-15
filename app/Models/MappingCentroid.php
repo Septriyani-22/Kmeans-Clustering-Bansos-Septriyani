@@ -9,10 +9,12 @@ class MappingCentroid extends Model
 {
     use HasFactory;
 
+    protected $table = 'mapping_centroids';
+
     protected $fillable = [
         'data_ke',
-        'nama_penduduk',
         'cluster',
+        'nama_penduduk',
         'usia',
         'jumlah_tanggungan',
         'kondisi_rumah',
