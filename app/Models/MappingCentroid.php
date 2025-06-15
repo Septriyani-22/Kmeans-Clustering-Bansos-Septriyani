@@ -27,6 +27,11 @@ class MappingCentroid extends Model
         return $this->belongsTo(Centroid::class);
     }
 
+    public function penduduk()
+    {
+        return $this->belongsTo(Penduduk::class, 'data_ke', 'id');
+    }
+
     // Accessors for Penduduk attributes
     public function getNamaPendudukAttribute()
     {

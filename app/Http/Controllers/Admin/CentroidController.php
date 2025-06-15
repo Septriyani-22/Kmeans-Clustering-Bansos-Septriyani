@@ -194,48 +194,57 @@ class CentroidController extends Controller
         $centroids = Centroid::all();
         $penduduks = Penduduk::all();
         $distanceResults = [];
-
-        foreach ($penduduks as $penduduk) {
+    
+        // Konversi data penduduk ke nilai numerik
+        $convertedPenduduks = $penduduks->map(function($penduduk) {
+            return [
+                'id' => $penduduk->id,
+                'nama' => $penduduk->nama,
+                'usia' => $this->getNilaiKriteria('Usia', $penduduk->usia) ?? 0,
+                'jumlah_tanggungan' => $this->getNilaiKriteria('Jumlah Tanggungan', $penduduk->tanggungan) ?? 0,
+                'kondisi_rumah' => $this->getNilaiKriteria('Kondisi Rumah', strtolower($penduduk->kondisi_rumah)) ?? 0,
+                'status_kepemilikan' => $this->getNilaiKriteria('Status Kepemilikan', strtolower($penduduk->status_kepemilikan)) ?? 0,
+                'jumlah_penghasilan' => $this->getNilaiKriteria('Penghasilan', $penduduk->penghasilan) ?? 0,
+            ];
+        });
+    
+        // Hitung jarak Euclidean untuk setiap penduduk ke semua centroid
+        foreach ($convertedPenduduks as $penduduk) {
             $distances = [];
+    
             foreach ($centroids as $centroid) {
-                // Convert string values to numeric using kriteria
-                $usiaPenduduk = $this->getNilaiKriteria('Usia', $penduduk->usia) ?? 1;
-                $usiaCentroid = floatval($centroid->usia);
-                
-                // Gunakan getNilaiKriteria untuk tanggungan
-                $tanggunganPenduduk = $this->getNilaiKriteria('Jumlah Tanggungan', $penduduk->tanggungan) ?? 1;
-                $tanggunganCentroid = floatval($centroid->tanggungan_num);
-                
-                $kondisiRumahPenduduk = $this->getNilaiKriteria('Kondisi Rumah', strtolower($penduduk->kondisi_rumah)) ?? 1;
-                $kondisiRumahCentroid = $this->getNilaiKriteria('Kondisi Rumah', strtolower($centroid->kondisi_rumah)) ?? 1;
-                
-                $statusKepemilikanPenduduk = $this->getNilaiKriteria('Status Kepemilikan', strtolower($penduduk->status_kepemilikan)) ?? 1;
-                $statusKepemilikanCentroid = $this->getNilaiKriteria('Status Kepemilikan', strtolower($centroid->status_kepemilikan)) ?? 1;
-                
-                // Gunakan getNilaiKriteria untuk penghasilan
-                $penghasilanPenduduk = $this->getNilaiKriteria('Penghasilan', $penduduk->penghasilan) ?? 1;
-                $penghasilanCentroid = floatval($centroid->penghasilan_num);
-
+                // Konversi nilai centroid ke numerik
+                $usia = floatval($centroid->usia);
+                $tanggungan = floatval($centroid->tanggungan_num);
+                $kondisiRumah = $this->getNilaiKriteria('Kondisi Rumah', strtolower($centroid->kondisi_rumah)) ?? 0;
+                $statusKepemilikan = $this->getNilaiKriteria('Status Kepemilikan', strtolower($centroid->status_kepemilikan)) ?? 0;
+                $penghasilan = floatval($centroid->penghasilan_num);
+    
+                // Hitung jarak Euclidean
                 $distance = sqrt(
-                    pow($usiaPenduduk - $usiaCentroid, 2) +
-                    pow($tanggunganPenduduk - $tanggunganCentroid, 2) +
-                    pow($kondisiRumahPenduduk - $kondisiRumahCentroid, 2) +
-                    pow($statusKepemilikanPenduduk - $statusKepemilikanCentroid, 2) +
-                    pow($penghasilanPenduduk - $penghasilanCentroid, 2)
+                    pow($penduduk['usia'] - $usia, 2) +
+                    pow($penduduk['jumlah_tanggungan'] - $tanggungan, 2) +
+                    pow($penduduk['kondisi_rumah'] - $kondisiRumah, 2) +
+                    pow($penduduk['status_kepemilikan'] - $statusKepemilikan, 2) +
+                    pow($penduduk['jumlah_penghasilan'] - $penghasilan, 2)
                 );
+    
                 $distances[] = $distance;
             }
+    
             $distanceResults[] = [
-                'penduduk' => $penduduk,
-                'distances' => $distances
+                'penduduk' => (object)[
+                    'id' => $penduduk['id'],
+                    'nama' => $penduduk['nama']
+                ],
+                'distances' => $distances,
             ];
         }
-
+    
+        // Simpan hasil ke session
         session(['distanceResults' => $distanceResults]);
-
+    
         return redirect()->route('admin.centroid.index')
-            ->with('success', 'Jarak berhasil dihitung');
-    }
-
-
+            ->with('success', 'Jarak antar data dan centroid berhasil dihitung.');
+    }    
 } 
