@@ -85,7 +85,6 @@
                                     <th>Status Kepemilikan</th>
                                     <th>Jumlah Penghasilan</th>
                                     <th>Cluster</th>
-                                    <th>Kelayakan</th>
                                     <th>Keterangan</th>
                                 </tr>
                             </thead>
@@ -100,11 +99,6 @@
                                     <td>{{ $result->status_kepemilikan }}</td>
                                     <td>Rp {{ number_format($result->jumlah_penghasilan, 0, ',', '.') }}</td>
                                     <td>{{ $result->cluster }}</td>
-                                        <td>
-                                            <span class="badge badge-{{ $result->kelayakan == 'Layak' ? 'success' : 'danger' }}">
-                                                {{ $result->kelayakan }}
-                                        </span>
-                                    </td>
                                         <td>{{ $result->keterangan }}</td>
                                     </tr>
                                 @empty
