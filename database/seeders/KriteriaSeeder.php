@@ -8,7 +8,7 @@ use App\Models\NilaiKriteria;
 
 class KriteriaSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('nilai_kriteria')->truncate();
@@ -32,9 +32,9 @@ class KriteriaSeeder extends Seeder
 
         NilaiKriteria::create([
             'kriteria_id' => $usia->id,
-            'nama' => '25-35 Tahun',
+            'nama' => '26-35 Tahun',
             'nilai' => 2,
-            'nilai_min' => 25,
+            'nilai_min' => 26,
             'nilai_max' => 35,
         ]);
 
@@ -56,7 +56,7 @@ class KriteriaSeeder extends Seeder
 
         // Kriteria Jumlah Tanggungan
         $tanggungan = Kriteria::create([
-            'nama' => 'Jumlah Tanggungan',
+            'nama' => 'Tanggungan',
             'deskripsi' => 'Kriteria berdasarkan jumlah anggota keluarga yang ditanggung',
             'tipe_kriteria' => 'tanggungan'
         ]);
@@ -166,23 +166,23 @@ class KriteriaSeeder extends Seeder
             'kriteria_id' => $penghasilan->id,
             'nama' => '>4000000',
             'nilai' => 1,
-            'nilai_min' => 4000000,
+            'nilai_min' => 4000001,
             'nilai_max' => 9999999,
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $penghasilan->id,
-            'nama' => '3000000 - 4000000',
+            'nama' => '3000001 - 4000000',
             'nilai' => 2,
-            'nilai_min' => 3000000,
+            'nilai_min' => 3000001,
             'nilai_max' => 4000000,
         ]);
 
         NilaiKriteria::create([
             'kriteria_id' => $penghasilan->id,
-            'nama' => '2000000 - 3000000',
+            'nama' => '2000001 - 3000000',
             'nilai' => 3,
-            'nilai_min' => 2000000,
+            'nilai_min' => 2000001,
             'nilai_max' => 3000000,
         ]);
 

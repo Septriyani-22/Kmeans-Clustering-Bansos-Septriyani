@@ -16,7 +16,7 @@ Sistem ini menggunakan algoritma K-Means Clustering untuk mengelompokkan penerim
 ### Kriteria dan Nilai
 1. **Usia**:
    - 1 = 15-25 Tahun
-   - 2 = 25-35 Tahun
+   - 2 = 26-35 Tahun
    - 3 = 36-45 Tahun
    - 4 = >46 Tahun
 
@@ -37,10 +37,10 @@ Sistem ini menggunakan algoritma K-Means Clustering untuk mengelompokkan penerim
    - 3 = Sewa
 
 5. **Penghasilan**:
-   - 1 = >4000000
-   - 2 = 3000000-4000000
-   - 3 = 2000000-3000000
-   - 4 = 1000000-2000000
+   - 1 = >4000000 (lebih dari 4 juta)
+   - 2 = 3000001-4000000 (3 juta lebih sampai 4 juta)
+   - 3 = 2000001-3000000 (2 juta lebih sampai 3 juta)
+   - 4 = 1000000-2000000 (1 juta sampai 2 juta)
 
 ### Keterangan Cluster
 - **C1**: Sangat membutuhkan bantuan (Rendah)
@@ -53,39 +53,39 @@ Sistem ini menggunakan algoritma K-Means Clustering untuk mengelompokkan penerim
 | Centroid | Nama Penduduk | Usia | Tanggungan | Kondisi Rumah | Status Kepemilikan | Penghasilan |
 |----------|---------------|------|------------|---------------|-------------------|-------------|
 | C1 | Riduan | 4 | 3 | 3 | 2 | 4 |
-| C2 | UJANG | 4 | 4 | 2 | 1 | 3 |
-| C3 | ISMAIL | 4 | 3 | 1 | 1 | 1 |
+| C2 | UJANG | 4 | 4 | 2 | 1 | 4 |
+| C3 | ISMAIL | 4 | 3 | 1 | 1 | 2 |
 
 ## Hasil Clustering
 
 ### Hasil Perhitungan Jarak dan Penentuan Cluster
 | Nama | Usia | Tanggungan | Kondisi Rumah | Status Kepemilikan | Penghasilan | Jarak ke C1 | Jarak ke C2 | Jarak ke C3 | Jarak Terdekat | Cluster |
 |------|------|------------|---------------|-------------------|-------------|-------------|-------------|-------------|----------------|---------|
-| ALBAR | 2 | 4 | 3 | 2 | 4 | 2.83 | 3.16 | 4.24 | 2.83 | C1 |
-| IBRAHIM | 2 | 3 | 2 | 1 | 3 | 3.16 | 2.83 | 3.16 | 2.83 | C2 |
-| KARNAIN | 2 | 3 | 1 | 1 | 2 | 3.74 | 3.16 | 2.83 | 2.83 | C3 |
-| Riduan | 4 | 3 | 3 | 2 | 4 | 0.00 | 2.24 | 3.74 | 0.00 | C1 |
-| Sarkowi | 4 | 3 | 3 | 1 | 4 | 1.00 | 2.45 | 3.74 | 1.00 | C1 |
-| SUPARMI | 4 | 3 | 1 | 1 | 4 | 2.24 | 2.45 | 3.00 | 2.24 | C1 |
-| UJANG | 4 | 4 | 2 | 1 | 3 | 2.24 | 0.00 | 2.45 | 0.00 | C2 |
-| Usmina | 4 | 1 | 3 | 1 | 4 | 2.00 | 3.00 | 3.74 | 2.00 | C1 |
-| SIAH | 4 | 1 | 3 | 1 | 4 | 2.00 | 3.00 | 3.74 | 2.00 | C1 |
-| ISMAIL | 4 | 3 | 1 | 1 | 1 | 3.74 | 2.45 | 0.00 | 0.00 | C3 |
-| M. YASIN | 3 | 4 | 1 | 1 | 1 | 3.32 | 2.24 | 1.41 | 1.41 | C3 |
-| SAUYA | 4 | 1 | 3 | 1 | 4 | 2.00 | 3.00 | 3.74 | 2.00 | C1 |
-| ROMNAH | 4 | 1 | 2 | 1 | 4 | 2.24 | 3.16 | 3.32 | 2.24 | C1 |
-| Mat Sani | 3 | 4 | 1 | 1 | 2 | 3.32 | 2.24 | 1.73 | 1.73 | C3 |
-| Muhammad saudi | 3 | 2 | 1 | 1 | 2 | 3.16 | 2.45 | 1.41 | 1.41 | C3 |
-| M.Hata Rajasa | 1 | 3 | 1 | 1 | 1 | 4.24 | 3.74 | 3.00 | 3.00 | C3 |
-| Safarudin | 3 | 2 | 1 | 1 | 1 | 3.32 | 2.83 | 1.73 | 1.73 | C3 |
-| Randi Sulpadila | 2 | 2 | 2 | 1 | 2 | 3.46 | 2.83 | 2.24 | 2.24 | C3 |
-| Pahrul | 3 | 2 | 1 | 1 | 2 | 3.16 | 2.45 | 1.41 | 1.41 | C3 |
-| Juniper Aditansil | 2 | 2 | 1 | 1 | 1 | 3.74 | 3.16 | 2.24 | 2.24 | C3 |
+| ALBAR | 2 | 4 | 3 | 2 | 4 | 2.236067977 | 2.449489743 | 3.741657387 | 2.236067977 | C1 |
+| IBRAHIM | 2 | 4 | 2 | 1 | 2 | 3.316624790 | 2.828427125 | 2.449489743 | 2.449489743 | C3 |
+| KARNAIN | 2 | 3 | 1 | 1 | 3 | 3.162277660 | 2.645751311 | 2.236067977 | 2.236067977 | C3 |
+| Riduan | 4 | 3 | 3 | 2 | 4 | 0.000000000 | 1.732050808 | 3.000000000 | 0.000000000 | C1 |
+| Sarkowi | 4 | 3 | 3 | 1 | 4 | 1.000000000 | 1.414213562 | 2.828427125 | 1.000000000 | C1 |
+| SUPARMI | 4 | 3 | 1 | 1 | 4 | 2.236067977 | 1.414213562 | 2.000000000 | 1.414213562 | C2 |
+| UJANG | 4 | 4 | 2 | 1 | 4 | 1.732050808 | 0.000000000 | 2.449489743 | 0.000000000 | C2 |
+| Usmina | 4 | 1 | 3 | 2 | 4 | 2.000000000 | 3.316624790 | 3.605551275 | 2.000000000 | C1 |
+| SIAH | 4 | 1 | 3 | 2 | 4 | 2.000000000 | 3.316624790 | 3.605551275 | 2.000000000 | C1 |
+| ISMAIL | 4 | 3 | 1 | 1 | 2 | 3.000000000 | 2.449489743 | 0.000000000 | 0.000000000 | C3 |
+| M. YASIN | 3 | 4 | 1 | 1 | 1 | 4.000000000 | 3.316624790 | 1.732050808 | 1.732050808 | C3 |
+| SAUYA | 4 | 1 | 3 | 2 | 4 | 2.000000000 | 3.316624790 | 3.605551275 | 2.000000000 | C1 |
+| ROMNAH | 4 | 1 | 2 | 1 | 4 | 2.449489743 | 3.000000000 | 3.000000000 | 2.449489743 | C1 |
+| Mat Sani | 3 | 4 | 1 | 1 | 2 | 3.316624790 | 2.449489743 | 1.414213562 | 1.414213562 | C3 |
+| Muhammad saudi | 3 | 2 | 1 | 1 | 3 | 2.828427125 | 2.645751311 | 1.732050808 | 1.732050808 | C3 |
+| M.Hata Rajasa | 1 | 3 | 1 | 3 | 1 | 4.795831523 | 4.898979486 | 3.741657387 | 3.741657387 | C3 |
+| Safarudin | 3 | 2 | 1 | 1 | 2 | 3.316624790 | 3.162277660 | 1.414213562 | 1.414213562 | C3 |
+| Randi Sulpadila | 2 | 2 | 2 | 1 | 2 | 3.316624790 | 3.464101615 | 2.449489743 | 2.449489743 | C3 |
+| Pahrul | 3 | 2 | 1 | 1 | 2 | 3.316624790 | 3.162277660 | 1.414213562 | 1.414213562 | C3 |
+| Juniper Aditansil | 2 | 2 | 1 | 1 | 1 | 4.358898944 | 4.242640687 | 2.449489743 | 2.449489743 | C3 |
 
 ### Ringkasan Hasil Clustering
-- **Cluster C1 (Rendah)**: 8 penduduk
+- **Cluster C1 (Rendah)**: 7 penduduk
 - **Cluster C2 (Tinggi)**: 2 penduduk
-- **Cluster C3 (Menengah)**: 10 penduduk
+- **Cluster C3 (Menengah)**: 11 penduduk
 
 ## Struktur Data
 
