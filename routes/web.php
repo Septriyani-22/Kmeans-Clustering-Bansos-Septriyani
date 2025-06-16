@@ -48,9 +48,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Admin routes
 Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::resource('penduduk', AdminPendudukController::class);
+    Route::resource('penduduk', AdminPendudukController::class)->except(['show']);
     Route::resource('centroid', CentroidController::class);
-    Route::resource('hasil-kmeans', HasilKmeansController::class);
+    Route::resource('hasil-kmeans', HasilKmeansController::class)->except(['show']);
     Route::resource('mapping-centroid', MappingCentroidController::class);
     Route::post('/calculate-distances', [HasilKmeansController::class, 'calculateDistances'])->name('calculate.distances');
     Route::get('/print/{cluster}', [HasilKmeansController::class, 'print'])->name('print.cluster');
@@ -145,29 +145,19 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/centroid/mapping/store-from-distance', [MappingCentroidController::class, 'storeFromDistance'])->name('centroid.mapping.store-from-distance');
 });
 
-Route::middleware(['auth', 'kepala_desa'])->prefix('kepala_desa')->name('kepala_desa.')->group(function () {
+// Kepala Desa Routes - Using Admin Controllers
+Route::middleware(['auth', 'role:kepala_desa'])->prefix('kepala_desa')->name('kepala_desa.')->group(function () {
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    // Penduduk
-    Route::get('penduduk', [KepalaDesaPendudukController::class, 'index'])->name('penduduk.index');
-    Route::get('penduduk/export', [KepalaDesaPendudukController::class, 'export'])->name('penduduk.export');
-    Route::get('penduduk/cetak', [KepalaDesaPendudukController::class, 'cetak'])->name('penduduk.cetak');
+    // Penduduk - Using Admin Controller
+    Route::get('penduduk', [AdminPendudukController::class, 'index'])->name('penduduk.index');
+    Route::get('penduduk/export', [AdminPendudukController::class, 'export'])->name('penduduk.export');
+    Route::get('penduduk/cetak', [AdminPendudukController::class, 'cetak'])->name('penduduk.cetak');
 
-    // Hasil Kmeans
+    // Hasil Kmeans - Using Admin Controller
     Route::get('/hasil-kmeans', [HasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
     Route::get('/hasil-kmeans/print', [HasilKmeansController::class, 'print'])->name('hasil-kmeans.print');
     Route::get('/hasil-kmeans/export', [HasilKmeansController::class, 'export'])->name('hasil-kmeans.export');
-});
-    
-// Kepala Desa Routes
-Route::middleware(['auth', 'role:kepala_desa'])->prefix('kepala-desa')->name('kepala_desa.')->group(function () {
-    // Penduduk Management
-    Route::resource('penduduk', \App\Http\Controllers\Admin\PendudukController::class);
-    Route::post('penduduk/import', [\App\Http\Controllers\Admin\PendudukController::class, 'import'])->name('penduduk.import');
-    Route::get('penduduk/format', [\App\Http\Controllers\Admin\PendudukController::class, 'format'])->name('penduduk.format');
-    
-    // Hasil Kmeans
-    Route::get('hasil-kmeans', [\App\Http\Controllers\Admin\HasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
 });
