@@ -344,12 +344,16 @@
                         </p>
                         <ul class="criteria-list">
                             <li>
-                                <h3>Layak</h3>
-                                <p>Calon penerima yang memenuhi kriteria dan berhak menerima bantuan sosial.</p>
+                                <h3>C1 (Cluster Membutuhkan)</h3>
+                                <p>Kelompok penerima yang membutuhkan bantuan sosial berdasarkan kriteria yang ditetapkan.</p>
                             </li>
                             <li>
-                                <h3>Tidak Layak</h3>
-                                <p>Calon penerima yang belum memenuhi kriteria untuk menerima bantuan sosial.</p>
+                                <h3>C2 (Cluster Tidak Membutuhkan)</h3>
+                                <p>Kelompok penerima yang tidak membutuhkan bantuan sosial berdasarkan kriteria yang ditetapkan.</p>
+                            </li>
+                            <li>
+                                <h3>C3 (Prioritas Sedang)</h3>
+                                <p>Kelompok penerima dengan prioritas sedang untuk menerima bantuan sosial.</p>
                             </li>
                         </ul>
                     </div>
