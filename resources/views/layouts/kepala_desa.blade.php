@@ -1,176 +1,131 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>@yield('title', 'BANSOS KMEANS Kepala Desa')</title>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Roboto', Arial, sans-serif;
-      background: #f4f6fa;
-    }
-    .container {
-      display: flex;
-      min-height: 100vh;
-    }
-    .sidebar {
-      width: 250px;
-      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      padding-top: 30px;
-    }
-    .sidebar h2 {
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-      letter-spacing: 1px;
-    }
-    .sidebar .section-label {
-      font-size: 0.75rem;
-      opacity: 0.7;
-      padding: 0 30px;
-      margin: 10px 0 5px;
-    }
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .sidebar ul li {
-      padding: 12px 30px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .sidebar ul li:hover,
-    .sidebar ul li.active {
-      background: rgba(255, 255, 255, 0.1);
-    }
-    .sidebar ul li a {
-      color: inherit;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .sidebar .collapse-btn {
-      margin-top: auto;
-      padding: 20px 0;
-      text-align: center;
-      font-size: 1.2rem;
-      opacity: 0.6;
-    }
-    .main-content {
-      flex: 1;
-      background: #f4f6fa;
-      display: flex;
-      flex-direction: column;
-    }
-    .topbar {
-      height: 60px;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-      padding: 0 32px;
-    }
-    .topbar .user {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-    .topbar .user img {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-    }
-    .content-area {
-      padding: 32px 40px;
-    }
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Bansos Kmeans</title>
 
-    @media (max-width: 600px) {
-      .sidebar {
-        width: 100px;
-        padding-top: 10px;
-      }
-      .sidebar h2 {
-        font-size: 1rem;
-        margin-bottom: 10px;
-      }
-      .sidebar ul li {
-        padding: 10px;
-        font-size: 0.85rem;
-      }
-      .content-area {
-        padding: 12px 4px;
-      }
-    }
-  </style>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- AdminLTE CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  @stack('styles')
 </head>
-<body>
-  <div class="container">
-    <nav class="sidebar">
-      <h2>🧊 BANSOS<span style="font-weight: 400;">KMEANS</span></h2>
 
-      <ul>
-        <li class="@if(request()->is('kepala_desa/dashboard')) active @endif">
-          <a href="/kepala_desa/dashboard">👤 Dashboard</a>
-        </li>
-        <li class="@if(request()->is('kepala_desa/users')) active @endif">
-          <a href="/kepala_desa/users">👥 Users</a>
-        </li>
-        <li class="@if(request()->is('kepala_desa/kriteria')) active @endif">
-          <a href="/kepala_desa/kriteria">🏷️ Kriteria</a>
-        </li>
-        <li class="@if(request()->is('kepala_desa/penduduk')) active @endif">
-          <a href="/kepala_desa/penduduk">📋 Data Penduduk</a>
-        </li>
-        <li class="@if(request()->is('kepala_desa/clustering')) active @endif">
-          <a href="/kepala_desa/clustering">🔄 Clustering</a>
-        </li>
-        <li class="@if(request()->is('kepala_desa/centroid')) active @endif">
-          <a href="/kepala_desa/centroid">📍 Centroid</a>
-        </li>
-        <li class="@if(request()->is('kepala_desa/datahasil')) active @endif">
-          <a href="/kepala_desa/datahasil">📊 Data Hasil</a>
-        </li>
-        <li class="@if(request()->is('kepala_desa/laporanhasil')) active @endif">
-          <a href="/kepala_desa/laporanhasil">🧾 Laporan Hasil</a>
-        </li>
-      </ul>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+    </ul>
 
-      <div class="collapse-btn">⬅️</div>
-    </nav>
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+                <!-- User Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <div class="d-flex align-items-center">
+                            @if(Auth::user()->profile_photo_path)
+                                <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" class="img-circle mr-2" alt="User Image" style="width: 32px; height: 32px;">
+                            @else
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=random" class="img-circle mr-2" alt="User Image" style="width: 32px; height: 32px;">
+                            @endif
+                            <span class="d-none d-md-inline-block">{{ Auth::user()->name }}</span>
+                            <i class="fas fa-chevron-down ml-2"></i>
+                        </div>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-user mr-2"></i> Profile
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+          @csrf
+                            <button type="submit" class="dropdown-item text-danger">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                            </button>
+        </form>
+                    </div>
+      </li>
+    </ul>
+  </nav>
+        <!-- /.navbar -->
 
-    <div class="main-content">
-      <div class="topbar">
-        <div class="user">
-          <span>MENU</span>
-          <img src="https://ui-avatars.com/api/?name=User" alt="User">
-          <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
-            @csrf
-            <button type="submit" style="background: none; border: none; color: #2563eb; cursor: pointer;">
-              Logout
-            </button>
-          </form>
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="{{ route('admin.dashboard') }}" class="brand-link">
+                <img src="{{ asset('images/logo.png') }}" alt="Bansos Kmeans Logo" class="brand-image img-circle elevation-3" style="opacity: .8; width: 40px; height: 40px; margin-right: 10px;">
+      <span class="brand-text font-weight-light">BANSOS KMEANS</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false">
+                        @if(auth()->user()->role === 'admin')
+                            @include('layouts.partials.sidebar.admin')
+                        @else
+                            @include('layouts.partials.sidebar.kepala_desa')
+                        @endif
+        </ul>
+      </nav>
+                <!-- /.sidebar-menu -->
+    </div>
+            <!-- /.sidebar -->
+  </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">@yield('title')</h1>
+          </div>
         </div>
       </div>
+    </div>
+            <!-- /.content-header -->
 
-      <div class="content-area">
+    <!-- Main content -->
+    <div class="content">
+      <div class="container-fluid">
         @yield('content')
       </div>
     </div>
+            <!-- /.content -->
   </div>
-  <footer style="text-align: center; padding: 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; margin-top: 40px;">
-    <p style="color: #64748b; font-size: 0.9rem; margin: 0;">
-      Copyright © SISTEM OPTIMALISASI PENYALURAN BANTUAN SOSIAL MENGGUNAKAN K-MEANS CLUSTERING BERDASARKAN SEGMENTASI DATA SOSIAL DAN EKONOMI (STUDI KASUS DESA TANJUNG SERANG KECAMATAN KAYUAGUNG)
-    </p>
+        <!-- /.content-wrapper -->
+
+        <!-- Main Footer -->
+  <footer class="main-footer">
+    <div class="float-right d-none d-sm-block">
+      <b>Version</b> 1.0.0
+    </div>
   </footer>
+</div>
+    <!-- ./wrapper -->
+
+    <!-- REQUIRED SCRIPTS -->
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+@stack('scripts')
 </body>
+
 </html>

@@ -143,19 +143,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('mapping-centroid/get-penduduk/{id}', [MappingCentroidController::class, 'getPendudukData'])->name('mapping-centroid.get-penduduk');
 });
 
-// Kepala Desa Routes - Using Admin Controllers
+// Kepala Desa Routes
 Route::middleware(['auth', 'role:kepala_desa'])->prefix('kepala_desa')->name('kepala_desa.')->group(function () {
     // Dashboard
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [KepalaDesaDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [KepalaDesaDashboardController::class, 'index'])->name('dashboard');
     
-    // Penduduk - Using Admin Controller
-    Route::get('penduduk', [AdminPendudukController::class, 'index'])->name('penduduk.index');
-    Route::get('penduduk/export', [AdminPendudukController::class, 'export'])->name('penduduk.export');
-    Route::get('penduduk/cetak', [AdminPendudukController::class, 'cetak'])->name('penduduk.cetak');
-
-    // Hasil Kmeans - Using Admin Controller
-    Route::get('/hasil-kmeans', [HasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
-    Route::get('/hasil-kmeans/print', [HasilKmeansController::class, 'print'])->name('hasil-kmeans.print');
-    Route::get('/hasil-kmeans/export', [HasilKmeansController::class, 'export'])->name('hasil-kmeans.export');
+    // Penduduk
+    Route::get('/penduduk', [KepalaDesaPendudukController::class, 'index'])->name('penduduk.index');
+    
+    // Hasil Kmeans
+    Route::get('/hasil-kmeans', [KepalaDesaHasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
+    Route::get('/hasil-kmeans/print', [KepalaDesaHasilKmeansController::class, 'print'])->name('hasil-kmeans.print');
 });

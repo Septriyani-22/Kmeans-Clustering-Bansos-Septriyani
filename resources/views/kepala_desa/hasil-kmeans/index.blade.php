@@ -26,8 +26,8 @@
                         </ul>
                     </div>
 
-                    <div class="row">
-                        <div class="col-lg-3 col-6">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
                             <div class="small-box bg-info">
                                 <div class="inner">
                                     <h3>{{ $totalData }}</h3>
@@ -38,33 +38,33 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-6">
-                            <div class="small-box bg-danger">
-                                <div class="inner">
-                                    <h3>{{ $layakBantuan }}</h3>
-                                    <p>C1 - Membutuhkan</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fas fa-heart"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-6">
+                        <div class="col-md-3">
                             <div class="small-box bg-success">
                                 <div class="inner">
-                                    <h3>{{ $tidakLayak }}</h3>
-                                    <p>C2 - Tidak Membutuhkan</p>
+                                    <h3>{{ $layakBantuan }}</h3>
+                                    <p>Layak Bantuan</p>
                                 </div>
                                 <div class="icon">
-                                    <i class="fas fa-check"></i>
+                                    <i class="fas fa-check-circle"></i>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-6">
+                        <div class="col-md-3">
                             <div class="small-box bg-warning">
                                 <div class="inner">
+                                    <h3>{{ $tidakLayak }}</h3>
+                                    <p>Tidak Layak</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-times-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="small-box bg-danger">
+                                <div class="inner">
                                     <h3>{{ $prioritasSedang }}</h3>
-                                    <p>C3 - Prioritas Sedang</p>
+                                    <p>Prioritas Sedang</p>
                                 </div>
                                 <div class="icon">
                                     <i class="fas fa-clock"></i>
@@ -77,13 +77,12 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>No</th>
                                     <th>Nama</th>
                                     <th>Usia</th>
                                     <th>Jumlah Tanggungan</th>
                                     <th>Kondisi Rumah</th>
                                     <th>Status Kepemilikan</th>
-                                    <th>Jumlah Penghasilan</th>
+                                    <th>Penghasilan</th>
                                     <th>Cluster</th>
                                     <th>Kelayakan</th>
                                     <th>Keterangan</th>
@@ -92,7 +91,6 @@
                             <tbody>
                                 @forelse($hasilKmeans as $result)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $result->nama_penduduk }}</td>
                                     <td>{{ $result->usia }}</td>
                                     <td>{{ $result->jumlah_tanggungan }}</td>
