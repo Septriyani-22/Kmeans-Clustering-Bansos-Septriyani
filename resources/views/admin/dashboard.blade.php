@@ -156,7 +156,6 @@
                                     <th>Status Kepemilikan</th>
                                     <th>Penghasilan</th>
                                     <th>Cluster</th>
-                                    <th>Kelayakan</th>
                                     <th>Keterangan</th>
                                 </tr>
                             </thead>
@@ -170,11 +169,6 @@
                                     <td>{{ $result['kondisi_rumah'] }}</td>
                                     <td>{{ $result['status_kepemilikan'] }}</td>
                                     <td>{{ $result['penghasilan'] }}</td>
-                                    <td>
-                                        <span class="badge badge-{{ $result['cluster'] == 'C1' ? 'danger' : ($result['cluster'] == 'C2' ? 'success' : 'info') }}">
-                                            {{ $result['cluster'] }}
-                                        </span>
-                                    </td>
                                     <td>{{ $result['kelayakan'] }}</td>
                                     <td>{{ $result['keterangan'] }}</td>
                                 </tr>
