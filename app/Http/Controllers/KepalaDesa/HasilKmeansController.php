@@ -3,116 +3,48 @@
 namespace App\Http\Controllers\KepalaDesa;
 
 use App\Http\Controllers\Controller;
+use App\Models\HasilKmeans;
+use App\Models\MappingCentroid;
 use App\Models\Penduduk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HasilKmeansController extends Controller
 {
     public function index()
     {
-        // Get distance results from session
-        $distanceResults = session('distanceResults', []);
-        
-        // Calculate totals
-        $totalData = count($distanceResults);
-        
-        // Initialize cluster counts
+        // Ambil data hasil k-means dari mapping_centroids
+        $results = MappingCentroid::with('penduduk')
+            ->orderBy('cluster')
+            ->paginate(10);
+
+        // Hitung jumlah per cluster
         $clusterCounts = [
-            'C1' => 0,
-            'C2' => 0,
-            'C3' => 0
+            'C1' => MappingCentroid::where('cluster', 'C1')->count(),
+            'C2' => MappingCentroid::where('cluster', 'C2')->count(),
+            'C3' => MappingCentroid::where('cluster', 'C3')->count()
         ];
 
-        // Process distance results to get cluster counts
-        $hasilKmeans = collect($distanceResults)->map(function($result) use (&$clusterCounts) {
-            $minDistance = min($result['distances']);
-            $clusterIndex = array_search($minDistance, $result['distances']);
-            $cluster = 'C' . ($clusterIndex + 1);
-            $clusterCounts[$cluster]++;
-            
-            // Get penduduk data
-            $penduduk = Penduduk::find($result['penduduk']->id);
-            
-            return (object)[
-                'nama_penduduk' => $penduduk->nama,
-                'usia' => $penduduk->usia,
-                'jumlah_tanggungan' => $penduduk->tanggungan,
-                'kondisi_rumah' => $penduduk->kondisi_rumah,
-                'status_kepemilikan' => $penduduk->status_kepemilikan,
-                'jumlah_penghasilan' => $penduduk->penghasilan,
-                'cluster' => $cluster,
-                'kelayakan' => $cluster === 'C1' ? 'Layak' : 'Tidak Layak',
-                'keterangan' => $cluster === 'C1' ? 
-                    'Membutuhkan' : 
-                    ($cluster === 'C2' ? 'Tidak Membutuhkan' : 'Prioritas sedang')
-            ];
-        });
+        // Hitung total data
+        $totalData = array_sum($clusterCounts);
 
-        // Get counts for each category
-        $layakBantuan = $clusterCounts['C1'];     // C1 - Membutuhkan
-        $tidakLayak = $clusterCounts['C2'];       // C2 - Tidak Membutuhkan
-        $prioritasSedang = $clusterCounts['C3'];  // C3 - Prioritas Sedang
+        // Persiapkan data untuk grafik
+        $chartData = [
+            'labels' => ['C1 (Membutuhkan)', 'C2 (Tidak Membutuhkan)', 'C3 (Prioritas Sedang)'],
+            'data' => array_values($clusterCounts)
+        ];
 
-        return view('kepala_desa.hasil-kmeans.index', compact(
-            'hasilKmeans',
+        return view('kepala_desa.hasil_kmeans.index', compact(
+            'results',
+            'clusterCounts',
             'totalData',
-            'layakBantuan',
-            'tidakLayak',
-            'prioritasSedang'
+            'chartData'
         ));
     }
 
-    public function print()
+    public function show($id)
     {
-        // Get distance results from session
-        $distanceResults = session('distanceResults', []);
-        
-        // Calculate totals
-        $totalData = count($distanceResults);
-        
-        // Initialize cluster counts
-        $clusterCounts = [
-            'C1' => 0,
-            'C2' => 0,
-            'C3' => 0
-        ];
-
-        // Process distance results to get cluster counts
-        $hasilKmeans = collect($distanceResults)->map(function($result) use (&$clusterCounts) {
-            $minDistance = min($result['distances']);
-            $clusterIndex = array_search($minDistance, $result['distances']);
-            $cluster = 'C' . ($clusterIndex + 1);
-            $clusterCounts[$cluster]++;
-            
-            // Get penduduk data
-            $penduduk = Penduduk::find($result['penduduk']->id);
-            
-            return (object)[
-                'nama_penduduk' => $penduduk->nama,
-                'usia' => $penduduk->usia,
-                'jumlah_tanggungan' => $penduduk->tanggungan,
-                'kondisi_rumah' => $penduduk->kondisi_rumah,
-                'status_kepemilikan' => $penduduk->status_kepemilikan,
-                'jumlah_penghasilan' => $penduduk->penghasilan,
-                'cluster' => $cluster,
-                'kelayakan' => $cluster === 'C1' ? 'Layak' : 'Tidak Layak',
-                'keterangan' => $cluster === 'C1' ? 
-                    'Membutuhkan' : 
-                    ($cluster === 'C2' ? 'Tidak Membutuhkan' : 'Prioritas sedang')
-            ];
-        });
-
-        // Get counts for each category
-        $layakBantuan = $clusterCounts['C1'];     // C1 - Membutuhkan
-        $tidakLayak = $clusterCounts['C2'];       // C2 - Tidak Membutuhkan
-        $prioritasSedang = $clusterCounts['C3'];  // C3 - Prioritas Sedang
-
-        return view('kepala_desa.hasil-kmeans.print', compact(
-            'hasilKmeans',
-            'totalData',
-            'layakBantuan',
-            'tidakLayak',
-            'prioritasSedang'
-        ));
+        $result = MappingCentroid::with('penduduk')->findOrFail($id);
+        return view('kepala_desa.hasil_kmeans.show', compact('result'));
     }
 } 

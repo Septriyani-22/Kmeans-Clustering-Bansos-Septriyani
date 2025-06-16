@@ -1,4 +1,4 @@
-@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.kepala_desa')
+@extends('layouts.kepala_desa')
 
 @section('title', 'Hasil K-Means - BANSOS KMEANS')
 
@@ -9,16 +9,6 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Hasil K-Means Clustering</h3>
-                    @if(auth()->user()->role === 'admin')
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#prosesModal">
-                            <i class="fas fa-calculator"></i> Proses K-Means
-                        </button>
-                        <a href="{{ route('admin.clustering.reset') }}" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin mereset semua data perhitungan?')">
-                            <i class="fas fa-trash"></i> Reset
-                        </a>
-                    </div>
-                    @endif
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -32,7 +22,7 @@
                                         <div class="col-lg-4 col-6">
                                             <div class="small-box bg-success">
                                                 <div class="inner">
-                                                    <h3>{{ $clusterCounts['C1'] ?? 0 }}</h3>
+                                                    <h3>{{ $clusterCounts['C1'] }}</h3>
                                                     <p>C1 - Membutuhkan</p>
                                                 </div>
                                                 <div class="icon">
@@ -43,7 +33,7 @@
                                         <div class="col-lg-4 col-6">
                                             <div class="small-box bg-warning">
                                                 <div class="inner">
-                                                    <h3>{{ $clusterCounts['C2'] ?? 0 }}</h3>
+                                                    <h3>{{ $clusterCounts['C2'] }}</h3>
                                                     <p>C2 - Tidak Membutuhkan</p>
                                                 </div>
                                                 <div class="icon">
@@ -54,7 +44,7 @@
                                         <div class="col-lg-4 col-6">
                                             <div class="small-box bg-danger">
                                                 <div class="inner">
-                                                    <h3>{{ $clusterCounts['C3'] ?? 0 }}</h3>
+                                                    <h3>{{ $clusterCounts['C3'] }}</h3>
                                                     <p>C3 - Prioritas Sedang</p>
                                                 </div>
                                                 <div class="icon">
@@ -102,21 +92,21 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($hasilKmeans as $hasil)
+                                                @foreach($results as $result)
                                                 <tr>
-                                                    <td>{{ $hasil->penduduk->nik }}</td>
-                                                    <td>{{ $hasil->penduduk->nama }}</td>
-                                                    <td>{{ $hasil->penduduk->usia }} tahun</td>
-                                                    <td>{{ $hasil->penduduk->tanggungan }} orang</td>
-                                                    <td>{{ $hasil->penduduk->kondisi_rumah }}</td>
-                                                    <td>{{ $hasil->penduduk->status_kepemilikan }}</td>
-                                                    <td>Rp {{ number_format($hasil->penduduk->penghasilan, 0, ',', '.') }}</td>
-                                                    <td>{{ $hasil->cluster }}</td>
-                                                    <td>{{ $hasil->cluster === 'C1' ? 'Layak' : 'Tidak Layak' }}</td>
+                                                    <td>{{ $result->penduduk->nik }}</td>
+                                                    <td>{{ $result->penduduk->nama }}</td>
+                                                    <td>{{ $result->penduduk->usia }} tahun</td>
+                                                    <td>{{ $result->penduduk->tanggungan }} orang</td>
+                                                    <td>{{ $result->penduduk->kondisi_rumah }}</td>
+                                                    <td>{{ $result->penduduk->status_kepemilikan }}</td>
+                                                    <td>Rp {{ number_format($result->penduduk->penghasilan, 0, ',', '.') }}</td>
+                                                    <td>{{ $result->cluster }}</td>
+                                                    <td>{{ $result->cluster === 'C1' ? 'Layak' : 'Tidak Layak' }}</td>
                                                     <td>
-                                                        @if($hasil->cluster === 'C1')
+                                                        @if($result->cluster === 'C1')
                                                             Membutuhkan
-                                                        @elseif($hasil->cluster === 'C2')
+                                                        @elseif($result->cluster === 'C2')
                                                             Tidak Membutuhkan
                                                         @else
                                                             Prioritas Sedang
@@ -127,6 +117,9 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    <div class="mt-3">
+                                        {{ $results->links() }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -136,35 +129,6 @@
         </div>
     </div>
 </div>
-
-@if(auth()->user()->role === 'admin')
-<!-- Modal Proses K-Means -->
-<div class="modal fade" id="prosesModal" tabindex="-1" role="dialog" aria-labelledby="prosesModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="prosesModalLabel">Proses K-Means Clustering</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="{{ route('admin.clustering.proses') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="jumlah_cluster">Jumlah Cluster</label>
-                        <input type="number" class="form-control" id="jumlah_cluster" name="jumlah_cluster" value="3" min="2" max="10" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Proses</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endif
 @endsection
 
 @push('scripts')
@@ -172,14 +136,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var ctx = document.getElementById('clusterChart').getContext('2d');
-    var chartData = {
-        labels: ['C1 (Membutuhkan)', 'C2 (Tidak Membutuhkan)', 'C3 (Prioritas Sedang)'],
-        data: [
-            {{ $clusterCounts['C1'] ?? 0 }},
-            {{ $clusterCounts['C2'] ?? 0 }},
-            {{ $clusterCounts['C3'] ?? 0 }}
-        ]
-    };
+    var chartData = @json($chartData);
     
     new Chart(ctx, {
         type: 'pie',

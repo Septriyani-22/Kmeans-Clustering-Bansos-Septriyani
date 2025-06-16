@@ -143,16 +143,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('mapping-centroid/get-penduduk/{id}', [MappingCentroidController::class, 'getPendudukData'])->name('mapping-centroid.get-penduduk');
 });
 
-// Kepala Desa Routes
+// Routes untuk Kepala Desa
 Route::middleware(['auth', 'role:kepala_desa'])->prefix('kepala_desa')->name('kepala_desa.')->group(function () {
-    // Dashboard
-    Route::get('/', [KepalaDesaDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard', [KepalaDesaDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/hasil-kmeans', [App\Http\Controllers\Admin\HasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
+    Route::get('/hasil-kmeans/{id}', [App\Http\Controllers\Admin\HasilKmeansController::class, 'show'])->name('hasil-kmeans.show');
     
-    // Penduduk
-    Route::get('/penduduk', [KepalaDesaPendudukController::class, 'index'])->name('penduduk.index');
-    
-    // Hasil Kmeans
-    Route::get('/hasil-kmeans', [KepalaDesaHasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
-    Route::get('/hasil-kmeans/print', [KepalaDesaHasilKmeansController::class, 'print'])->name('hasil-kmeans.print');
+    // Penduduk routes
+    Route::get('/penduduk', [App\Http\Controllers\KepalaDesa\PendudukController::class, 'index'])->name('penduduk.index');
+    Route::get('/penduduk/{id}', [App\Http\Controllers\KepalaDesa\PendudukController::class, 'show'])->name('penduduk.show');
 });
