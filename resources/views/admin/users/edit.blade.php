@@ -47,19 +47,14 @@
                             <select class="form-control @error('role') is-invalid @enderror" id="role" name="role" required>
                                 <option value="">Pilih Role</option>
                                 <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="user" {{ old('role', $user->role) == 'kepala_desa' ? 'selected' : '' }}>Kepala Desa</option>
+                                <option value="kepala_desa" {{ old('role', $user->role) == 'kepala_desa' ? 'selected' : '' }}>Kepala Desa</option>
                             </select>
                             @error('role')
                                 <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
+                            @enderror
+                        </div>
 
                         <div class="form-group">
-                            <label for="is_active">Status</label>
-                            <select class="form-control @error('is_active') is-invalid @enderror" id="is_active" name="is_active" required>
-                                <option value="1" {{ old('is_active', $user->is_active) ? 'selected' : '' }}>Aktif</option>
-                                <option value="0" {{ old('is_active', $user->is_active) ? '' : 'selected' }}>Nonaktif</option>
-                            </select>
                             @error('is_active')
                                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror

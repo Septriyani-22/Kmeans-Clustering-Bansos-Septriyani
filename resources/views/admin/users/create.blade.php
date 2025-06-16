@@ -30,16 +30,20 @@
         </div>
         <div style="margin-bottom:18px;">
             <label for="password" style="color:#888fa6; font-size:1rem;">Password:</label>
-            <input type="password" id="password" name="password" style="padding:7px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:1rem; width:100%;" required>
+            <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" required>
             @error('password')
                 <p style="color:#ef4444; font-size:0.875rem; margin-top:4px;">{{ $message }}</p>
             @enderror
         </div>
         <div style="margin-bottom:18px;">
+            <label for="password_confirmation" style="color:#888fa6; font-size:1rem;">Konfirmasi Password:</label>
+            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" required>
+        </div>
+        <div style="margin-bottom:18px;">
             <label for="role" style="color:#888fa6; font-size:1rem;">Role:</label>
             <select id="role" name="role" style="padding:7px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:1rem; width:100%;" required>
                 <option value="admin">ADMIN</option>
-                <option value="KEPALA DESA">KEPALA DESA</option>
+                <option value="kepala_desa">KEPALA DESA</option>
             </select>
             @error('role')
                 <p style="color:#ef4444; font-size:0.875rem; margin-top:4px;">{{ $message }}</p>
