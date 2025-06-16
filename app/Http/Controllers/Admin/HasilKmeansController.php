@@ -38,8 +38,8 @@ class HasilKmeansController extends Controller
                 'cluster' => $hasil->centroid->nama_centroid,
                 'kelayakan' => $hasil->centroid->nama_centroid === 'C1' ? 'Layak' : 'Tidak Layak',
                 'keterangan' => $hasil->centroid->nama_centroid === 'C1' ? 
-                    'Sangat membutuhkan bantuan' : 
-                    ($hasil->centroid->nama_centroid === 'C2' ? 'Tidak membutuhkan bantuan' : 'Prioritas sedang')
+                    'Membutuhkan' : 
+                    ($hasil->centroid->nama_centroid === 'C2' ? 'Tidak Membutuhkan' : 'Prioritas sedang')
             ];
         });
 
@@ -149,8 +149,8 @@ class HasilKmeansController extends Controller
                 'cluster' => $cluster,
                 'kelayakan' => $cluster === 'C1' ? 'Layak' : 'Tidak Layak',
                 'keterangan' => $cluster === 'C1' ? 
-                    'Sangat membutuhkan bantuan' : 
-                    ($cluster === 'C2' ? 'Tidak membutuhkan bantuan' : 'Prioritas sedang')
+                    'Membutuhkan' : 
+                    ($cluster === 'C2' ? 'Tidak Membutuhkan' : 'Prioritas sedang')
             ];
         })->filter(function($hasil) use ($clusters) {
             // Filter berdasarkan cluster yang dipilih

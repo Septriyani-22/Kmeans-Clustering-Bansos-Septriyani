@@ -26,6 +26,13 @@
                         </div>
                     @endif
 
+                    <!-- Highlight Controls -->
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-warning" id="resetHighlights">
+                            <i class="fas fa-eraser"></i> Reset Highlight
+                        </button>
+                    </div>
+
                     <!-- Tab Navigation -->
                     <ul class="nav nav-tabs" id="centroidTabs" role="tablist">
                         <li class="nav-item">
@@ -67,11 +74,11 @@
                                         <tr>
                                             <td>{{ $penduduk['id'] }}</td>
                                             <td>{{ $penduduk['nama'] }}</td>
-                                            <td>{{ $penduduk['usia'] }}</td>
-                                            <td>{{ $penduduk['jumlah_tanggungan'] }}</td>
-                                            <td>{{ $penduduk['kondisi_rumah'] }}</td>
-                                            <td>{{ $penduduk['status_kepemilikan'] }}</td>
-                                            <td>{{ $penduduk['jumlah_penghasilan'] }}</td>
+                                            <td class="highlightable" data-id="usia-{{ $penduduk['id'] }}">{{ $penduduk['usia'] }}</td>
+                                            <td class="highlightable" data-id="tanggungan-{{ $penduduk['id'] }}">{{ $penduduk['jumlah_tanggungan'] }}</td>
+                                            <td class="highlightable" data-id="kondisi-{{ $penduduk['id'] }}">{{ $penduduk['kondisi_rumah'] }}</td>
+                                            <td class="highlightable" data-id="status-{{ $penduduk['id'] }}">{{ $penduduk['status_kepemilikan'] }}</td>
+                                            <td class="highlightable" data-id="penghasilan-{{ $penduduk['id'] }}">{{ $penduduk['jumlah_penghasilan'] }}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -113,11 +120,11 @@
                                                     <option value="C3" {{ $mapping['cluster'] == 'C3' ? 'selected' : '' }}>C3</option>
                                                 </select>
                                             </td>
-                                            <td>{{ $mapping['usia'] }}</td>
-                                            <td>{{ $mapping['jumlah_tanggungan'] }}</td>
-                                            <td>{{ $mapping['kondisi_rumah'] }}</td>
-                                            <td>{{ $mapping['status_kepemilikan'] }}</td>
-                                            <td>{{ $mapping['jumlah_penghasilan'] }}</td>
+                                            <td class="highlightable" data-id="m-usia-{{ $mapping['id'] }}">{{ $mapping['usia'] }}</td>
+                                            <td class="highlightable" data-id="m-tanggungan-{{ $mapping['id'] }}">{{ $mapping['jumlah_tanggungan'] }}</td>
+                                            <td class="highlightable" data-id="m-kondisi-{{ $mapping['id'] }}">{{ $mapping['kondisi_rumah'] }}</td>
+                                            <td class="highlightable" data-id="m-status-{{ $mapping['id'] }}">{{ $mapping['status_kepemilikan'] }}</td>
+                                            <td class="highlightable" data-id="m-penghasilan-{{ $mapping['id'] }}">{{ $mapping['jumlah_penghasilan'] }}</td>
                                             <td>
                                                 <form action="{{ route('admin.mapping-centroid.destroy', $mapping['id']) }}" method="POST" class="d-inline">
                                                     @csrf
@@ -160,8 +167,8 @@
                                         <tr>
                                             <td>{{ $result['penduduk']->id }}</td>
                                             <td>{{ $result['penduduk']->nama }}</td>
-                                            @foreach($result['distances'] as $distance)
-                                            <td>{{ number_format($distance, 2) }}</td>
+                                            @foreach($result['distances'] as $index => $distance)
+                                            <td class="highlightable" data-id="d-{{ $result['penduduk']->id }}-{{ $index }}">{{ number_format($distance, 9, '.', '') }}</td>
                                             @endforeach
                                             <td>C{{ array_search(min($result['distances']), $result['distances']) + 1 }}</td>
                                         </tr>
@@ -235,9 +242,58 @@
 
 @endsection
 
+@push('styles')
+<style>
+.highlightable {
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.highlightable:hover {
+    background-color: #ffe6e6;
+}
+
+.highlighted {
+    background-color: #ffcccc !important;
+}
+</style>
+@endpush
+
 @push('scripts')
 <script>
 $(document).ready(function() {
+    // Load saved highlights from localStorage
+    function loadHighlights() {
+        const savedHighlights = JSON.parse(localStorage.getItem('highlightedCells') || '[]');
+        savedHighlights.forEach(id => {
+            $(`[data-id="${id}"]`).addClass('highlighted');
+        });
+    }
+
+    // Save highlights to localStorage
+    function saveHighlights() {
+        const highlightedCells = $('.highlighted').map(function() {
+            return $(this).data('id');
+        }).get();
+        localStorage.setItem('highlightedCells', JSON.stringify(highlightedCells));
+    }
+
+    // Handle cell highlighting
+    $('.highlightable').click(function() {
+        $(this).toggleClass('highlighted');
+        saveHighlights();
+    });
+
+    // Handle reset highlights
+    $('#resetHighlights').click(function() {
+        $('.highlighted').removeClass('highlighted');
+        localStorage.removeItem('highlightedCells');
+        toastr.info('Semua highlight telah direset');
+    });
+
+    // Load saved highlights when page loads
+    loadHighlights();
+
     // Handle penduduk selection in modal
     $('#penduduk-select').change(function() {
         var selectedOption = $(this).find('option:selected');

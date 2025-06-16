@@ -31,8 +31,8 @@ class HasilClustering extends Model
     public function getClusterDescriptionAttribute()
     {
         return match($this->cluster) {
-            1 => 'Sangat membutuhkan bantuan',
-            2 => 'Tidak membutuhkan bantuan',
+            1 => 'Membutuhkan',
+            2 => 'Tidak Membutuhkan',
             3 => 'Prioritas bantuan sedang',
             default => 'Unknown'
         };

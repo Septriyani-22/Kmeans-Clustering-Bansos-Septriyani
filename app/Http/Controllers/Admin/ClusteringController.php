@@ -95,30 +95,108 @@ class ClusteringController extends Controller
     public function reset()
     {
         try {
-            DB::beginTransaction();
-            
             // Nonaktifkan foreign key checks sementara
             DB::statement('SET FOREIGN_KEY_CHECKS=0');
             
-            // Hapus data hasil perhitungan
+            // Hapus semua data hasil perhitungan
             DB::table('hasil_kmeans')->truncate();
             DB::table('mapping_centroids')->truncate();
             DB::table('centroids')->truncate();
+            DB::table('iterasi')->truncate();
             
             // Aktifkan kembali foreign key checks
             DB::statement('SET FOREIGN_KEY_CHECKS=1');
             
-            DB::commit();
-            
             // Hapus data dari session
-            session()->forget('distanceResults');
+            session()->forget(['distanceResults', 'centroids', 'iterasi', 'hasilKmeans']);
             
-            return redirect()->route('admin.centroid.index')
-                ->with('success', 'Data hasil perhitungan berhasil direset');
+            return redirect()->route('admin.clustering.index')
+                ->with('success', 'Semua data perhitungan berhasil direset');
         } catch (\Exception $e) {
-            DB::rollback();
+            Log::error('Error resetting calculations: ' . $e->getMessage());
             return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                ->with('error', 'Terjadi kesalahan saat mereset data: ' . $e->getMessage());
+        }
+    }
+
+    public function calculate()
+    {
+        try {
+            // Ambil data penduduk yang sudah di-mapping
+            $mappings = MappingCentroid::with('penduduk')->get();
+            
+            if ($mappings->isEmpty()) {
+                return redirect()->back()->with('warning', 'Tidak ada data mapping yang tersedia. Silakan tambahkan mapping terlebih dahulu.');
+            }
+
+            // Kelompokkan data berdasarkan cluster
+            $clusterData = [
+                'C1' => [],
+                'C2' => [],
+                'C3' => []
+            ];
+
+            foreach ($mappings as $mapping) {
+                $clusterData[$mapping->cluster][] = [
+                    'usia' => $mapping->usia,
+                    'jumlah_tanggungan' => $mapping->jumlah_tanggungan,
+                    'kondisi_rumah' => $mapping->kondisi_rumah,
+                    'status_kepemilikan' => $mapping->status_kepemilikan,
+                    'jumlah_penghasilan' => $mapping->jumlah_penghasilan
+                ];
+            }
+
+            // Hitung centroid baru untuk setiap cluster
+            $newCentroids = [];
+            foreach ($clusterData as $cluster => $data) {
+                if (!empty($data)) {
+                    $newCentroids[$cluster] = [
+                        'usia' => array_sum(array_column($data, 'usia')) / count($data),
+                        'jumlah_tanggungan' => array_sum(array_column($data, 'jumlah_tanggungan')) / count($data),
+                        'kondisi_rumah' => array_sum(array_column($data, 'kondisi_rumah')) / count($data),
+                        'status_kepemilikan' => array_sum(array_column($data, 'status_kepemilikan')) / count($data),
+                        'jumlah_penghasilan' => array_sum(array_column($data, 'jumlah_penghasilan')) / count($data)
+                    ];
+                }
+            }
+
+            // Hitung jarak untuk setiap penduduk ke setiap centroid
+            $distanceResults = [];
+            $penduduks = Penduduk::all();
+
+            foreach ($penduduks as $penduduk) {
+                $distances = [];
+                foreach ($newCentroids as $cluster => $centroid) {
+                    $distance = sqrt(
+                        pow($penduduk->usia - $centroid['usia'], 2) +
+                        pow($penduduk->jumlah_tanggungan - $centroid['jumlah_tanggungan'], 2) +
+                        pow($penduduk->kondisi_rumah - $centroid['kondisi_rumah'], 2) +
+                        pow($penduduk->status_kepemilikan - $centroid['status_kepemilikan'], 2) +
+                        pow($penduduk->jumlah_penghasilan - $centroid['jumlah_penghasilan'], 2)
+                    );
+                    $distances[] = $distance;
+                }
+                $distanceResults[] = [
+                    'penduduk' => $penduduk,
+                    'distances' => $distances
+                ];
+            }
+
+            // Update cluster berdasarkan jarak terdekat
+            foreach ($distanceResults as $result) {
+                $minDistanceIndex = array_search(min($result['distances']), $result['distances']);
+                $newCluster = 'C' . ($minDistanceIndex + 1);
+                
+                // Update mapping jika cluster berubah
+                $mapping = MappingCentroid::where('data_ke', $result['penduduk']->id)->first();
+                if ($mapping && $mapping->cluster !== $newCluster) {
+                    $mapping->update(['cluster' => $newCluster]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Perhitungan clustering berhasil dilakukan');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 }

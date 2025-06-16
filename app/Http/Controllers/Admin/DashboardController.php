@@ -50,8 +50,8 @@ class DashboardController extends Controller
                         'cluster' => $cluster,
                         'kelayakan' => $cluster === 'C1' ? 'Layak' : 'Tidak Layak',
                         'keterangan' => $cluster === 'C1' ? 
-                            'Sangat membutuhkan bantuan' : 
-                            ($cluster === 'C2' ? 'Tidak membutuhkan bantuan' : 'Prioritas sedang')
+                            'Membutuhkan' : 
+                            ($cluster === 'C2' ? 'Tidak Membutuhkan' : 'Prioritas sedang')
                     ];
                 }
             }
