@@ -27,87 +27,64 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <select class="form-control" id="role_filter" onchange="filterUsers(this.value)">
-                                <option value="">Semua Role</option>
-                                <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>User</option>
-                            </select>
                         </div>
-                        <div class="col-md-3">
-                            <select class="form-control" id="status_filter" onchange="filterUsers(this.value)">
-                                <option value="">Semua Status</option>
-                                <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Aktif</option>
-                                <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>Nonaktif</option>
-                            </select>
-            </div>
-                        <div class="col-md-2">
-                            <div class="d-flex justify-content-end">
-                                <select class="form-control" id="entries" onchange="this.form.submit()">
-                <option value="10" {{ request('entries', 10) == 10 ? 'selected' : '' }}>10</option>
-                <option value="25" {{ request('entries') == 25 ? 'selected' : '' }}>25</option>
-                <option value="50" {{ request('entries') == 50 ? 'selected' : '' }}>50</option>
-                <option value="100" {{ request('entries') == 100 ? 'selected' : '' }}>100</option>
-            </select>
-                            </div>
-                        </div>
-        </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped">
-            <thead>
+                            <thead>
                                 <tr>
                                     <th style="width: 5%">No</th>
-                                    <th style="width: 20%">Username</th>
                                     <th style="width: 20%">Nama</th>
+                                    <th style="width: 20%">Username</th>
                                     <th style="width: 25%">Email</th>
                                     <th style="width: 15%">Role</th>
                                     <th style="width: 15%">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 @forelse($users as $index => $user)
-                    <tr>
-                                        <td>{{ $users->firstItem() + $index }}</td>
-                                        <td>{{ $user->username }}</td>
-                                        <td>{{ $user->name }}</td>
-                                        <td>{{ $user->email }}</td>
-                                        <td>
-                                            @if($user->role === 'admin')
-                                                <span class="badge badge-primary">Admin</span>
-                                            @else
-                                                <span class="badge badge-info">Kepala Desa</span>
-                                            @endif
-                        </td>
-                                        <td>
-                                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus user ini?')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                                        <td colspan="7" class="text-center">No users found.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                                <tr>
+                                    <td>{{ $users->firstItem() + $index }}</td>
+                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $user->username }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>
+                                        @if($user->role === 'admin')
+                                            <span class="badge badge-primary">Admin</span>
+                                        @else
+                                            <span class="badge badge-info">Kepala Desa</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus user ini?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="text-center">No users found.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-6">
                             <p class="text-muted">
-                Showing {{ $users->firstItem() }} to {{ $users->lastItem() }} of {{ $users->total() }} entries
+                                Showing {{ $users->firstItem() }} to {{ $users->lastItem() }} of {{ $users->total() }} entries
                             </p>
-            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="d-flex justify-content-end">
-                {{ $users->links('pagination::simple-tailwind') }}
+                                {{ $users->links('pagination::simple-tailwind') }}
                             </div>
                         </div>
                     </div>
@@ -192,229 +169,237 @@
             window.location.href = url.toString();
         }
 
-    function filterUsers(value) {
-        const url = new URL(window.location.href);
-        if (value) {
-            url.searchParams.set('role', value);
-        } else {
-            url.searchParams.delete('role');
-        }
-        window.location.href = url.toString();
-    }
-
-    function resetPassword(userId) {
-        $('#resetPasswordForm').attr('action', `/admin/users/${userId}/reset-password`);
-        $('#resetPasswordModal').modal('show');
-    }
-
-    $('#resetPasswordForm').on('submit', function(e) {
-        e.preventDefault();
-        const form = $(this);
-        const url = form.attr('action');
-        const password = $('#new_password').val();
-        const confirmation = $('#password_confirmation').val();
-
-        // Validasi client-side
-        if (password.length < 8) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Password Terlalu Pendek',
-                text: 'Password harus minimal 8 karakter',
-                confirmButtonText: 'OK'
-            });
-            return false;
+        function filterUsers(value, type) {
+            const url = new URL(window.location.href);
+            if (type === 'role') {
+                if (value) {
+                    url.searchParams.set('role', value);
+                } else {
+                    url.searchParams.delete('role');
+                }
+            } else if (type === 'status') {
+                if (value) {
+                    url.searchParams.set('status', value);
+                } else {
+                    url.searchParams.delete('status');
+                }
+            }
+            window.location.href = url.toString();
         }
 
-        if (password !== confirmation) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Password Tidak Cocok',
-                text: 'Password dan konfirmasi password harus sama',
-                confirmButtonText: 'OK'
-            });
-            return false;
+        function resetPassword(userId) {
+            $('#resetPasswordForm').attr('action', `/admin/users/${userId}/reset-password`);
+            $('#resetPasswordModal').modal('show');
         }
 
-        // Konfirmasi sebelum submit
-        Swal.fire({
-            title: 'Konfirmasi Reset Password',
-            text: 'Apakah Anda yakin ingin mereset password user ini?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, Reset Password',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Tampilkan loading
+        $('#resetPasswordForm').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const url = form.attr('action');
+            const password = $('#new_password').val();
+            const confirmation = $('#password_confirmation').val();
+
+            // Validasi client-side
+            if (password.length < 8) {
                 Swal.fire({
-                    title: 'Memproses...',
-                    text: 'Mohon tunggu sebentar',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
+                    icon: 'error',
+                    title: 'Password Terlalu Pendek',
+                    text: 'Password harus minimal 8 karakter',
+                    confirmButtonText: 'OK'
                 });
+                return false;
+            }
 
-                // Kirim request
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: form.serialize(),
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(response) {
-                        $('#resetPasswordModal').modal('hide');
-                        // Tampilkan notifikasi sukses
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: 'Password berhasil direset',
-                            timer: 2000,
-                            showConfirmButton: false
-                        }).then(() => {
-                            location.reload();
-                        });
-                    },
-                    error: function(xhr) {
-                        let errorMessage = 'Terjadi kesalahan saat mereset password';
-                        
-                        if (xhr.status === 422) {
-                            const errors = xhr.responseJSON.errors;
-                            errorMessage = Object.values(errors).flat().join('\n');
+            if (password !== confirmation) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Password Tidak Cocok',
+                    text: 'Password dan konfirmasi password harus sama',
+                    confirmButtonText: 'OK'
+                });
+                return false;
+            }
+
+            // Konfirmasi sebelum submit
+            Swal.fire({
+                title: 'Konfirmasi Reset Password',
+                text: 'Apakah Anda yakin ingin mereset password user ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Reset Password',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Tampilkan loading
+                    Swal.fire({
+                        title: 'Memproses...',
+                        text: 'Mohon tunggu sebentar',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
                         }
-                        
-                        // Tampilkan notifikasi error
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal!',
-                            text: errorMessage,
-                            confirmButtonText: 'OK'
-                        });
-                    }
+                    });
+
+                    // Kirim request
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: form.serialize(),
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            $('#resetPasswordModal').modal('hide');
+                            // Tampilkan notifikasi sukses
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Password berhasil direset',
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr) {
+                            let errorMessage = 'Terjadi kesalahan saat mereset password';
+                            
+                            if (xhr.status === 422) {
+                                const errors = xhr.responseJSON.errors;
+                                errorMessage = Object.values(errors).flat().join('\n');
+                            }
+                            
+                            // Tampilkan notifikasi error
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: errorMessage,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        // Password validation
+        function validatePassword() {
+            const password = $('#new_password').val();
+            const confirmation = $('#password_confirmation').val();
+            const submitButton = $('#submitResetPassword');
+            
+            if (password.length >= 8 && confirmation.length >= 8) {
+                if (password === confirmation) {
+                    submitButton.prop('disabled', false);
+                    $('#password_confirmation').removeClass('is-invalid').addClass('is-valid');
+                    $('#new_password').removeClass('is-invalid').addClass('is-valid');
+                } else {
+                    submitButton.prop('disabled', true);
+                    $('#password_confirmation').removeClass('is-valid').addClass('is-invalid');
+                    $('#new_password').removeClass('is-valid').addClass('is-invalid');
+                }
+            } else {
+                submitButton.prop('disabled', true);
+                if (password.length < 8) {
+                    $('#new_password').removeClass('is-valid').addClass('is-invalid');
+                } else {
+                    $('#new_password').removeClass('is-invalid').addClass('is-valid');
+                }
+                if (confirmation.length < 8) {
+                    $('#password_confirmation').removeClass('is-valid').addClass('is-invalid');
+                } else {
+                    $('#password_confirmation').removeClass('is-invalid').addClass('is-valid');
+                }
+            }
+        }
+
+        $('#new_password, #password_confirmation').on('input', validatePassword);
+
+        // Generate password
+        $('#generatePassword').on('click', function() {
+            try {
+                // Fungsi untuk mendapatkan karakter acak dari string
+                function getRandomChar(str) {
+                    return str.charAt(Math.floor(Math.random() * str.length));
+                }
+
+                // Karakter yang akan digunakan
+                const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+                const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                const numbers = '0123456789';
+                const special = '!@#$%^&*';
+
+                // Pastikan password memiliki minimal 1 karakter dari setiap jenis
+                let password = '';
+                password += getRandomChar(lowercase); // 1 huruf kecil
+                password += getRandomChar(uppercase); // 1 huruf besar
+                password += getRandomChar(numbers);   // 1 angka
+                password += getRandomChar(special);   // 1 karakter khusus
+
+                // Tambahkan karakter acak hingga panjang 12
+                const allChars = lowercase + uppercase + numbers + special;
+                for (let i = password.length; i < 12; i++) {
+                    password += getRandomChar(allChars);
+                }
+
+                // Acak urutan karakter
+                password = password.split('').sort(() => Math.random() - 0.5).join('');
+
+                // Set nilai ke input
+                $('#new_password').val(password);
+                $('#password_confirmation').val(password);
+                
+                // Trigger validasi
+                validatePassword();
+                
+                // Tampilkan password
+                $('#new_password').attr('type', 'text');
+                $('#password_confirmation').attr('type', 'text');
+                $('#togglePassword, #toggleConfirmPassword').find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+
+                // Tampilkan notifikasi sukses
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Password Berhasil Digenerate',
+                    text: 'Password baru telah dibuat dan siap digunakan',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } catch (error) {
+                // Tampilkan notifikasi error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Generate Password',
+                    text: 'Terjadi kesalahan saat membuat password baru',
+                    confirmButtonText: 'Coba Lagi'
                 });
             }
         });
-    });
 
-    // Password validation
-    function validatePassword() {
-        const password = $('#new_password').val();
-        const confirmation = $('#password_confirmation').val();
-        const submitButton = $('#submitResetPassword');
-        
-        if (password.length >= 8 && confirmation.length >= 8) {
-            if (password === confirmation) {
-                submitButton.prop('disabled', false);
-                $('#password_confirmation').removeClass('is-invalid').addClass('is-valid');
-                $('#new_password').removeClass('is-invalid').addClass('is-valid');
-            } else {
-                submitButton.prop('disabled', true);
-                $('#password_confirmation').removeClass('is-valid').addClass('is-invalid');
-                $('#new_password').removeClass('is-valid').addClass('is-invalid');
-            }
-        } else {
-            submitButton.prop('disabled', true);
-            if (password.length < 8) {
-                $('#new_password').removeClass('is-valid').addClass('is-invalid');
-            } else {
-                $('#new_password').removeClass('is-invalid').addClass('is-valid');
-            }
-            if (confirmation.length < 8) {
-                $('#password_confirmation').removeClass('is-valid').addClass('is-invalid');
-            } else {
-                $('#password_confirmation').removeClass('is-invalid').addClass('is-valid');
-            }
-        }
-    }
+        // Toggle password visibility
+        $('#togglePassword').on('click', function() {
+            const passwordInput = $('#new_password');
+            const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+            passwordInput.attr('type', type);
+            $(this).find('i').toggleClass('fa-eye fa-eye-slash');
+        });
 
-    $('#new_password, #password_confirmation').on('input', validatePassword);
+        $('#toggleConfirmPassword').on('click', function() {
+            const passwordInput = $('#password_confirmation');
+            const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+            passwordInput.attr('type', type);
+            $(this).find('i').toggleClass('fa-eye fa-eye-slash');
+        });
 
-    // Generate password
-    $('#generatePassword').on('click', function() {
-        try {
-            // Fungsi untuk mendapatkan karakter acak dari string
-            function getRandomChar(str) {
-                return str.charAt(Math.floor(Math.random() * str.length));
-            }
-
-            // Karakter yang akan digunakan
-            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
-            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            const numbers = '0123456789';
-            const special = '!@#$%^&*';
-
-            // Pastikan password memiliki minimal 1 karakter dari setiap jenis
-            let password = '';
-            password += getRandomChar(lowercase); // 1 huruf kecil
-            password += getRandomChar(uppercase); // 1 huruf besar
-            password += getRandomChar(numbers);   // 1 angka
-            password += getRandomChar(special);   // 1 karakter khusus
-
-            // Tambahkan karakter acak hingga panjang 12
-            const allChars = lowercase + uppercase + numbers + special;
-            for (let i = password.length; i < 12; i++) {
-                password += getRandomChar(allChars);
-            }
-
-            // Acak urutan karakter
-            password = password.split('').sort(() => Math.random() - 0.5).join('');
-
-            // Set nilai ke input
-            $('#new_password').val(password);
-            $('#password_confirmation').val(password);
-            
-            // Trigger validasi
-            validatePassword();
-            
-            // Tampilkan password
-            $('#new_password').attr('type', 'text');
-            $('#password_confirmation').attr('type', 'text');
-            $('#togglePassword, #toggleConfirmPassword').find('i').removeClass('fa-eye').addClass('fa-eye-slash');
-
-            // Tampilkan notifikasi sukses
-            Swal.fire({
-                icon: 'success',
-                title: 'Password Berhasil Digenerate',
-                text: 'Password baru telah dibuat dan siap digunakan',
-                timer: 2000,
-                showConfirmButton: false
-            });
-        } catch (error) {
-            // Tampilkan notifikasi error
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal Generate Password',
-                text: 'Terjadi kesalahan saat membuat password baru',
-                confirmButtonText: 'Coba Lagi'
-            });
-        }
-    });
-
-    // Toggle password visibility
-    $('#togglePassword').on('click', function() {
-        const passwordInput = $('#new_password');
-        const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
-        passwordInput.attr('type', type);
-        $(this).find('i').toggleClass('fa-eye fa-eye-slash');
-    });
-
-    $('#toggleConfirmPassword').on('click', function() {
-        const passwordInput = $('#password_confirmation');
-        const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
-        passwordInput.attr('type', type);
-        $(this).find('i').toggleClass('fa-eye fa-eye-slash');
-    });
-
-    // Reset form when modal is closed
-    $('#resetPasswordModal').on('hidden.bs.modal', function() {
-        $('#resetPasswordForm')[0].reset();
-        $('#new_password, #password_confirmation').removeClass('is-valid is-invalid');
-        $('#submitResetPassword').prop('disabled', true);
-        $('#new_password, #password_confirmation').attr('type', 'password');
-        $('#togglePassword, #toggleConfirmPassword').find('i').removeClass('fa-eye-slash').addClass('fa-eye');
-    });
+        // Reset form when modal is closed
+        $('#resetPasswordModal').on('hidden.bs.modal', function() {
+            $('#resetPasswordForm')[0].reset();
+            $('#new_password, #password_confirmation').removeClass('is-valid is-invalid');
+            $('#submitResetPassword').prop('disabled', true);
+            $('#new_password, #password_confirmation').attr('type', 'password');
+            $('#togglePassword, #toggleConfirmPassword').find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+        });
     </script>
 @endsection
