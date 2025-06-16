@@ -56,7 +56,7 @@ class CentroidController extends Controller
             foreach ($randomPenduduks as $index => $penduduk) {
                 $centroids[] = [
                     'usia' => $this->getNilaiKriteria('Usia', $penduduk->usia) ?? 1,
-                    'tanggungan_num' => $this->getNilaiKriteria('Jumlah Tanggungan', $penduduk->tanggungan) ?? 1,
+                    'tanggungan_num' => $this->getNilaiKriteria('Tanggungan', $penduduk->tanggungan) ?? 1,
                     'kondisi_rumah' => $this->getNilaiKriteria('Kondisi Rumah', strtolower($penduduk->kondisi_rumah)) ?? 1,
                     'status_kepemilikan' => $this->getNilaiKriteria('Status Kepemilikan', strtolower($penduduk->status_kepemilikan)) ?? 1,
                     'penghasilan_num' => $this->getNilaiKriteria('Penghasilan', $penduduk->penghasilan) ?? 1,
@@ -94,7 +94,7 @@ class CentroidController extends Controller
                 'id' => $penduduk->id,
                 'nama' => $penduduk->nama,
                 'usia' => $this->getNilaiKriteria('Usia', $penduduk->usia),
-                'jumlah_tanggungan' => $this->getNilaiKriteria('Jumlah Tanggungan', $penduduk->tanggungan),
+                'jumlah_tanggungan' => $this->getNilaiKriteria('Tanggungan', $penduduk->tanggungan),
                 'kondisi_rumah' => $this->getNilaiKriteria('Kondisi Rumah', strtolower($penduduk->kondisi_rumah)),
                 'status_kepemilikan' => $this->getNilaiKriteria('Status Kepemilikan', strtolower($penduduk->status_kepemilikan)),
                 'jumlah_penghasilan' => $this->getNilaiKriteria('Penghasilan', $penduduk->penghasilan),
@@ -201,7 +201,7 @@ class CentroidController extends Controller
                 'id' => $penduduk->id,
                 'nama' => $penduduk->nama,
                 'usia' => $this->getNilaiKriteria('Usia', $penduduk->usia) ?? 0,
-                'jumlah_tanggungan' => $this->getNilaiKriteria('Jumlah Tanggungan', $penduduk->tanggungan) ?? 0,
+                'jumlah_tanggungan' => $this->getNilaiKriteria('Tanggungan', $penduduk->tanggungan) ?? 0,
                 'kondisi_rumah' => $this->getNilaiKriteria('Kondisi Rumah', strtolower($penduduk->kondisi_rumah)) ?? 0,
                 'status_kepemilikan' => $this->getNilaiKriteria('Status Kepemilikan', strtolower($penduduk->status_kepemilikan)) ?? 0,
                 'jumlah_penghasilan' => $this->getNilaiKriteria('Penghasilan', $penduduk->penghasilan) ?? 0,
@@ -216,11 +216,11 @@ class CentroidController extends Controller
                 // Konversi nilai centroid ke numerik
                 $usia = floatval($centroid->usia);
                 $tanggungan = floatval($centroid->tanggungan_num);
-                $kondisiRumah = $this->getNilaiKriteria('Kondisi Rumah', strtolower($centroid->kondisi_rumah)) ?? 0;
-                $statusKepemilikan = $this->getNilaiKriteria('Status Kepemilikan', strtolower($centroid->status_kepemilikan)) ?? 0;
+                $kondisiRumah = floatval($centroid->kondisi_rumah);
+                $statusKepemilikan = floatval($centroid->status_kepemilikan);
                 $penghasilan = floatval($centroid->penghasilan_num);
     
-                // Hitung jarak Euclidean
+                // Hitung jarak Euclidean dengan 9 desimal
                 $distance = sqrt(
                     pow($penduduk['usia'] - $usia, 2) +
                     pow($penduduk['jumlah_tanggungan'] - $tanggungan, 2) +
@@ -229,8 +229,14 @@ class CentroidController extends Controller
                     pow($penduduk['jumlah_penghasilan'] - $penghasilan, 2)
                 );
     
-                $distances[] = $distance;
+                // Format jarak ke 9 desimal
+                $distances[] = number_format($distance, 9, '.', '');
             }
+    
+            // Tentukan cluster berdasarkan jarak terdekat
+            $minDistance = min($distances);
+            $clusterIndex = array_search($minDistance, $distances);
+            $cluster = 'C' . ($clusterIndex + 1);
     
             $distanceResults[] = [
                 'penduduk' => (object)[
@@ -238,6 +244,8 @@ class CentroidController extends Controller
                     'nama' => $penduduk['nama']
                 ],
                 'distances' => $distances,
+                'min_distance' => $minDistance,
+                'cluster' => $cluster
             ];
         }
     

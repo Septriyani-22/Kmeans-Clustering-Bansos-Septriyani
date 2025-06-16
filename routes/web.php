@@ -135,14 +135,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     });
 
     // Mapping Centroid Routes
-    Route::resource('mapping-centroid', MappingCentroidController::class);
-    Route::post('mapping-centroid/store-from-distance', [MappingCentroidController::class, 'storeFromDistance'])
-        ->name('mapping-centroid.store-from-distance');
-
-    Route::get('/centroid/mapping/{mapping}/edit', [MappingCentroidController::class, 'edit'])->name('centroid.mapping.edit');
-    Route::put('/centroid/mapping/{mapping}', [MappingCentroidController::class, 'update'])->name('centroid.mapping.update');
-    Route::delete('/centroid/mapping/{mapping}', [MappingCentroidController::class, 'destroy'])->name('centroid.mapping.destroy');
-    Route::post('/centroid/mapping/store-from-distance', [MappingCentroidController::class, 'storeFromDistance'])->name('centroid.mapping.store-from-distance');
+    Route::get('mapping-centroid', [MappingCentroidController::class, 'index'])->name('mapping-centroid.index');
+    Route::get('mapping-centroid/create', [MappingCentroidController::class, 'create'])->name('mapping-centroid.create');
+    Route::post('mapping-centroid', [MappingCentroidController::class, 'store'])->name('mapping-centroid.store');
+    Route::put('mapping-centroid/{id}', [MappingCentroidController::class, 'update'])->name('mapping-centroid.update');
+    Route::delete('mapping-centroid/{id}', [MappingCentroidController::class, 'destroy'])->name('mapping-centroid.destroy');
+    Route::get('mapping-centroid/get-penduduk/{id}', [MappingCentroidController::class, 'getPendudukData'])->name('mapping-centroid.get-penduduk');
 });
 
 // Kepala Desa Routes - Using Admin Controllers

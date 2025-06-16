@@ -32,8 +32,10 @@ class ClusteringController extends Controller
                 'jumlah_cluster' => 'required|integer|min:2|max:10'
             ]);
 
+            // Reset data sebelumnya
             HasilKmeans::query()->delete();
             Centroid::query()->delete();
+            MappingCentroid::query()->delete();
 
             $penduduks = Penduduk::all();
             if ($penduduks->isEmpty()) {
@@ -45,8 +47,44 @@ class ClusteringController extends Controller
                 return redirect()->back()->with('error', 'Tidak ada kriteria yang tersedia.');
             }
 
+            // Inisialisasi centroid awal dengan data yang sudah ditentukan
+            $initialCentroids = [
+                [
+                    'usia' => 4,
+                    'tanggungan_num' => 3,
+                    'kondisi_rumah' => 3,
+                    'status_kepemilikan' => 2,
+                    'penghasilan_num' => 4,
+                    'tahun' => date('Y'),
+                    'periode' => 1
+                ],
+                [
+                    'usia' => 4,
+                    'tanggungan_num' => 4,
+                    'kondisi_rumah' => 2,
+                    'status_kepemilikan' => 1,
+                    'penghasilan_num' => 4,
+                    'tahun' => date('Y'),
+                    'periode' => 1
+                ],
+                [
+                    'usia' => 4,
+                    'tanggungan_num' => 3,
+                    'kondisi_rumah' => 1,
+                    'status_kepemilikan' => 1,
+                    'penghasilan_num' => 2,
+                    'tahun' => date('Y'),
+                    'periode' => 1
+                ]
+            ];
+
+            // Simpan centroid awal
+            foreach ($initialCentroids as $centroid) {
+                Centroid::create($centroid);
+            }
+
             $centroidController = app(CentroidController::class);
-            return $centroidController->prosesClustering($request, $penduduks, $kriteria);
+            return $centroidController->calculateDistances();
 
         } catch (\Exception $e) {
             return redirect()->back()
@@ -62,9 +100,10 @@ class ClusteringController extends Controller
             // Nonaktifkan foreign key checks sementara
             DB::statement('SET FOREIGN_KEY_CHECKS=0');
             
-            // Hapus hanya data hasil perhitungan
+            // Hapus data hasil perhitungan
             DB::table('hasil_kmeans')->truncate();
             DB::table('mapping_centroids')->truncate();
+            DB::table('centroids')->truncate();
             
             // Aktifkan kembali foreign key checks
             DB::statement('SET FOREIGN_KEY_CHECKS=1');
@@ -82,5 +121,4 @@ class ClusteringController extends Controller
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
-
 }
