@@ -22,65 +22,6 @@ class CentroidController extends Controller
         $this->clusteringController = $clusteringController;
     }
 
-    // Perhitungan Kriteria dan proses clustering
-    private function getNilaiKriteria($tipe, $value)
-    {
-        // Get parent kriteria
-        $kriteria = Kriteria::where('nama', $tipe)->first();
-        if (!$kriteria) return null;
-
-        // Get nilai kriteria based on value
-        $nilaiKriteria = $kriteria->nilaiKriteria()
-            ->where(function($query) use ($value) {
-                if (is_numeric($value)) {
-                    $query->where('nilai_min', '<=', $value)
-                          ->where('nilai_max', '>=', $value);
-                } else {
-                    $query->where('nama', 'like', '%' . $value . '%');
-                }
-            })
-            ->first();
-
-        return $nilaiKriteria ? $nilaiKriteria->nilai : null;
-    }
-    public function prosesClustering(Request $request, $penduduks, $kriteria)
-    {
-        try {
-            // Inisialisasi centroid awal dengan nilai dari kriteria
-            $centroids = [];
-            $jumlahCluster = $request->jumlah_cluster;
-            
-            // Ambil beberapa data penduduk secara acak untuk centroid awal
-            $randomPenduduks = $penduduks->random($jumlahCluster);
-            
-            foreach ($randomPenduduks as $index => $penduduk) {
-                $centroids[] = [
-                    'usia' => $this->getNilaiKriteria('Usia', $penduduk->usia) ?? 1,
-                    'tanggungan_num' => $this->getNilaiKriteria('Tanggungan', $penduduk->tanggungan) ?? 1,
-                    'kondisi_rumah' => $this->getNilaiKriteria('Kondisi Rumah', strtolower($penduduk->kondisi_rumah)) ?? 1,
-                    'status_kepemilikan' => $this->getNilaiKriteria('Status Kepemilikan', strtolower($penduduk->status_kepemilikan)) ?? 1,
-                    'penghasilan_num' => $this->getNilaiKriteria('Penghasilan', $penduduk->penghasilan) ?? 1,
-                    'tahun' => date('Y'),
-                    'periode' => 1
-                ];
-            }
-            
-            // Simpan centroid awal ke database
-            foreach ($centroids as $centroid) {
-                Centroid::create($centroid);
-            }
-            
-            // Hitung jarak
-            $this->calculateDistances();
-            
-            return redirect()->route('admin.centroid.index')
-                ->with('success', 'Clustering berhasil dilakukan');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
-    //  Another case
     public function index()
     {
         $centroids = Centroid::all();
@@ -189,6 +130,32 @@ class CentroidController extends Controller
         return view('admin.centroid.edit', compact('centroid'));
     }
 
+    /**
+     * Get the nilai_kriteria based on the type and value.
+     *
+     * @param string $tipe
+     * @param mixed $value
+     * @return mixed|null
+     */
+
+    private function getNilaiKriteria($tipe, $value)
+    {
+        $kriteria = Kriteria::where('nama', $tipe)->first();
+        if (!$kriteria) return null;
+
+        $nilaiKriteria = $kriteria->nilaiKriteria()
+            ->where(function($query) use ($value) {
+                if (is_numeric($value)) {
+                    $query->where('nilai_min', '<=', $value)
+                          ->where('nilai_max', '>=', $value);
+                } else {
+                    $query->where('nama', 'like', '%' . $value . '%');
+                }
+            })
+            ->first();
+
+        return $nilaiKriteria ? $nilaiKriteria->nilai : null;
+    }
     public function calculateDistances()
     {
         $centroids = Centroid::all();
@@ -208,7 +175,6 @@ class CentroidController extends Controller
             ];
         });
     
-        // Hitung jarak Euclidean untuk setiap penduduk ke semua centroid
         foreach ($convertedPenduduks as $penduduk) {
             $distances = [];
     
@@ -233,7 +199,6 @@ class CentroidController extends Controller
                 $distances[] = number_format($distance, 9, '.', '');
             }
     
-            // Tentukan cluster berdasarkan jarak terdekat
             $minDistance = min($distances);
             $clusterIndex = array_search($minDistance, $distances);
             $cluster = 'C' . ($clusterIndex + 1);

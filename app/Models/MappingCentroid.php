@@ -22,45 +22,4 @@ class MappingCentroid extends Model
         'status_kepemilikan',
         'jumlah_penghasilan'
     ];
-
-    public function centroid()
-    {
-        return $this->belongsTo(Centroid::class);
-    }
-
-    public function penduduk()
-    {
-        return $this->belongsTo(Penduduk::class, 'data_ke', 'id');
-    }
-
-    // Accessors for Penduduk attributes
-    public function getNamaPendudukAttribute()
-    {
-        return $this->penduduk->nama ?? '';
-    }
-
-    public function getUsiaAttribute()
-    {
-        return $this->penduduk->usia ?? 0;
-    }
-
-    public function getTanggunganAttribute()
-    {
-        return $this->penduduk->tanggungan ?? 0;
-    }
-
-    public function getKondisiRumahAttribute()
-    {
-        return $this->penduduk->kondisi_rumah ?? '';
-    }
-
-    public function getStatusKepemilikanAttribute()
-    {
-        return $this->penduduk->status_kepemilikan ?? '';
-    }
-
-    public function getJumlahPenghasilanAttribute()
-    {
-        return $this->penduduk->penghasilan ?? 0;
-    }
 }

@@ -31,34 +31,4 @@ class Penduduk extends Model
         'tanggungan' => 'integer',
         'penghasilan' => 'float'
     ];
-
-    // Get formatted penghasilan
-    public function getFormattedPenghasilanAttribute()
-    {
-        return 'Rp ' . number_format($this->penghasilan, 0, ',', '.');
-    }
-
-    // Get nilai kriteria
-    public function getNilaiKriteria()
-    {
-        return [
-            'usia' => Kriteria::getNilaiUsia($this->usia),
-            'tanggungan' => Kriteria::getNilaiTanggungan($this->tanggungan),
-            'kondisi_rumah' => Kriteria::getNilaiKondisiRumah($this->kondisi_rumah),
-            'status_kepemilikan' => Kriteria::getNilaiStatusKepemilikan($this->status_kepemilikan),
-            'penghasilan' => Kriteria::getNilaiPenghasilan($this->penghasilan)
-        ];
-    }
-
-    // Get kriteria options
-    public function getKriteriaOptions()
-    {
-        return Kriteria::getKriteriaOptions();
-    }
-
-    // Add any necessary accessors or mutators here
-    public function getJenisKelaminTextAttribute()
-    {
-        return $this->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan';
-    }
 }
