@@ -26,6 +26,7 @@
                 </div>
             </div>
         </div>
+
         <!-- C1 Card -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-danger shadow h-100 py-2">
@@ -61,6 +62,7 @@
                 </div>
             </div>
         </div>
+
         <!-- C3 Card -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
@@ -79,13 +81,13 @@
             </div>
         </div>
     </div>
-    </div>
 
     <!-- Content Row -->
     <div class="row">
         <!-- Pie Chart -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
+        <!-- <div class="col-xl-8 col-lg-12"> -->
+        <div class="col-12">
+        <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Distribusi Cluster</h6>
                 </div>
@@ -97,7 +99,8 @@
             </div>
         </div>
 
-        <!-- Recent Penduduk -->
+        <!-- Recent Penduduk (DISABLED SEMENTARA) -->
+        {{--
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
@@ -133,11 +136,11 @@
                 </div>
             </div>
         </div>
+        --}}
     </div>
 
-    <!-- Content Row -->
+    <!-- Hasil K-Means Table -->
     <div class="row">
-        <!-- Hasil K-Means Table -->
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
@@ -182,13 +185,14 @@
                     </div>
                     <div class="d-flex justify-content-center mt-4">
                         @if($paginatedResults->hasPages())
-                            <div class="pagination">
-                                @foreach($paginatedResults->getUrlRange(1, $paginatedResults->lastPage()) as $page => $url)
-                                    <a href="{{ $url }}" class="btn btn-sm {{ $page == $paginatedResults->currentPage() ? 'btn-primary' : 'btn-outline-primary' }} mr-1">
-                                        {{ $page }}
-                                    </a>
-                                @endforeach
-                            </div>
+                        <div class="pagination">
+                            @foreach($paginatedResults->getUrlRange(1, $paginatedResults->lastPage()) as $page => $url)
+                            <a href="{{ $url }}"
+                                class="btn btn-sm {{ $page == $paginatedResults->currentPage() ? 'btn-primary' : 'btn-outline-primary' }} mr-1">
+                                {{ $page }}
+                            </a>
+                            @endforeach
+                        </div>
                         @endif
                     </div>
                 </div>
@@ -200,10 +204,9 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Pie Chart
+document.addEventListener('DOMContentLoaded', function () {
     var ctx = document.getElementById('clusterChart').getContext('2d');
-    var myPieChart = new Chart(ctx, {
+    new Chart(ctx, {
         type: 'pie',
         data: {
             labels: {!! json_encode($chartData['labels']) !!},
@@ -236,4 +239,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
-@endsection 
+@endsection
