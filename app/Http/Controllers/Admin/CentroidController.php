@@ -153,12 +153,10 @@ class CentroidController extends Controller
     }
     public function calculateDistances()
     {
-        // Fetch centroids from mapping_centroids, ensuring they match Excel if needed
-        $centroids = MappingCentroid::all()->keyBy('cluster');
-        if (count($centroids) < 3 || !$centroids->has('C1') || !$centroids->has('C2') || !$centroids->has('C3')) {
-            return redirect()->route('admin.centroid.index')
-                ->with('error', 'Insufficient or missing centroid data for C1, C2, or C3.');
-        }
+        // Define initial centroids based on Tabel 3.8 Centroid Awal
+        $c1Centroid = (object)['usia' => 4, 'jumlah_tanggungan' => 3, 'kondisi_rumah' => 3, 'status_kepemilikan' => 2, 'jumlah_penghasilan' => 4];
+        $c2Centroid = (object)['usia' => 4, 'jumlah_tanggungan' => 4, 'kondisi_rumah' => 2, 'status_kepemilikan' => 1, 'jumlah_penghasilan' => 4];
+        $c3Centroid = (object)['usia' => 4, 'jumlah_tanggungan' => 3, 'kondisi_rumah' => 1, 'status_kepemilikan' => 1, 'jumlah_penghasilan' => 2];
     
         $penduduks = Penduduk::all();
         $distanceResults = [];
@@ -177,15 +175,6 @@ class CentroidController extends Controller
                 'jumlah_penghasilan' => $this->getNilaiKriteria('Penghasilan', $penduduk->penghasilan) ?? 0,
             ];
         });
-    
-        // Define centroids based on Excel or mapping_centroids
-        $c1Centroid = $centroids['C1']; // ALBAR: 2, 4, 3, 2, 4
-        $c2Centroid = $centroids['C2']; // IBRAHIM: 2, 4, 2, 1, 2
-        $c3Centroid = $centroids['C3']; // SUPARMI: 4, 3, 1, 1, 4
-    
-        // If Excel centroids differ, manually set them here to match
-        // Example from Excel: C3 should be 3, 2, 2, 1, 4
-        // $c3Centroid = (object)['usia' => 3, 'jumlah_tanggungan' => 2, 'kondisi_rumah' => 2, 'status_kepemilikan' => 1, 'jumlah_penghasilan' => 4];
     
         foreach ($convertedPenduduks as $penduduk) {
             $c1Distance = sqrt(
@@ -241,4 +230,5 @@ class CentroidController extends Controller
     
         return redirect()->route('admin.centroid.index')
             ->with('success', 'Distance calculation completed successfully.');
-    }} 
+    }
+}
