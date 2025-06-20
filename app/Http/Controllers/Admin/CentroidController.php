@@ -158,11 +158,13 @@ class CentroidController extends Controller
     }
     public function calculateDistances()
     {
-        $centroids = Centroid::all();
+        $centroids = MappingCentroid::all();
         $penduduks = Penduduk::all();
         $distanceResults = [];
-    
-        // Konversi data penduduk ke nilai numerik
+        $c1Distances = [];
+        $c2Distances = [];
+        $c3Distances = [];
+
         $convertedPenduduks = $penduduks->map(function($penduduk) {
             return [
                 'id' => $penduduk->id,
@@ -176,48 +178,61 @@ class CentroidController extends Controller
         });
     
         foreach ($convertedPenduduks as $penduduk) {
-            $distances = [];
-    
-            foreach ($centroids as $centroid) {
-                // Konversi nilai centroid ke numerik
-                $usia = floatval($centroid->usia);
-                $tanggungan = floatval($centroid->tanggungan_num);
-                $kondisiRumah = floatval($centroid->kondisi_rumah);
-                $statusKepemilikan = floatval($centroid->status_kepemilikan);
-                $penghasilan = floatval($centroid->penghasilan_num);
-    
-                // Hitung jarak Euclidean dengan 9 desimal
+            foreach ($centroids as $index => $centroid) {
                 $distance = sqrt(
-                    pow($penduduk['usia'] - $usia, 2) +
-                    pow($penduduk['jumlah_tanggungan'] - $tanggungan, 2) +
-                    pow($penduduk['kondisi_rumah'] - $kondisiRumah, 2) +
-                    pow($penduduk['status_kepemilikan'] - $statusKepemilikan, 2) +
-                    pow($penduduk['jumlah_penghasilan'] - $penghasilan, 2)
+                    pow($penduduk['usia'] - floatval($centroid->usia), 2) +
+                    pow($penduduk['jumlah_tanggungan'] - floatval($centroid->jumlah_tanggungan), 2) +
+                    pow($penduduk['kondisi_rumah'] - floatval($centroid->kondisi_rumah), 2) +
+                    pow($penduduk['status_kepemilikan'] - floatval($centroid->status_kepemilikan), 2) +
+                    pow($penduduk['jumlah_penghasilan'] - floatval($centroid->jumlah_penghasilan), 2)
                 );
-    
-                // Format jarak ke 9 desimal
-                $distances[] = number_format($distance, 9, '.', '');
+                
+                // Store distances separately by cluster
+                switch($index) {
+                    case 0:
+                        $c1Distances[$penduduk['id']] = number_format($distance, 9, '.', '');
+                        break;
+                    case 1:
+                        $c2Distances[$penduduk['id']] = number_format($distance, 9, '.', '');
+                        break;
+                    case 2:
+                        $c3Distances[$penduduk['id']] = number_format($distance, 9, '.', '');
+                        break;
+                }
             }
-    
+
+            // Find minimum distance and assign cluster
+            $distances = [
+                $c1Distances[$penduduk['id']], 
+                $c2Distances[$penduduk['id']], 
+                $c3Distances[$penduduk['id']]
+            ];
+            
             $minDistance = min($distances);
             $clusterIndex = array_search($minDistance, $distances);
             $cluster = 'C' . ($clusterIndex + 1);
-    
+
             $distanceResults[] = [
                 'penduduk' => (object)[
                     'id' => $penduduk['id'],
                     'nama' => $penduduk['nama']
                 ],
-                'distances' => $distances,
+                'c1_distance' => $c1Distances[$penduduk['id']],
+                'c2_distance' => $c2Distances[$penduduk['id']],
+                'c3_distance' => $c3Distances[$penduduk['id']],
                 'min_distance' => $minDistance,
                 'cluster' => $cluster
-            ];
-        }
-    
-        // Simpan hasil ke session
-        session(['distanceResults' => $distanceResults]);
-    
+            ];        }
+
+        session([
+            'distanceResults' => $distanceResults,
+            'c1Distances' => $c1Distances,
+            'c2Distances' => $c2Distances,
+            'c3Distances' => $c3Distances
+        ]);
+
         return redirect()->route('admin.centroid.index')
-            ->with('success', 'Jarak antar data dan centroid berhasil dihitung.');
-    }    
+            ->with('success', 'Distance calculation completed successfully.');
+
+    }
 } 

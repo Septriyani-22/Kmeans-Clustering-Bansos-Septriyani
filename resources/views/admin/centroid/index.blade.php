@@ -141,50 +141,49 @@
                             </div>
                         </div>
 
-                        <!-- Clustering Tab -->
-                        <div class="tab-pane fade" id="clustering" role="tabpanel">
-                            <div class="mb-3">
-                                <form action="{{ route('admin.centroid.calculate') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-primary">Hitung Jarak</button>
-                                </form>
-                            </div>
-                            @if(!empty($distanceResults))
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Data ke-</th>
-                                            <th>Nama Penduduk</th>
-                                            <th>Jarak ke C1</th>
-                                            <th>Jarak ke C2</th>
-                                            <th>Jarak ke C3</th>
-                                            <th>Cluster</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($distanceResults as $result)
-                                        <tr>
-                                            <td>{{ $result['penduduk']->id }}</td>
-                                            <td>{{ $result['penduduk']->nama }}</td>
-                                            @foreach($result['distances'] as $index => $distance)
-                                            <td class="highlightable" data-id="d-{{ $result['penduduk']->id }}-{{ $index }}">{{ number_format($distance, 9, '.', '') }}</td>
-                                            @endforeach
-                                            <td>C{{ array_search(min($result['distances']), $result['distances']) + 1 }}</td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- Clustering Tab -->
+<div class="tab-pane fade" id="clustering" role="tabpanel">
+    <div class="mb-3">
+        <form action="{{ route('admin.centroid.calculate') }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-primary">Hitung Jarak</button>
+        </form>
     </div>
+    @if(!empty($distanceResults))
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Data ke-</th>
+                        <th>Nama Penduduk</th>
+                        <th>Jarak ke C1</th>
+                        <th>Jarak ke C2</th>
+                        <th>Jarak ke C3</th>
+                        <th>Cluster</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($distanceResults as $result)
+                        <tr>
+                            <td>{{ $result['penduduk']->id }}</td>
+                            <td>{{ $result['penduduk']->nama }}</td>
+                            <td class="highlightable" data-id="d-{{ $result['penduduk']->id }}-1">
+                                {{ number_format($result['c1_distance'], 9, '.', '') }}
+                            </td>
+                            <td class="highlightable" data-id="d-{{ $result['penduduk']->id }}-2">
+                                {{ number_format($result['c2_distance'], 9, '.', '') }}
+                            </td>
+                            <td class="highlightable" data-id="d-{{ $result['penduduk']->id }}-3">
+                                {{ number_format($result['c3_distance'], 9, '.', '') }}
+                            </td>
+                            <td>{{ $result['cluster'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
 </div>
-
 <!-- Add Mapping Modal -->
 <div class="modal fade" id="addMappingModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
