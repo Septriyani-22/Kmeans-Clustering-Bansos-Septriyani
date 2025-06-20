@@ -153,13 +153,19 @@ class CentroidController extends Controller
     }
     public function calculateDistances()
     {
-        $centroids = MappingCentroid::all();
+        // Fetch centroids from mapping_centroids, ensuring they match Excel if needed
+        $centroids = MappingCentroid::all()->keyBy('cluster');
+        if (count($centroids) < 3 || !$centroids->has('C1') || !$centroids->has('C2') || !$centroids->has('C3')) {
+            return redirect()->route('admin.centroid.index')
+                ->with('error', 'Insufficient or missing centroid data for C1, C2, or C3.');
+        }
+    
         $penduduks = Penduduk::all();
         $distanceResults = [];
         $c1Distances = [];
         $c2Distances = [];
         $c3Distances = [];
-
+    
         $convertedPenduduks = $penduduks->map(function($penduduk) {
             return [
                 'id' => $penduduk->id,
@@ -172,46 +178,67 @@ class CentroidController extends Controller
             ];
         });
     
+        // Define centroids based on Excel or mapping_centroids
+        $c1Centroid = $centroids['C1']; // ALBAR: 2, 4, 3, 2, 4
+        $c2Centroid = $centroids['C2']; // IBRAHIM: 2, 4, 2, 1, 2
+        $c3Centroid = $centroids['C3']; // SUPARMI: 4, 3, 1, 1, 4
+    
+        // If Excel centroids differ, manually set them here to match
+        // Example from Excel: C3 should be 3, 2, 2, 1, 4
+        // $c3Centroid = (object)['usia' => 3, 'jumlah_tanggungan' => 2, 'kondisi_rumah' => 2, 'status_kepemilikan' => 1, 'jumlah_penghasilan' => 4];
+    
         foreach ($convertedPenduduks as $penduduk) {
-            foreach ($centroids as $index => $centroid) {
-                $distance = sqrt(
-                    pow($penduduk['usia'] - floatval($centroid->usia), 2) +
-                    pow($penduduk['jumlah_tanggungan'] - floatval($centroid->jumlah_tanggungan), 2) +
-                    pow($penduduk['kondisi_rumah'] - floatval($centroid->kondisi_rumah), 2) +
-                    pow($penduduk['status_kepemilikan'] - floatval($centroid->status_kepemilikan), 2) +
-                    pow($penduduk['jumlah_penghasilan'] - floatval($centroid->jumlah_penghasilan), 2)
-                );
-                // Ensure no null values interfere
-                $distance = is_nan($distance) ? 0 : $distance;
-                // Store distances
-                switch($index) {
-                    case 0: $c1Distances[$penduduk['id']] = number_format($distance, 9, '.', ''); break;
-                    case 1: $c2Distances[$penduduk['id']] = number_format($distance, 9, '.', ''); break;
-                    case 2: $c3Distances[$penduduk['id']] = number_format($distance, 9, '.', ''); break;
-                }
-            }
-            // Assign cluster based on minimum distance
-            $distances = [$c1Distances[$penduduk['id']], $c2Distances[$penduduk['id']], $c3Distances[$penduduk['id']]];
+            $c1Distance = sqrt(
+                pow($penduduk['usia'] - floatval($c1Centroid->usia), 2) +
+                pow($penduduk['jumlah_tanggungan'] - floatval($c1Centroid->jumlah_tanggungan), 2) +
+                pow($penduduk['kondisi_rumah'] - floatval($c1Centroid->kondisi_rumah), 2) +
+                pow($penduduk['status_kepemilikan'] - floatval($c1Centroid->status_kepemilikan), 2) +
+                pow($penduduk['jumlah_penghasilan'] - floatval($c1Centroid->jumlah_penghasilan), 2)
+            );
+            $c1Distance = is_nan($c1Distance) ? 0 : $c1Distance;
+            $c1Distances[$penduduk['id']] = number_format($c1Distance, 9, '.', '');
+    
+            $c2Distance = sqrt(
+                pow($penduduk['usia'] - floatval($c2Centroid->usia), 2) +
+                pow($penduduk['jumlah_tanggungan'] - floatval($c2Centroid->jumlah_tanggungan), 2) +
+                pow($penduduk['kondisi_rumah'] - floatval($c2Centroid->kondisi_rumah), 2) +
+                pow($penduduk['status_kepemilikan'] - floatval($c2Centroid->status_kepemilikan), 2) +
+                pow($penduduk['jumlah_penghasilan'] - floatval($c2Centroid->jumlah_penghasilan), 2)
+            );
+            $c2Distance = is_nan($c2Distance) ? 0 : $c2Distance;
+            $c2Distances[$penduduk['id']] = number_format($c2Distance, 9, '.', '');
+    
+            $c3Distance = sqrt(
+                pow($penduduk['usia'] - floatval($c3Centroid->usia), 2) +
+                pow($penduduk['jumlah_tanggungan'] - floatval($c3Centroid->jumlah_tanggungan), 2) +
+                pow($penduduk['kondisi_rumah'] - floatval($c3Centroid->kondisi_rumah), 2) +
+                pow($penduduk['status_kepemilikan'] - floatval($c3Centroid->status_kepemilikan), 2) +
+                pow($penduduk['jumlah_penghasilan'] - floatval($c3Centroid->jumlah_penghasilan), 2)
+            );
+            $c3Distance = is_nan($c3Distance) ? 0 : $c3Distance;
+            $c3Distances[$penduduk['id']] = number_format($c3Distance, 9, '.', '');
+    
+            $distances = [$c1Distance, $c2Distance, $c3Distance];
             $minDistance = min($distances);
-            $clusterIndex = array_search($minDistance, $distances);
+            $clusterIndex = array_keys($distances, $minDistance)[0];
             $cluster = 'C' . ($clusterIndex + 1);
             $distanceResults[] = [
                 'penduduk' => (object)['id' => $penduduk['id'], 'nama' => $penduduk['nama']],
                 'c1_distance' => $c1Distances[$penduduk['id']],
                 'c2_distance' => $c2Distances[$penduduk['id']],
                 'c3_distance' => $c3Distances[$penduduk['id']],
-                'min_distance' => $minDistance,
+                'min_distance' => number_format($minDistance, 9, '.', ''),
                 'cluster' => $cluster
             ];
-        }        session([
+        }
+    
+        session([
             'distanceResults' => $distanceResults,
             'c1Distances' => $c1Distances,
             'c2Distances' => $c2Distances,
             'c3Distances' => $c3Distances
         ]);
-
+    
         return redirect()->route('admin.centroid.index')
             ->with('success', 'Distance calculation completed successfully.');
-
-    }
-} 
+    }} 

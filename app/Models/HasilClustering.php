@@ -13,9 +13,4 @@ class HasilClustering extends Model
         'cluster'
     ];
 
-    public function penduduk()
-    {
-        return $this->belongsTo(Penduduk::class);
-    }
-
 } 

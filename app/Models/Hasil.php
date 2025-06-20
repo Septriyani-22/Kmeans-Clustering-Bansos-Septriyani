@@ -14,16 +14,4 @@ class Hasil extends Model
         'iterasi'
     ];
 
-
-
-    public function penduduk()
-    {
-        return $this->belongsTo(Penduduk::class);
-    }
-
-    // Get centroid
-    public function centroid()
-    {
-        return $this->belongsTo(Centroid::class, 'cluster', 'cluster');
-    }
 } 
