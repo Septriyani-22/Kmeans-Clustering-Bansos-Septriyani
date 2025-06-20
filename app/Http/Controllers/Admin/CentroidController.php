@@ -39,11 +39,6 @@ class CentroidController extends Controller
                 'kondisi_rumah' => $this->getNilaiKriteria('Kondisi Rumah', strtolower($penduduk->kondisi_rumah)),
                 'status_kepemilikan' => $this->getNilaiKriteria('Status Kepemilikan', strtolower($penduduk->status_kepemilikan)),
                 'jumlah_penghasilan' => $this->getNilaiKriteria('Penghasilan', $penduduk->penghasilan),
-                'usia_raw' => $penduduk->usia,
-                'tanggungan_raw' => $penduduk->tanggungan,
-                'kondisi_rumah_raw' => $penduduk->kondisi_rumah,
-                'status_kepemilikan_raw' => $penduduk->status_kepemilikan,
-                'penghasilan_raw' => $penduduk->penghasilan
             ];
         });
 
@@ -186,45 +181,29 @@ class CentroidController extends Controller
                     pow($penduduk['status_kepemilikan'] - floatval($centroid->status_kepemilikan), 2) +
                     pow($penduduk['jumlah_penghasilan'] - floatval($centroid->jumlah_penghasilan), 2)
                 );
-                
-                // Store distances separately by cluster
+                // Ensure no null values interfere
+                $distance = is_nan($distance) ? 0 : $distance;
+                // Store distances
                 switch($index) {
-                    case 0:
-                        $c1Distances[$penduduk['id']] = number_format($distance, 9, '.', '');
-                        break;
-                    case 1:
-                        $c2Distances[$penduduk['id']] = number_format($distance, 9, '.', '');
-                        break;
-                    case 2:
-                        $c3Distances[$penduduk['id']] = number_format($distance, 9, '.', '');
-                        break;
+                    case 0: $c1Distances[$penduduk['id']] = number_format($distance, 9, '.', ''); break;
+                    case 1: $c2Distances[$penduduk['id']] = number_format($distance, 9, '.', ''); break;
+                    case 2: $c3Distances[$penduduk['id']] = number_format($distance, 9, '.', ''); break;
                 }
             }
-
-            // Find minimum distance and assign cluster
-            $distances = [
-                $c1Distances[$penduduk['id']], 
-                $c2Distances[$penduduk['id']], 
-                $c3Distances[$penduduk['id']]
-            ];
-            
+            // Assign cluster based on minimum distance
+            $distances = [$c1Distances[$penduduk['id']], $c2Distances[$penduduk['id']], $c3Distances[$penduduk['id']]];
             $minDistance = min($distances);
             $clusterIndex = array_search($minDistance, $distances);
             $cluster = 'C' . ($clusterIndex + 1);
-
             $distanceResults[] = [
-                'penduduk' => (object)[
-                    'id' => $penduduk['id'],
-                    'nama' => $penduduk['nama']
-                ],
+                'penduduk' => (object)['id' => $penduduk['id'], 'nama' => $penduduk['nama']],
                 'c1_distance' => $c1Distances[$penduduk['id']],
                 'c2_distance' => $c2Distances[$penduduk['id']],
                 'c3_distance' => $c3Distances[$penduduk['id']],
                 'min_distance' => $minDistance,
                 'cluster' => $cluster
-            ];        }
-
-        session([
+            ];
+        }        session([
             'distanceResults' => $distanceResults,
             'c1Distances' => $c1Distances,
             'c2Distances' => $c2Distances,
