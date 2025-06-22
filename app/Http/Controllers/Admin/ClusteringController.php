@@ -159,6 +159,40 @@ class ClusteringController extends Controller
             ];
         }
     
+        // Hapus hasil lama sebelum memasukkan yang baru
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        HasilKmeans::truncate();
+        Centroid::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
+        // Simpan centroid baru
+        foreach ($centroids as $clusterName => $centroidData) {
+            $centroidModel = Centroid::create([
+                'nama_centroid' => $clusterName,
+                'usia' => $centroidData->usia,
+                'tanggungan_num' => $centroidData->tanggungan,
+                'kondisi_rumah' => $centroidData->kondisi_rumah,
+                'status_kepemilikan' => $centroidData->status_kepemilikan,
+                'penghasilan_num' => $centroidData->penghasilan,
+                'tahun' => date('Y'),
+                'periode' => 1, // Atur sesuai kebutuhan
+            ]);
+            $centroids[$clusterName]->id = $centroidModel->id;
+        }
+
+        // Simpan hasil ke database
+        foreach ($distanceResults as $result) {
+            HasilKmeans::create([
+                'penduduk_id' => $result['penduduk']->id,
+                'centroid_id' => $centroids[$result['cluster']]->id,
+                'cluster' => (int) substr($result['cluster'], 1),
+                'jarak' => $result['min_distance'],
+                'iterasi' => 1, // Iterasi pertama
+                'tahun' => date('Y'),
+                'periode' => 1, // Atur sesuai kebutuhan
+            ]);
+        }
+
         session(['distanceResults' => $distanceResults]);
     
         return redirect()->route('admin.clustering.index')
