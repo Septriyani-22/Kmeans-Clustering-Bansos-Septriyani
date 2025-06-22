@@ -42,4 +42,12 @@ class Penduduk extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the hasil kmeans record associated with the penduduk.
+     */
+    public function hasilKmeans()
+    {
+        return $this->hasOne(HasilKmeans::class);
+    }
 }

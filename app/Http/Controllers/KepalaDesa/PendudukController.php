@@ -10,7 +10,7 @@ class PendudukController extends Controller
 {
     public function index()
     {
-        $penduduk = Penduduk::all();
+        $penduduk = Penduduk::with('hasilKmeans')->paginate(20);
         return view('kepala_desa.penduduk.index', compact('penduduk'));
     }
 } 

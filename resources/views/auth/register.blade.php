@@ -251,9 +251,9 @@
                 </form>
 
                 <p class="mt-3 text-center">
-                    <a href="{{ route('login') }}">
-                        Sudah punya akun? Login di sini
-                    </a>
+                        <a href="{{ route('login') }}">
+                            Sudah punya akun? Login di sini
+                        </a>
                 </p>
             </div>
         </div>

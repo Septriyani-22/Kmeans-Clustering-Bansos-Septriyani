@@ -15,6 +15,7 @@ class HasilKmeans extends Model
     protected $fillable = [
         'penduduk_id',
         'centroid_id',
+        'cluster',
         'jarak',
         'iterasi',
         'tahun',

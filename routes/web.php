@@ -146,9 +146,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 // Routes untuk Kepala Desa
 Route::middleware(['auth', 'role:kepala_desa'])->prefix('kepala_desa')->name('kepala_desa.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/hasil-kmeans', [App\Http\Controllers\Admin\HasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
-    Route::get('/hasil-kmeans/{id}', [App\Http\Controllers\Admin\HasilKmeansController::class, 'show'])->name('hasil-kmeans.show');
+    Route::get('/dashboard', [App\Http\Controllers\KepalaDesa\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/hasil-kmeans', [App\Http\Controllers\KepalaDesa\HasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
+    Route::get('/hasil-kmeans/{id}', [App\Http\Controllers\KepalaDesa\HasilKmeansController::class, 'show'])->name('hasil-kmeans.show');
     
     // Penduduk routes
     Route::get('/penduduk', [App\Http\Controllers\KepalaDesa\PendudukController::class, 'index'])->name('penduduk.index');
