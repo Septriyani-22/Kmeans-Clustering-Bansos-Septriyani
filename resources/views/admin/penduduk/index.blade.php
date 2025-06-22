@@ -83,7 +83,7 @@
                             <tbody>
                                 @forelse($penduduk as $p)
                                     <tr>
-                                        <td>{{ $p->no ?? $loop->iteration }}</td>
+                                        <td>{{ $loop->iteration + ($penduduk->currentPage() - 1) * $penduduk->perPage() }}</td>
                                         <td>{{ $p->nik }}</td>
                                         <td>{{ optional($p->user)->name ?? $p->nama }}</td>
                                         <td>{{ $p->tahun }}</td>

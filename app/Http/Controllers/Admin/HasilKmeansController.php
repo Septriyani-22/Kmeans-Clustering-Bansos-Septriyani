@@ -30,13 +30,19 @@ class HasilKmeansController extends Controller
 
         // Process distance results to get cluster counts
         $hasilKmeans = collect($distanceResults)->map(function($result) use (&$clusterCounts) {
-            $minDistance = min($result['distances']);
-            $clusterIndex = array_search($minDistance, $result['distances']);
-            $cluster = 'C' . ($clusterIndex + 1);
-            $clusterCounts[$cluster]++;
+            if (empty($result['cluster']) || empty($result['penduduk'])) {
+                return null;
+            }
+            $cluster = $result['cluster'];
+            if (isset($clusterCounts[$cluster])) {
+                $clusterCounts[$cluster]++;
+            }
             
             // Get penduduk data
             $penduduk = Penduduk::find($result['penduduk']->id);
+            if (!$penduduk) {
+                return null;
+            }
             
             return (object)[
                 'nama_penduduk' => $penduduk->nama,
@@ -51,12 +57,12 @@ class HasilKmeansController extends Controller
                     'Membutuhkan' : 
                     ($cluster === 'C2' ? 'Tidak Membutuhkan' : 'Prioritas sedang')
             ];
-        });
+        })->filter();
 
         // Get counts for each category
-        $layakBantuan = $clusterCounts['C1'];     // C1 - Membutuhkan
-        $tidakLayak = $clusterCounts['C2'];       // C2 - Tidak Membutuhkan
-        $prioritasSedang = $clusterCounts['C3'];  // C3 - Prioritas Sedang
+        $layakBantuan = $clusterCounts['C1'];    
+        $tidakLayak = $clusterCounts['C2'];       
+        $prioritasSedang = $clusterCounts['C3']; 
 
         return view('admin.hasil-kmeans.index', compact(
             'hasilKmeans',
@@ -135,10 +141,13 @@ class HasilKmeansController extends Controller
         ];
 
         foreach ($distanceResults as $result) {
-            $minDistance = min($result['distances']);
-            $clusterIndex = array_search($minDistance, $result['distances']);
-            $cluster = 'C' . ($clusterIndex + 1);
-            $clusterCounts[$cluster]++;
+            if (empty($result['cluster'])) {
+                continue;
+            }
+            $cluster = $result['cluster'];
+            if (isset($clusterCounts[$cluster])) {
+                $clusterCounts[$cluster]++;
+            }
         }
 
         $layakBantuan = $clusterCounts['C1']; // C1 - Membutuhkan
@@ -147,12 +156,16 @@ class HasilKmeansController extends Controller
 
         // Ambil data penduduk untuk setiap hasil
         $hasilKmeans = collect($distanceResults)->map(function($result) {
-            $minDistance = min($result['distances']);
-            $clusterIndex = array_search($minDistance, $result['distances']);
-            $cluster = 'C' . ($clusterIndex + 1);
+            if (empty($result['cluster']) || empty($result['penduduk'])) {
+                return null;
+            }
+            $cluster = $result['cluster'];
             
             // Ambil data penduduk
             $penduduk = Penduduk::find($result['penduduk']->id);
+            if (!$penduduk) {
+                return null;
+            }
             
             return (object)[
                 'nama_penduduk' => $penduduk->nama,
@@ -167,7 +180,7 @@ class HasilKmeansController extends Controller
                     'Membutuhkan' : 
                     ($cluster === 'C2' ? 'Tidak Membutuhkan' : 'Prioritas sedang')
             ];
-        })->filter(function($hasil) use ($clusters) {
+        })->filter()->filter(function($hasil) use ($clusters) {
             // Filter berdasarkan cluster yang dipilih
             $clusterNumber = (int)substr($hasil->cluster, 1);
             return in_array($clusterNumber, $clusters);

@@ -22,4 +22,9 @@ class MappingCentroid extends Model
         'status_kepemilikan',
         'jumlah_penghasilan'
     ];
+
+    public function penduduk()
+    {
+        return $this->belongsTo(Penduduk::class, 'data_ke');
+    }
 }

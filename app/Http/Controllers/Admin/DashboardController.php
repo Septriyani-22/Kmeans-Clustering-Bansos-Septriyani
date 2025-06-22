@@ -31,10 +31,14 @@ class DashboardController extends Controller
         $results = [];
         if (!empty($distanceResults)) {
             foreach ($distanceResults as $result) {
-                $minDistance = min($result['distances']);
-                $clusterIndex = array_search($minDistance, $result['distances']);
-                $cluster = 'C' . ($clusterIndex + 1);
-                $clusterCounts[$cluster]++;
+                if (empty($result['cluster']) || empty($result['penduduk'])) {
+                    continue;
+                }
+                
+                $cluster = $result['cluster'];
+                if (isset($clusterCounts[$cluster])) {
+                    $clusterCounts[$cluster]++;
+                }
                 
                 // Get penduduk data
                 $penduduk = Penduduk::find($result['penduduk']->id);
