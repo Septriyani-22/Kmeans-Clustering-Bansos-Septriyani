@@ -242,25 +242,19 @@
                         @enderror
                     </div>
 
-                    <div class="form-group">
-                        <label for="role">Role</label>
-                        <select id="role" name="role" class="form-control" required>
-                            <option value="admin">Admin</option>
-                            <option value="kepala_desa">Kepala Desa</option>
-                            <option value="penduduk">Penduduk</option>
-                        </select>
-                    </div>
+                    <!-- Role is now hidden and defaults to 'penduduk' -->
+                    <input type="hidden" name="role" value="penduduk">
 
-                    <button type="submit" class="btn btn-primary">
-                        Register
-                    </button>
-
-                    <div class="text-center mt-3">
-                        <a href="{{ route('login') }}">
-                            Sudah punya akun? Login di sini
-                        </a>
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">Register</button>
                     </div>
                 </form>
+
+                <p class="mt-3 text-center">
+                    <a href="{{ route('login') }}">
+                        Sudah punya akun? Login di sini
+                    </a>
+                </p>
             </div>
         </div>
     </div>

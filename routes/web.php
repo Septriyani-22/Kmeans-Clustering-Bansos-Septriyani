@@ -155,9 +155,9 @@ Route::middleware(['auth', 'role:kepala_desa'])->prefix('kepala_desa')->name('ke
     Route::get('/penduduk/{id}', [App\Http\Controllers\KepalaDesa\PendudukController::class, 'show'])->name('penduduk.show');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [PendudukDashboardController::class, 'index'])->name('penduduk.dashboard');
+Route::middleware(['auth', 'role:penduduk'])->prefix('dashboard')->group(function () {
+    Route::get('/', [PendudukDashboardController::class, 'index'])->name('penduduk.dashboard');
     Route::get('/profile/edit', [PendudukDashboardController::class, 'edit'])->name('penduduk.profile.edit');
     Route::put('/profile/update', [PendudukDashboardController::class, 'update'])->name('penduduk.profile.update');
-    // Rute lain yang memerlukan autentikasi bisa ditambahkan di sini
+    Route::post('/profile/lock', [PendudukDashboardController::class, 'lockProfile'])->name('penduduk.profile.lock');
 });

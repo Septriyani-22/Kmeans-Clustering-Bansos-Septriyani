@@ -23,6 +23,7 @@ class Penduduk extends Model
         'kondisi_rumah',
         'status_kepemilikan',
         'penghasilan',
+        'is_profile_complete',
     ];
 
     protected $casts = [
@@ -30,7 +31,8 @@ class Penduduk extends Model
         'usia' => 'integer',
         'rt' => 'integer',
         'tanggungan' => 'integer',
-        'penghasilan' => 'float'
+        'penghasilan' => 'float',
+        'is_profile_complete' => 'boolean',
     ];
 
     /**

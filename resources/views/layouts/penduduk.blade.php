@@ -39,10 +39,12 @@
           </div>
         </a>
         <div class="dropdown-menu dropdown-menu-right">
+          @if(Auth::user()->penduduk && !Auth::user()->penduduk->is_profile_complete)
           <a href="{{ route('penduduk.profile.edit') }}" class="dropdown-item">
             <i class="fas fa-user-edit mr-2"></i> Update Profile
           </a>
           <div class="dropdown-divider"></div>
+          @endif
           <form action="{{ route('logout') }}" method="POST" class="d-inline">
             @csrf
             <button type="submit" class="dropdown-item text-danger">
@@ -74,12 +76,14 @@
               <p>Dashboard</p>
             </a>
           </li>
+          @if(Auth::user()->penduduk && !Auth::user()->penduduk->is_profile_complete)
           <li class="nav-item">
             <a href="{{ route('penduduk.profile.edit') }}" class="nav-link {{ request()->routeIs('penduduk.profile.edit') ? 'active' : '' }}">
               <i class="nav-icon fas fa-user-edit"></i>
               <p>Update Data Diri</p>
             </a>
           </li>
+          @endif
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

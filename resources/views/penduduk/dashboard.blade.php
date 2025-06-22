@@ -35,7 +35,24 @@
                         </li>
                     </ul>
 
-                    <a href="{{ route('penduduk.profile.edit') }}" class="btn btn-primary btn-block"><b>Update Data Diri</b></a>
+                    @if(!$penduduk->is_profile_complete)
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ route('penduduk.profile.edit') }}" class="btn btn-primary">
+                                <i class="fas fa-edit mr-1"></i> Update Data
+                            </a>
+
+                            <form action="{{ route('penduduk.profile.lock') }}" method="POST" onsubmit="return confirm('Apakah Anda yakin? Setelah disubmit, data tidak bisa diubah lagi oleh Anda.');">
+                                @csrf
+                                <button type="submit" class="btn btn-success" {{-- Tombol disable jika NIK kosong --}} @if(empty($penduduk->nik)) disabled title="Harap lengkapi NIK Anda terlebih dahulu." @endif>
+                                    <i class="fas fa-check-circle mr-1"></i> Submit Final & Kunci Profil
+                                </button>
+                            </form>
+                        </div>
+                    @else
+                        <div class="alert alert-success text-center mt-3">
+                            <i class="fas fa-lock mr-1"></i> Profil Anda sudah final dan telah dikirim. Hubungi Admin untuk melakukan perubahan.
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
