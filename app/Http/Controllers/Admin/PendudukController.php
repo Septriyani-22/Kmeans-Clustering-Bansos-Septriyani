@@ -144,6 +144,7 @@ class PendudukController extends Controller
 
     public function edit(Penduduk $penduduk)
     {
+        $penduduk->load('user');
         return view('admin.penduduk.edit', compact('penduduk'));
     }
 
@@ -164,6 +165,12 @@ class PendudukController extends Controller
         ]);
 
         $penduduk->update($request->all());
+
+        // Jika ada user terkait, update juga namanya di tabel users
+        if ($penduduk->user) {
+            $penduduk->user->update(['name' => $request->nama]);
+        }
+
         return redirect()->route('admin.penduduk.index')->with('success', 'Data penduduk berhasil diperbarui!');
     }
 
