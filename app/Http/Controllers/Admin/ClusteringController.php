@@ -17,12 +17,7 @@ class ClusteringController extends Controller
 {
     public function index()
     {
-        $penduduk = Penduduk::all();
-        $centroids = Centroid::all();
-        $iterasi = Iterasi::all();
-        $hasilKmeans = HasilKmeans::with(['penduduk', 'centroid'])->get();
-        
-        return view('admin.clustering.index', compact('penduduk', 'centroids', 'iterasi', 'hasilKmeans'));
+        return view('admin.clustering.index');
     }
 
     public function proses(Request $request)

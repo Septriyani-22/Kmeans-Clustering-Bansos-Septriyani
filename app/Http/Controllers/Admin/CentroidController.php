@@ -29,7 +29,6 @@ class CentroidController extends Controller
         $penduduks = Penduduk::all();
         $distanceResults = session('distanceResults', []);
 
-        // Convert raw data to numerical values
         $convertedPenduduks = $penduduks->map(function($penduduk) {
             return [
                 'id' => $penduduk->id,
