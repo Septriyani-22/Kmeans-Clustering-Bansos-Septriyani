@@ -87,7 +87,6 @@
                                                     <th>Status Kepemilikan</th>
                                                     <th>Penghasilan</th>
                                                     <th>Cluster</th>
-                                                    <th>Kelayakan</th>
                                                     <th>Keterangan</th>
                                                 </tr>
                                             </thead>
