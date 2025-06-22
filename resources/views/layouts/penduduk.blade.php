@@ -60,7 +60,7 @@
     <!-- Brand Logo -->
     <a href="{{ route('penduduk.dashboard') }}" class="brand-link">
       <img src="{{ asset('images/logo.png') }}" alt="Bansos Kmeans Logo" class="brand-image img-circle elevation-3" style="opacity: .8; width: 40px; height: 40px; margin-right: 10px;">
-      <span class="brand-text font-weight-light">Dashboard</span>
+      <span class="brand-text font-weight-light">Bansos Kmeans</span>
     </a>
 
     <!-- Sidebar -->
