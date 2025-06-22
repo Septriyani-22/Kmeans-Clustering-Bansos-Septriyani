@@ -34,7 +34,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults()],
-            'role' => ['required', 'in:admin,kepala_desa'],
+            'role' => ['required', 'in:admin,kepala_desa,penduduk'],
         ]);
 
         User::create([
@@ -65,7 +65,7 @@ class UserController extends Controller
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'role' => 'required|in:admin,kepala_desa'
+            'role' => 'required|in:admin,kepala_desa,penduduk'
         ]);
 
         $user->update([

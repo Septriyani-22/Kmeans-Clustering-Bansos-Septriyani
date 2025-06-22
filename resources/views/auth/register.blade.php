@@ -243,16 +243,12 @@
                     </div>
 
                     <div class="form-group">
-                        <select class="form-control @error('role') is-invalid @enderror" name="role" required>
-                            <option value="">Pilih Role</option>
-                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                            <option value="kepala_desa" {{ old('role') == 'kepala_desa' ? 'selected' : '' }}>Kepala Desa</option>
+                        <label for="role">Role</label>
+                        <select id="role" name="role" class="form-control" required>
+                            <option value="admin">Admin</option>
+                            <option value="kepala_desa">Kepala Desa</option>
+                            <option value="penduduk">Penduduk</option>
                         </select>
-                        @error('role')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                        @enderror
                     </div>
 
                     <button type="submit" class="btn btn-primary">

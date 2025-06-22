@@ -35,6 +35,8 @@ class AuthController extends Controller
                 return redirect('/admin/dashboard');
             } elseif ($user->role === 'kepala_desa') {
                 return redirect('/kepala_desa/dashboard');
+            } elseif ($user->role === 'penduduk') {
+                return redirect('/dashboard');
             } else {
                 Auth::logout();
                 return back()->withErrors([
@@ -66,7 +68,7 @@ class AuthController extends Controller
             'username' => 'required|string|max:255|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:6',
-            'role' => 'required|in:admin,kepala_desa',
+            'role' => 'required|in:admin,kepala_desa,penduduk',
         ]);
 
         $user = User::create([
@@ -77,12 +79,21 @@ class AuthController extends Controller
             'role' => $request->role,
         ]);
 
+        if ($user->role === 'penduduk') {
+            $user->penduduk()->create([
+                'nama' => $user->name,
+                // Kolom lain akan null secara default
+            ]);
+        }
+
         Auth::login($user);
 
         if ($user->role === 'admin') {
             return redirect('/admin/dashboard');
         } elseif ($user->role === 'kepala_desa') {
             return redirect('/kepala_desa/dashboard');
+        } elseif ($user->role === 'penduduk') {
+            return redirect('/dashboard');
         } else {
             Auth::logout();
             return redirect('/login')->withErrors([

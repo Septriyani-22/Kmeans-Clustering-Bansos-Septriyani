@@ -11,6 +11,7 @@ class Penduduk extends Model
 
     protected $table = 'penduduk';
     protected $fillable = [
+        'user_id',
         'no',
         'nik',
         'nama',
@@ -21,7 +22,7 @@ class Penduduk extends Model
         'tanggungan',
         'kondisi_rumah',
         'status_kepemilikan',
-        'penghasilan'
+        'penghasilan',
     ];
 
     protected $casts = [
@@ -31,4 +32,12 @@ class Penduduk extends Model
         'tanggungan' => 'integer',
         'penghasilan' => 'float'
     ];
+
+    /**
+     * Get the user that owns the penduduk record.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

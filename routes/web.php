@@ -26,6 +26,7 @@ use App\Http\Controllers\KepalaDesa\HasilKmeansController as KepalaDesaHasilKmea
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\PendudukDashboardController;
 
 // Public routes
 Route::get('/', function () {
@@ -152,4 +153,11 @@ Route::middleware(['auth', 'role:kepala_desa'])->prefix('kepala_desa')->name('ke
     // Penduduk routes
     Route::get('/penduduk', [App\Http\Controllers\KepalaDesa\PendudukController::class, 'index'])->name('penduduk.index');
     Route::get('/penduduk/{id}', [App\Http\Controllers\KepalaDesa\PendudukController::class, 'show'])->name('penduduk.show');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [PendudukDashboardController::class, 'index'])->name('penduduk.dashboard');
+    Route::get('/profile/edit', [PendudukDashboardController::class, 'edit'])->name('penduduk.profile.edit');
+    Route::put('/profile/update', [PendudukDashboardController::class, 'update'])->name('penduduk.profile.update');
+    // Rute lain yang memerlukan autentikasi bisa ditambahkan di sini
 });

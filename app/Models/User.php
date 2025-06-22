@@ -60,4 +60,12 @@ class User extends Authenticatable
     {
         return $this->role === 'user';
     }
+
+    /**
+     * Get the penduduk record associated with the user.
+     */
+    public function penduduk()
+    {
+        return $this->hasOne(Penduduk::class);
+    }
 }

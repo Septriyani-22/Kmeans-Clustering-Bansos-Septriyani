@@ -27,9 +27,9 @@ class PendudukSeeder extends Seeder
                     continue;
                 }
 
-                // Mapping sesuai data_masukan.csv:
                 // NO,NIK,Nama,Tahun,Jenis Kelamin,Usia,Rt,Tanggungan ,Kondisi Rumah,Status Kepemilikan,Penghasilan
                 $data[] = [
+                    'no' => $row[0],
                     'nik' => $row[1],
                     'nama' => $row[2],
                     'tahun' => $row[3],

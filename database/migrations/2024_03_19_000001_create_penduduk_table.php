@@ -10,17 +10,21 @@ return new class extends Migration
     {
         Schema::create('penduduk', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
+            
+            // Kolom asli yang dipertahankan dan dibuat nullable
             $table->integer('no')->nullable();
-            $table->string('nik')->unique();
-            $table->string('nama');
-            $table->integer('tahun');
-            $table->enum('jenis_kelamin', ['L', 'P']);
-            $table->integer('usia');
-            $table->integer('rt');
-            $table->integer('tanggungan');
-            $table->enum('kondisi_rumah', ['baik', 'cukup', 'kurang']);
-            $table->enum('status_kepemilikan', ['hak milik', 'numpang', 'sewa']);
-            $table->decimal('penghasilan', 12, 2);
+            $table->string('nik')->unique()->nullable();
+            $table->string('nama')->nullable();
+            $table->integer('tahun')->nullable();
+            $table->enum('jenis_kelamin', ['L', 'P'])->nullable();
+            $table->integer('usia')->nullable();
+            $table->integer('rt')->nullable();
+            $table->integer('tanggungan')->nullable();
+            $table->enum('kondisi_rumah', ['baik', 'cukup', 'kurang'])->nullable();
+            $table->enum('status_kepemilikan', ['hak milik', 'numpang', 'sewa'])->nullable();
+            $table->decimal('penghasilan', 12, 2)->nullable();
+            
             $table->timestamps();
         });
     }
