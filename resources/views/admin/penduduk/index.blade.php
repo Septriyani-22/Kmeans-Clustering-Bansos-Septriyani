@@ -123,9 +123,9 @@
                     </div>
 
                     <!-- Pagination -->
-                    <!-- <div class="mt-3">
+                    <div class="mt-3">
                         {{ $penduduk->appends(request()->query())->links() }}
-                    </div> -->
+                    </div>
                 </div>
             </div>
         </div>

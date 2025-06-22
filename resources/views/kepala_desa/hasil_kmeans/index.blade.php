@@ -116,9 +116,9 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <!-- <div class="mt-3">
+                                    <div class="mt-3">
                                         {{ $results->links() }}
-                                    </div> -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
