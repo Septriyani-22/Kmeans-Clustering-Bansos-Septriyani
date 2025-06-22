@@ -101,12 +101,11 @@
                                                     <td>{{ $result->penduduk->kondisi_rumah }}</td>
                                                     <td>{{ $result->penduduk->status_kepemilikan }}</td>
                                                     <td>Rp {{ number_format($result->penduduk->penghasilan, 0, ',', '.') }}</td>
-                                                    <td>{{ $result->cluster }}</td>
-                                                    <td>{{ $result->cluster === 'C1' ? 'Layak' : 'Tidak Layak' }}</td>
+                                                    <td>{{ $result->centroid_id }}</td>
                                                     <td>
-                                                        @if($result->cluster === 'C1')
+                                                        @if($result->centroid_id === 'C1')
                                                             Membutuhkan
-                                                        @elseif($result->cluster === 'C2')
+                                                        @elseif($result->centroid_id === 'C2')
                                                             Tidak Membutuhkan
                                                         @else
                                                             Prioritas Sedang
@@ -117,9 +116,9 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="mt-3">
+                                    <!-- <div class="mt-3">
                                         {{ $results->links() }}
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>

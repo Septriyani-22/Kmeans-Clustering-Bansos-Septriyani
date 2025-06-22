@@ -14,46 +14,22 @@ class DashboardController extends Controller
     public function index()
     {
         $totalPenduduk = Penduduk::count();
-        $hasilKmeans = HasilKmeans::with('penduduk', 'centroid')->get();
 
-        $clusterCounts = $hasilKmeans->groupBy('centroid.nama_centroid')
-            ->map->count()
-            ->collect()
+        // Count clusters directly from the results table
+        $clusterCounts = HasilKmeans::select('centroid_id', DB::raw('count(*) as count'))
+            ->groupBy('centroid_id')
+            ->pluck('count', 'centroid_id')
             ->pipe(function ($collection) {
                 return [
-                    'C1' => $collection->get('C1', 0),
-                    'C2' => $collection->get('C2', 0),
-                    'C3' => $collection->get('C3', 0),
+                    'C1' => $collection->get(1, 0),
+                    'C2' => $collection->get(2, 0),
+                    'C3' => $collection->get(3, 0),
                 ];
             });
 
-        $results = $hasilKmeans->map(function ($hasil) {
-            if (!$hasil->penduduk || !$hasil->centroid) {
-                return null;
-            }
-            $cluster = $hasil->centroid->nama_centroid;
-            return [
-                'nik' => $hasil->penduduk->nik,
-                'nama' => $hasil->penduduk->nama,
-                'usia' => $hasil->penduduk->usia . ' tahun',
-                'tanggungan' => $hasil->penduduk->tanggungan . ' orang',
-                'kondisi_rumah' => $hasil->penduduk->kondisi_rumah,
-                'status_kepemilikan' => $hasil->penduduk->status_kepemilikan,
-                'penghasilan' => 'Rp ' . number_format($hasil->penduduk->penghasilan, 0, ',', '.'),
-                'cluster' => $cluster,
-                'kelayakan' => $cluster === 'C1' ? 'Layak' : 'Tidak Layak',
-                'keterangan' => $cluster === 'C1' ? 'Membutuhkan' : ($cluster === 'C2' ? 'Tidak Membutuhkan' : 'Prioritas sedang')
-            ];
-        })->filter()->values();
-
-        $totalData = $results->count();
-        $paginatedResults = new LengthAwarePaginator(
-            $results->forPage(request()->get('page', 1), 10),
-            $totalData,
-            10,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $paginatedResults = HasilKmeans::with('penduduk')->paginate(10);
+        
+        $totalData = $paginatedResults->total();
         
         $recentPenduduk = Penduduk::latest()->take(5)->get()->map(function ($penduduk) {
             return [
