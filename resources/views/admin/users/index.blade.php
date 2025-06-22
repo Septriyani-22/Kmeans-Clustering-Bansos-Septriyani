@@ -51,8 +51,12 @@
                                     <td>
                                         @if($user->role === 'admin')
                                             <span class="badge badge-primary">Admin</span>
-                                        @else
+                                        @elseif($user->role === 'kepala_desa')
                                             <span class="badge badge-info">Kepala Desa</span>
+                                        @elseif($user->role === 'penduduk')
+                                            <span class="badge badge-success">Penduduk</span>
+                                        @else
+                                            <span class="badge badge-secondary">{{ $user->role }}</span>
                                         @endif
                                     </td>
                                     <td>
