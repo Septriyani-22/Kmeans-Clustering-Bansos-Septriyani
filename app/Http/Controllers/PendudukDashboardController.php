@@ -46,6 +46,7 @@ class PendudukDashboardController extends Controller
 
         $request->validate([
             'nama' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'nik' => 'required|string|size:16|unique:penduduk,nik,' . $penduduk->id,
             'tahun' => 'required|integer',
@@ -58,11 +59,17 @@ class PendudukDashboardController extends Controller
             'penghasilan' => 'required|numeric',
         ]);
 
+        // Update tabel users
         $user->update([
             'name' => $request->nama,
+            'username' => $request->username,
             'email' => $request->email,
         ]);
-        $penduduk->update($request->except('nama', 'email', '_token', '_method'));
+        
+        // Update tabel penduduk, pastikan nama juga terupdate
+        $pendudukData = $request->except('email', 'username', '_token', '_method');
+        $pendudukData['nama'] = $request->nama;
+        $penduduk->update($pendudukData);
 
         return redirect()->route('penduduk.dashboard')->with('success', 'Data diri berhasil diperbarui.');
     }

@@ -21,7 +21,7 @@
                         <img class="profile-user-img img-fluid img-circle" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0D8ABC&color=fff" alt="User profile picture">
                     </div>
                     <h3 class="profile-username text-center">{{ $user->name }}</h3>
-                    <p class="text-muted text-center">Penduduk</p>
+                    <p class="text-muted text-center">{{ '@' . $user->username }}</p>
 
                     <ul class="list-group list-group-unbordered mb-3">
                         <li class="list-group-item">

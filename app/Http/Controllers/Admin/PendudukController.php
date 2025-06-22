@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Penduduk;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Exports\PendudukExport;
 use App\Imports\PendudukImport;
@@ -15,7 +16,7 @@ class PendudukController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Penduduk::query();
+        $query = Penduduk::with('user');
 
         // Search
         if ($request->has('search') && $request->search !== '') {
@@ -30,7 +31,12 @@ class PendudukController extends Controller
                   ->orWhere('tanggungan', 'like', "%{$search}%")
                   ->orWhere('kondisi_rumah', 'like', "%{$search}%")
                   ->orWhere('status_kepemilikan', 'like', "%{$search}%")
-                  ->orWhere('penghasilan', 'like', "%{$search}%");
+                  ->orWhere('penghasilan', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($userQuery) use ($search) {
+                      $userQuery->where('name', 'like', "%{$search}%")
+                                ->orWhere('username', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%");
+                  });
             });
         }
 

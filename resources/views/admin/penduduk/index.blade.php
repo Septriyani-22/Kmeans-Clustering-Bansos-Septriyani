@@ -85,7 +85,7 @@
                                     <tr>
                                         <td>{{ $p->no ?? $loop->iteration }}</td>
                                         <td>{{ $p->nik }}</td>
-                                        <td>{{ $p->nama }}</td>
+                                        <td>{{ optional($p->user)->name ?? $p->nama }}</td>
                                         <td>{{ $p->tahun }}</td>
                                         <td>{{ $p->jenis_kelamin }}</td>
                                         <td>{{ $p->usia }}</td>

@@ -75,6 +75,11 @@ class UserController extends Controller
             'role' => $request->role
         ]);
 
+        // Sync name to penduduk table if the user is a penduduk
+        if ($user->role === 'penduduk' && $user->penduduk) {
+            $user->penduduk->update(['nama' => $request->name]);
+        }
+
         return redirect()->route('admin.users.index')
             ->with('success', 'User berhasil diperbarui');
     }

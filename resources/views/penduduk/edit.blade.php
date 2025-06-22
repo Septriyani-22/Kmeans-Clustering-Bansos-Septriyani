@@ -26,6 +26,18 @@
                             @error('nama') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
+                        <!-- USERNAME -->
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-at"></i></span>
+                                </div>
+                                <input type="text" id="username" name="username" class="form-control @error('username') is-invalid @enderror" value="{{ old('username', $user->username) }}" required>
+                            </div>
+                            @error('username') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+
                         <!-- NIK -->
                         <div class="form-group">
                             <label for="nik">NIK</label>
