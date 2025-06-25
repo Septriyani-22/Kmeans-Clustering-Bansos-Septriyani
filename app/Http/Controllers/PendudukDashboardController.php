@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PendudukDashboardController extends Controller
 {
@@ -38,7 +39,14 @@ class PendudukDashboardController extends Controller
             return redirect()->route('penduduk.dashboard')->with('error', 'Aksi tidak diizinkan.');
         }
 
-        $request->validate([
+        $fileRules = [
+            'ktp_photo' => (!$penduduk || !$penduduk->ktp_photo || !Storage::disk('public')->exists($penduduk->ktp_photo)) ? 'required|image|mimes:jpeg,png,jpg|max:2048' : 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'sktm_file' => (!$penduduk || !$penduduk->sktm_file || !Storage::disk('public')->exists($penduduk->sktm_file)) ? 'required|mimes:pdf,jpeg,png,jpg|max:2048' : 'nullable|mimes:pdf,jpeg,png,jpg|max:2048',
+            'bukti_kepemilikan_file' => (!$penduduk || !$penduduk->bukti_kepemilikan_file || !Storage::disk('public')->exists($penduduk->bukti_kepemilikan_file)) ? 'required|mimes:pdf,jpeg,png,jpg|max:2048' : 'nullable|mimes:pdf,jpeg,png,jpg|max:2048',
+            'slip_gaji_file' => (!$penduduk || !$penduduk->slip_gaji_file || !Storage::disk('public')->exists($penduduk->slip_gaji_file)) ? 'required|mimes:pdf,jpeg,png,jpg|max:2048' : 'nullable|mimes:pdf,jpeg,png,jpg|max:2048',
+            'foto_rumah' => (!$penduduk || !$penduduk->foto_rumah || !Storage::disk('public')->exists($penduduk->foto_rumah)) ? 'required|image|mimes:jpeg,png,jpg|max:2048' : 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ];
+        $request->validate(array_merge([
             'nama' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
@@ -51,13 +59,7 @@ class PendudukDashboardController extends Controller
             'kondisi_rumah' => 'required|in:baik,cukup,kurang',
             'status_kepemilikan' => 'required|in:hak milik,numpang,sewa',
             'penghasilan' => 'required|numeric',
-            // Validasi file upload
-            'ktp_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'sktm_file' => 'nullable|mimes:pdf,jpeg,png,jpg|max:2048',
-            'bukti_kepemilikan_file' => 'nullable|mimes:pdf,jpeg,png,jpg|max:2048',
-            'slip_gaji_file' => 'nullable|mimes:pdf,jpeg,png,jpg|max:2048',
-            'foto_rumah' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        ], $fileRules));
 
         // Simpan data lama untuk log
         $dataLama = $penduduk->only([
