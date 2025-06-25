@@ -150,10 +150,22 @@
                 </div>
                 <div class="card-body">
                     @if($penduduk->hasilKmeans)
-                        <div class="alert alert-success">
-                            <b>Selamat!</b> Kamu termasuk kategori penerima bantuan periode {{ $penduduk->hasilKmeans->periode ?? '-' }}<br>
-                            <span class="text-muted">Cluster: {{ $penduduk->hasilKmeans->cluster ?? '-' }}</span>
-                        </div>
+                        @if($penduduk->hasilKmeans->cluster == 1)
+                            <div class="alert alert-success">
+                                <b>Selamat!</b> Kamu termasuk kategori <b>penerima bantuan</b> (Cluster Membutuhkan) periode {{ $penduduk->hasilKmeans->periode ?? '-' }}<br>
+                                <span class="text-muted">Cluster: 1 (Membutuhkan)</span>
+                            </div>
+                        @elseif($penduduk->hasilKmeans->cluster == 3)
+                            <div class="alert alert-warning">
+                                <b>Info:</b> Kamu termasuk <b>prioritas sedang</b> (Cluster 3). Bantuan akan diberikan jika kuota masih tersedia.<br>
+                                <span class="text-muted">Cluster: 3 (Prioritas Sedang)</span>
+                            </div>
+                        @else
+                            <div class="alert alert-info">
+                                <b>Maaf,</b> kamu <b>tidak termasuk penerima bantuan</b> periode ini.<br>
+                                <span class="text-muted">Cluster: 2 (Tidak Membutuhkan)</span>
+                            </div>
+                        @endif
                     @else
                         <div class="alert alert-info">Belum ada hasil penetapan penerima bantuan untuk periode berjalan.</div>
                     @endif

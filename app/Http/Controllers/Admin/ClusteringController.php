@@ -182,7 +182,7 @@ class ClusteringController extends Controller
 
         // Simpan hasil ke database
         foreach ($distanceResults as $result) {
-            HasilKmeans::create([
+            $hasil = HasilKmeans::create([
                 'penduduk_id' => $result['penduduk']->id,
                 'centroid_id' => $centroids[$result['cluster']]->id,
                 'cluster' => (int) substr($result['cluster'], 1),
@@ -191,6 +191,29 @@ class ClusteringController extends Controller
                 'tahun' => date('Y'),
                 'periode' => 1, // Atur sesuai kebutuhan
             ]);
+            // Log pengumuman hasil ke riwayat pengajuan
+            $penduduk = \App\Models\Penduduk::find($result['penduduk']->id);
+            if ($penduduk) {
+                $aksi = 'Pengumuman Hasil';
+                $keterangan = '';
+                if ($hasil->cluster == 1) {
+                    $keterangan = 'Ditetapkan sebagai penerima bantuan utama (Cluster Membutuhkan) periode ' . $hasil->periode;
+                } elseif ($hasil->cluster == 3) {
+                    $keterangan = 'Ditetapkan sebagai prioritas sedang (Cluster 3) periode ' . $hasil->periode;
+                } else {
+                    $keterangan = 'Tidak termasuk penerima bantuan (Cluster Tidak Membutuhkan) periode ' . $hasil->periode;
+                }
+                $penduduk->riwayatPengajuan()->create([
+                    'aksi' => $aksi,
+                    'keterangan' => $keterangan,
+                    'status' => 'pengumuman',
+                    'data_lama' => null,
+                    'data_baru' => json_encode([
+                        'periode' => $hasil->periode,
+                        'cluster' => $hasil->cluster
+                    ]),
+                ]);
+            }
         }
 
         session(['distanceResults' => $distanceResults]);
