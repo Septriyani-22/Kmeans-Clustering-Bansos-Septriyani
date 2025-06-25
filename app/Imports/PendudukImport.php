@@ -26,6 +26,7 @@ class PendudukImport implements ToModel, WithHeadingRow
             $nik = trim($row['nik']);
             $nama = trim($row['nama'] ?? '');
             $tahun = trim($row['tahun'] ?? date('Y'));
+            $tanggal_lahir = $tahun ? $tahun . '-01-01' : null;
             $jenis_kelamin = trim($row['jenis_kelamin'] ?? 'L');
             $usia = trim($row['usia'] ?? '0');
             $rt = trim($row['rt'] ?? '1');
@@ -47,7 +48,7 @@ class PendudukImport implements ToModel, WithHeadingRow
                 // Update data yang sudah ada
                 $penduduk->update([
                     'nama' => $nama,
-                    'tahun' => $tahun,
+                    'tanggal_lahir' => $tanggal_lahir,
                     'jenis_kelamin' => $jenis_kelamin,
                     'usia' => $usia,
                     'rt' => $rt,
@@ -63,7 +64,7 @@ class PendudukImport implements ToModel, WithHeadingRow
             return new Penduduk([
                 'nik' => $nik,
                 'nama' => $nama,
-                'tahun' => $tahun,
+                'tanggal_lahir' => $tanggal_lahir,
                 'jenis_kelamin' => $jenis_kelamin,
                 'usia' => $usia,
                 'rt' => $rt,

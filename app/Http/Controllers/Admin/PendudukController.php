@@ -24,7 +24,7 @@ class PendudukController extends Controller
             $query->where(function($q) use ($search) {
                 $q->where('nik', 'like', "%{$search}%")
                   ->orWhere('nama', 'like', "%{$search}%")
-                  ->orWhere('tahun', 'like', "%{$search}%")
+                  ->orWhere('tanggal_lahir', 'like', "%{$search}%")
                   ->orWhere('jenis_kelamin', 'like', "%{$search}%")
                   ->orWhere('usia', 'like', "%{$search}%")
                   ->orWhere('rt', 'like', "%{$search}%")
@@ -55,9 +55,9 @@ class PendudukController extends Controller
             $query->where('cluster', $request->cluster);
         }
 
-        // Filter by tahun
-        if ($request->filled('tahun')) {
-            $query->where('tahun', $request->tahun);
+        // Filter by tanggal_lahir
+        if ($request->filled('tanggal_lahir')) {
+            $query->where('tanggal_lahir', $request->tanggal_lahir);
         }
 
         // Filter by usia min/max
@@ -98,7 +98,7 @@ class PendudukController extends Controller
         if ($request->has('sort')) {
             $sort = $request->sort;
             $sorts = [
-                'no', 'nik', 'nama', 'tahun', 'jenis_kelamin', 'usia', 'rt', 'tanggungan', 'kondisi_rumah', 'status_kepemilikan', 'penghasilan'
+                'no', 'nik', 'nama', 'tanggal_lahir', 'jenis_kelamin', 'usia', 'rt', 'tanggungan', 'kondisi_rumah', 'status_kepemilikan', 'penghasilan'
             ];
             foreach ($sorts as $field) {
                 if ($sort === $field.'_asc') {
@@ -128,7 +128,7 @@ class PendudukController extends Controller
             'no' => 'nullable|integer',
             'nik' => 'required|unique:penduduk,nik',
             'nama' => 'required',
-            'tahun' => 'required|integer|min:2000|max:2100',
+            'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
             'usia' => 'required|integer|min:0',
             'rt' => 'required|integer|min:1',
@@ -154,7 +154,7 @@ class PendudukController extends Controller
             'no' => 'nullable|integer',
             'nik' => 'required|unique:penduduk,nik,' . $penduduk->id,
             'nama' => 'required',
-            'tahun' => 'required|integer|min:2000|max:2100',
+            'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
             'usia' => 'required|integer|min:0',
             'rt' => 'required|integer|min:1',
@@ -241,7 +241,7 @@ class PendudukController extends Controller
             $ids = $request->ids;
 
             // Validasi field yang diizinkan untuk update massal
-            $allowedFields = ['tahun', 'jenis_kelamin', 'rt', 'kondisi_rumah', 'status_kepemilikan'];
+            $allowedFields = ['tanggal_lahir', 'jenis_kelamin', 'rt', 'kondisi_rumah', 'status_kepemilikan'];
             if (!in_array($field, $allowedFields)) {
                 return response()->json([
                     'success' => false,
@@ -294,7 +294,7 @@ class PendudukController extends Controller
             $query->where(function($sub) use ($q) {
                 $sub->where('nik', 'like', "%{$q}%")
                     ->orWhere('nama', 'like', "%{$q}%")
-                    ->orWhere('tahun', 'like', "%{$q}%")
+                    ->orWhere('tanggal_lahir', 'like', "%{$q}%")
                     ->orWhere('jenis_kelamin', 'like', "%{$q}%")
                     ->orWhere('usia', 'like', "%{$q}%")
                     ->orWhere('rt', 'like', "%{$q}%")
@@ -307,7 +307,7 @@ class PendudukController extends Controller
         $results = $query->limit(10)->get();
         $suggestions = $results->map(function($item) {
             return [
-                'display' => $item->nik.' | '.$item->nama.' | '.$item->tahun.' | '.$item->jenis_kelamin.' | '.$item->usia.' | '.$item->rt.' | '.$item->tanggungan.' | '.$item->kondisi_rumah.' | '.$item->status_kepemilikan.' | '.$item->penghasilan
+                'display' => $item->nik.' | '.$item->nama.' | '.$item->tanggal_lahir.' | '.$item->jenis_kelamin.' | '.$item->usia.' | '.$item->rt.' | '.$item->tanggungan.' | '.$item->kondisi_rumah.' | '.$item->status_kepemilikan.' | '.$item->penghasilan
             ];
         });
         return response()->json($suggestions);

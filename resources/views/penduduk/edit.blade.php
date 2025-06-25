@@ -33,7 +33,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-at"></i></span>
                                 </div>
-                                <input type="text" id="username" name="username" class="form-control @error('username') is-invalid @enderror" value="{{ old('username', $user->username) }}" required>
+                                <input type="text" id="username" name="username" class="form-control @error('username') is-invalid @enderror" value="{{ old('username', $user->username) }}" required readonly>
                             </div>
                             @error('username') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
@@ -62,19 +62,19 @@
                             @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
 
-                        <!-- TAHUN & USIA (Side-by-side) -->
+                        <!-- TANGGAL LAHIR & USIA (Side-by-side) -->
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="tahun">Tahun</label>
-                                    <input type="number" id="tahun" name="tahun" class="form-control @error('tahun') is-invalid @enderror" value="{{ old('tahun', $penduduk->tahun) }}" required>
-                                    @error('tahun') <span class="text-danger">{{ $message }}</span> @enderror
+                                    <label for="tanggal_lahir">Tanggal Lahir</label>
+                                    <input type="date" id="tanggal_lahir" name="tanggal_lahir" class="form-control @error('tanggal_lahir') is-invalid @enderror" value="{{ old('tanggal_lahir', $penduduk->tanggal_lahir) }}" required>
+                                    @error('tanggal_lahir') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="usia">Usia</label>
-                                    <input type="number" id="usia" name="usia" class="form-control @error('usia') is-invalid @enderror" value="{{ old('usia', $penduduk->usia) }}" required>
+                                    <input type="number" id="usia" name="usia" class="form-control @error('usia') is-invalid @enderror" value="{{ old('usia', $penduduk->usia ?? 0) }}" required readonly>
                                     @error('usia') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>

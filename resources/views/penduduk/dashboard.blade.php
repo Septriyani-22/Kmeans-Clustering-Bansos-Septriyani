@@ -31,7 +31,7 @@
                             <b>Email</b> <a class="float-right">{{ $user->email ?? 'Belum diisi' }}</a>
                         </li>
                         <li class="list-group-item">
-                            <b>Tahun Data</b> <a class="float-right">{{ $penduduk->tahun ?? 'Belum diisi' }}</a>
+                            <b>Tanggal Lahir</b> <a class="float-right">{{ $penduduk->tanggal_lahir ? \Carbon\Carbon::parse($penduduk->tanggal_lahir)->format('d-m-Y') : 'Belum diisi' }}</a>
                         </li>
                     </ul>
 

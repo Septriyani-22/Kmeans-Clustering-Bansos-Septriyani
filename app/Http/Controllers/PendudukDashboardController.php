@@ -43,7 +43,7 @@ class PendudukDashboardController extends Controller
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'nik' => 'required|string|size:16|unique:penduduk,nik,' . optional($penduduk)->id,
-            'tahun' => 'required|integer',
+            'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
             'usia' => 'required|integer',
             'rt' => 'required|integer',
@@ -61,7 +61,7 @@ class PendudukDashboardController extends Controller
 
         // Simpan data lama untuk log
         $dataLama = $penduduk->only([
-            'nik','nama','tahun','jenis_kelamin','usia','rt','tanggungan','kondisi_rumah','status_kepemilikan','penghasilan',
+            'nik','nama','tanggal_lahir','jenis_kelamin','usia','rt','tanggungan','kondisi_rumah','status_kepemilikan','penghasilan',
             'ktp_photo','sktm_file','bukti_kepemilikan_file','slip_gaji_file','foto_rumah'
         ]);
 
@@ -100,7 +100,7 @@ class PendudukDashboardController extends Controller
 
         // Simpan data baru untuk log
         $dataBaru = $penduduk->only([
-            'nik','nama','tahun','jenis_kelamin','usia','rt','tanggungan','kondisi_rumah','status_kepemilikan','penghasilan',
+            'nik','nama','tanggal_lahir','jenis_kelamin','usia','rt','tanggungan','kondisi_rumah','status_kepemilikan','penghasilan',
             'ktp_photo','sktm_file','bukti_kepemilikan_file','slip_gaji_file','foto_rumah'
         ]);
 

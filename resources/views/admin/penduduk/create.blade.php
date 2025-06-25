@@ -35,9 +35,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label for="tahun">Tahun</label>
-                                    <input type="number" class="form-control @error('tahun') is-invalid @enderror" id="tahun" name="tahun" value="{{ old('tahun', date('Y')) }}" required>
-                                    @error('tahun')
+                                    <label for="tanggal_lahir">Tanggal Lahir</label>
+                                    <input type="date" class="form-control @error('tanggal_lahir') is-invalid @enderror" id="tanggal_lahir" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" required>
+                                    @error('tanggal_lahir')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>

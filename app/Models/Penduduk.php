@@ -15,7 +15,7 @@ class Penduduk extends Model
         'no',
         'nik',
         'nama',
-        'tahun',
+        'tanggal_lahir',
         'jenis_kelamin',
         'usia',
         'rt',
@@ -62,5 +62,13 @@ class Penduduk extends Model
     public function riwayatPengajuan()
     {
         return $this->hasMany(PengajuanRiwayat::class);
+    }
+
+    public function getUsiaAttribute($value)
+    {
+        if ($this->tanggal_lahir) {
+            return \Carbon\Carbon::parse($this->tanggal_lahir)->age;
+        }
+        return $value;
     }
 }

@@ -28,13 +28,15 @@ class PendudukSeeder extends Seeder
                 }
 
                 // NO,NIK,Nama,Tahun,Jenis Kelamin,Usia,Rt,Tanggungan ,Kondisi Rumah,Status Kepemilikan,Penghasilan
+                $usia = (int)$row[5];
+                $tahun_lahir = $usia > 0 ? (date('Y') - $usia) : null;
                 $data[] = [
                     'no' => $row[0],
                     'nik' => $row[1],
                     'nama' => $row[2],
-                    'tahun' => $row[3],
+                    'tanggal_lahir' => $tahun_lahir ? $tahun_lahir . '-01-01' : null,
                     'jenis_kelamin' => $row[4],
-                    'usia' => (int)$row[5],
+                    'usia' => $usia,
                     'rt' => (int)$row[6],
                     'tanggungan' => (int)trim($row[7]),
                     'kondisi_rumah' => trim($row[8]),
