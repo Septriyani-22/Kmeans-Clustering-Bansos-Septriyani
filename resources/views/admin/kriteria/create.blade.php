@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Tambah Kriteria - BANSOS KMEANS')
+@section('title', 'Tambah Kriteria - SibansosTanser')
 
 @section('content')
 <div class="container-fluid">

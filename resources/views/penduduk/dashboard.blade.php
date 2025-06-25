@@ -176,7 +176,7 @@
 
     <div class="row mt-4">
         <div class="col-12">
-            <div class="card card-info">
+            <div class="card card-info" id="riwayat-pengajuan">
                 <div class="card-header">
                     <h3 class="card-title"><i class="fas fa-history mr-1"></i> Riwayat Pengajuan Data</h3>
                 </div>

@@ -116,6 +116,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/hasil-kmeans', [HasilKmeansController::class, 'index'])->name('hasil-kmeans.index');
     Route::get('/hasil-kmeans/print', [HasilKmeansController::class, 'print'])->name('hasil-kmeans.print');
     Route::get('/hasil-kmeans/export', [HasilKmeansController::class, 'export'])->name('hasil-kmeans.export');
+    Route::post('/hasil-kmeans/refresh', [HasilKmeansController::class, 'refresh'])->name('hasil-kmeans.refresh');
 
     Route::post('/penduduk/mass-update', [App\Http\Controllers\Admin\PendudukController::class, 'massUpdate'])->name('penduduk.mass-update');
     Route::post('/penduduk/mass-delete', [App\Http\Controllers\Admin\PendudukController::class, 'massDelete'])->name('penduduk.mass-delete');

@@ -1,6 +1,6 @@
 @extends('layouts.kepala_desa')
 
-@section('title', 'Hasil K-Means - BANSOS KMEANS')
+@section('title', 'Hasil K-Means - SibansosTanser')
 
 @section('content')
 <div class="container-fluid">

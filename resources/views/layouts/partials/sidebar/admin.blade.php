@@ -19,12 +19,14 @@
 </li>
 
 
+{{--
 <li class="nav-item">
     <a href="{{ route('admin.clustering.index') }}" class="nav-link {{ request()->routeIs('admin.clustering.*') ? 'active' : '' }}">
         <i class="nav-icon fas fa-project-diagram"></i>
         <p>Clustering</p>
     </a>
 </li>
+--}}
 
 <!-- <li class="nav-item">
     <a href="{{ route('admin.centroid.index') }}" class="nav-link {{ request()->routeIs('admin.centroid.*') ? 'active' : '' }}">

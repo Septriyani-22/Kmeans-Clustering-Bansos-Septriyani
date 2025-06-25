@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Tambah User - BANSOS KMEANS')
+@section('title', 'Tambah User - SibansosTanser')
 
 @section('content')
 <div style="background:#fff; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.07); padding:32px 40px; max-width:900px; margin:0 auto;">

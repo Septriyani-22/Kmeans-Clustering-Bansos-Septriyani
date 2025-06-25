@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Clustering - BANSOS KMEANS')
+@section('title', 'Clustering - SibansosTanser')
 
 @section('content')
 <div class="container-fluid">
@@ -297,6 +297,16 @@
             $('#status_kepemilikan').val(selected.data('status-kepemilikan'));
             $('#jumlah_penghasilan').val(selected.data('penghasilan'));
         });
+
+        // Auto-submit clustering process if not already calculated
+        @if(empty($distanceResults))
+            $.post("{{ route('admin.clustering.proses') }}", {
+                _token: "{{ csrf_token() }}",
+                jumlah_iterasi: 1
+            }, function(){
+                location.reload();
+            });
+        @endif
     });
 </script>
 @endpush 

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Hasil K-Means - BANSOS KMEANS')
+@section('title', 'Hasil K-Means - SibansosTanser')
 
 @section('content')
 <div class="container-fluid">
@@ -10,6 +10,12 @@
                 <div class="card-header">
                     <h3 class="card-title">Hasil K-Means Clustering</h3>
                     <div class="card-tools">
+                        <form action="{{ route('admin.hasil-kmeans.refresh') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-success mr-2" onclick="return confirm('Yakin ingin memperbarui data clustering?')">
+                                <i class="fas fa-sync-alt"></i> Refresh Data
+                            </button>
+                        </form>
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#printWizardModal">
                             <i class="fas fa-print"></i> Cetak Clustering
                         </button>

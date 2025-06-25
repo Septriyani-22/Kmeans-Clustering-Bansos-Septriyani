@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Centroid - BANSOS KMEANS')
+@section('title', 'Centroid - SibansosTanser')
 
 @section('content')
 <div class="container-fluid">

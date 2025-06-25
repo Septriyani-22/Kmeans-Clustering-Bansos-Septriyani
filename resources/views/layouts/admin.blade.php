@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Bansos Kmeans</title>
+    <title>SibansosTanser</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -63,8 +63,8 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ route('admin.dashboard') }}" class="brand-link">
-                <img src="{{ asset('images/logo.png') }}" alt="Bansos Kmeans Logo" class="brand-image img-circle elevation-3" style="opacity: .8; width: 40px; height: 40px; margin-right: 10px;">
-      <span class="brand-text font-weight-light">BANSOS KMEANS</span>
+                <img src="{{ asset('images/logo.png') }}" alt="SibansosTanser Logo" class="brand-image img-circle elevation-3" style="opacity: .8; width: 40px; height: 40px; margin-right: 10px;">
+      <span class="brand-text font-weight-light">SibansosTanser</span>
     </a>
 
     <!-- Sidebar -->

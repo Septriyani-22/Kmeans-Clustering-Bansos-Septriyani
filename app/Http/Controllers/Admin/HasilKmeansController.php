@@ -15,11 +15,14 @@ class HasilKmeansController extends Controller
 {
     public function index()
     {
-        // Get distance results from session
-        $distanceResults = session('distanceResults', []);
-        
+        // Get data from database instead of session
+        $hasilKmeans = HasilKmeans::with(['penduduk', 'centroid'])
+            ->orderBy('cluster', 'asc')
+            ->orderBy('penduduk_id', 'asc')
+            ->get();
+
         // Calculate totals
-        $totalData = count($distanceResults);
+        $totalData = $hasilKmeans->count();
         
         // Initialize cluster counts
         $clusterCounts = [
@@ -28,36 +31,28 @@ class HasilKmeansController extends Controller
             'C3' => 0
         ];
 
-        // Process distance results to get cluster counts
-        $hasilKmeans = collect($distanceResults)->map(function($result) use (&$clusterCounts) {
-            if (empty($result['cluster']) || empty($result['penduduk'])) {
-                return null;
-            }
-            $cluster = $result['cluster'];
+        // Process database results
+        $hasilKmeans = $hasilKmeans->map(function($hasil) use (&$clusterCounts) {
+            $cluster = 'C' . $hasil->cluster;
             if (isset($clusterCounts[$cluster])) {
                 $clusterCounts[$cluster]++;
             }
             
-            // Get penduduk data
-            $penduduk = Penduduk::find($result['penduduk']->id);
-            if (!$penduduk) {
-                return null;
-            }
-            
             return (object)[
-                'nama_penduduk' => $penduduk->nama,
-                'usia' => $penduduk->usia,
-                'jumlah_tanggungan' => $penduduk->tanggungan,
-                'kondisi_rumah' => $penduduk->kondisi_rumah,
-                'status_kepemilikan' => $penduduk->status_kepemilikan,
-                'jumlah_penghasilan' => $penduduk->penghasilan,
+                'nama_penduduk' => $hasil->penduduk->nama,
+                'usia' => $hasil->penduduk->usia,
+                'jumlah_tanggungan' => $hasil->penduduk->tanggungan,
+                'kondisi_rumah' => $hasil->penduduk->kondisi_rumah,
+                'status_kepemilikan' => $hasil->penduduk->status_kepemilikan,
+                'jumlah_penghasilan' => $hasil->penduduk->penghasilan,
                 'cluster' => $cluster,
-                // 'kelayakan' => $cluster === 'C1' ? 'Layak' : 'Tidak Layak',
+                'jarak' => $hasil->jarak,
+                'periode' => $hasil->periode,
                 'keterangan' => $cluster === 'C1' ? 
                     'Membutuhkan' : 
                     ($cluster === 'C2' ? 'Tidak Membutuhkan' : 'Prioritas sedang')
             ];
-        })->filter();
+        });
 
         // Get counts for each category
         $layakBantuan = $clusterCounts['C1'];    
@@ -197,5 +192,20 @@ class HasilKmeansController extends Controller
 
         $pdf = PDF::loadView('admin.hasil-kmeans.print', $data);
         return $pdf->stream('hasil-kmeans.pdf');
+    }
+
+    public function refresh()
+    {
+        try {
+            // Run clustering process
+            $clusteringController = new ClusteringController();
+            $clusteringController->calculateDistances();
+            
+            return redirect()->route('admin.hasil-kmeans.index')
+                ->with('success', 'Data hasil clustering berhasil diperbarui!');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.hasil-kmeans.index')
+                ->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
+        }
     }
 } 

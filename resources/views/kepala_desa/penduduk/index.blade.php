@@ -1,6 +1,6 @@
 @extends('layouts.kepala_desa')
 
-@section('title', 'Data Penduduk - BANSOS KMEANS')
+@section('title', 'Data Penduduk - SibansosTanser')
 
 @section('content')
 <div class="container-fluid">

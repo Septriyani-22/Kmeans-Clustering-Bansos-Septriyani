@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Admin\ClusteringController;
+use App\Models\HasilKmeans;
 
 class PendudukDashboardController extends Controller
 {
@@ -133,7 +135,32 @@ class PendudukDashboardController extends Controller
                 'data_lama' => json_encode($dataLama),
                 'data_baru' => json_encode($dataBaru),
             ]);
-            return redirect()->route('penduduk.dashboard')->with('success', 'Profil Anda telah berhasil dikunci.');
+
+            // Auto-run clustering process after profile is locked
+            try {
+                // Check if clustering results exist for this penduduk
+                $existingResult = HasilKmeans::where('penduduk_id', $penduduk->id)->first();
+                
+                if (!$existingResult) {
+                    // Run clustering process
+                    $clusteringController = new ClusteringController();
+                    $clusteringController->calculateDistances();
+                    
+                    // Log the clustering process
+                    $penduduk->riwayatPengajuan()->create([
+                        'aksi' => 'Proses Clustering',
+                        'keterangan' => 'Sistem menjalankan proses clustering otomatis setelah profil dikunci',
+                        'status' => 'diproses',
+                        'data_lama' => null,
+                        'data_baru' => json_encode(['clustering_triggered' => true]),
+                    ]);
+                }
+            } catch (\Exception $e) {
+                // Log error but don't stop the process
+                \Log::error('Error running clustering after profile lock: ' . $e->getMessage());
+            }
+
+            return redirect()->route('penduduk.dashboard')->with('success', 'Profil Anda telah berhasil dikunci dan hasil clustering akan segera tersedia.');
         }
 
         return redirect()->route('penduduk.dashboard')->with('error', 'Gagal menemukan data penduduk.');

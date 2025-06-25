@@ -1,6 +1,6 @@
 @extends('layouts.kepala_desa')
 
-@section('title', 'Dashboard - BANSOS KMEANS')
+@section('title', 'Dashboard - SibansosTanser')
 
 @section('content')
 <div class="container-fluid">
