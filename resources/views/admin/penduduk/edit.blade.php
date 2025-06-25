@@ -110,6 +110,46 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label>Foto KTP</label><br>
+                            @if($penduduk->ktp_photo)
+                                <img src="{{ asset('storage/'.$penduduk->ktp_photo) }}" alt="Foto KTP" width="120">
+                            @else
+                                <span class="text-muted">Belum diupload</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Surat Keterangan Tidak Mampu</label><br>
+                            @if($penduduk->sktm_file)
+                                <a href="{{ asset('storage/'.$penduduk->sktm_file) }}" target="_blank">Lihat File</a>
+                            @else
+                                <span class="text-muted">Belum diupload</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Bukti Status Kepemilikan Rumah</label><br>
+                            @if($penduduk->bukti_kepemilikan_file)
+                                <a href="{{ asset('storage/'.$penduduk->bukti_kepemilikan_file) }}" target="_blank">Lihat File</a>
+                            @else
+                                <span class="text-muted">Belum diupload</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Slip Gaji</label><br>
+                            @if($penduduk->slip_gaji_file)
+                                <a href="{{ asset('storage/'.$penduduk->slip_gaji_file) }}" target="_blank">Lihat File</a>
+                            @else
+                                <span class="text-muted">Belum diupload</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
+                            <label>Foto Kondisi Rumah</label><br>
+                            @if($penduduk->foto_rumah)
+                                <img src="{{ asset('storage/'.$penduduk->foto_rumah) }}" alt="Foto Rumah" width="120">
+                            @else
+                                <span class="text-muted">Belum diupload</span>
+                            @endif
+                        </div>
+                        <div class="form-group">
                             <button type="submit" class="btn btn-primary">Simpan</button>
                             <a href="{{ route('admin.penduduk.index') }}" class="btn btn-secondary">Kembali</a>
                         </div>

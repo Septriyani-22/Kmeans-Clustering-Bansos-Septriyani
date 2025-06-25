@@ -24,6 +24,11 @@ class Penduduk extends Model
         'status_kepemilikan',
         'penghasilan',
         'is_profile_complete',
+        'ktp_photo',
+        'sktm_file',
+        'bukti_kepemilikan_file',
+        'slip_gaji_file',
+        'foto_rumah',
     ];
 
     protected $casts = [
@@ -49,5 +54,13 @@ class Penduduk extends Model
     public function hasilKmeans()
     {
         return $this->hasOne(HasilKmeans::class);
+    }
+
+    /**
+     * Get all riwayat pengajuan for this penduduk.
+     */
+    public function riwayatPengajuan()
+    {
+        return $this->hasMany(PengajuanRiwayat::class);
     }
 }

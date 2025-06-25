@@ -98,5 +98,104 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-file-alt mr-1"></i> Dokumen & Foto</h3>
+                </div>
+                <div class="card-body">
+                    <strong>Foto KTP:</strong><br>
+                    @if($penduduk->ktp_photo)
+                        <img src="{{ asset('storage/'.$penduduk->ktp_photo) }}" alt="Foto KTP" width="120">
+                    @else
+                        <span class="text-muted">Belum diupload</span>
+                    @endif
+                    <hr>
+                    <strong>Surat Keterangan Tidak Mampu:</strong><br>
+                    @if($penduduk->sktm_file)
+                        <a href="{{ asset('storage/'.$penduduk->sktm_file) }}" target="_blank">Lihat File</a>
+                    @else
+                        <span class="text-muted">Belum diupload</span>
+                    @endif
+                    <hr>
+                    <strong>Bukti Status Kepemilikan Rumah:</strong><br>
+                    @if($penduduk->bukti_kepemilikan_file)
+                        <a href="{{ asset('storage/'.$penduduk->bukti_kepemilikan_file) }}" target="_blank">Lihat File</a>
+                    @else
+                        <span class="text-muted">Belum diupload</span>
+                    @endif
+                    <hr>
+                    <strong>Slip Gaji:</strong><br>
+                    @if($penduduk->slip_gaji_file)
+                        <a href="{{ asset('storage/'.$penduduk->slip_gaji_file) }}" target="_blank">Lihat File</a>
+                    @else
+                        <span class="text-muted">Belum diupload</span>
+                    @endif
+                    <hr>
+                    <strong>Foto Kondisi Rumah:</strong><br>
+                    @if($penduduk->foto_rumah)
+                        <img src="{{ asset('storage/'.$penduduk->foto_rumah) }}" alt="Foto Rumah" width="120">
+                    @else
+                        <span class="text-muted">Belum diupload</span>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card card-success">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-award mr-1"></i> Status Penerima Bantuan</h3>
+                </div>
+                <div class="card-body">
+                    @if($penduduk->hasilKmeans)
+                        <div class="alert alert-success">
+                            <b>Selamat!</b> Kamu termasuk kategori penerima bantuan periode {{ $penduduk->hasilKmeans->periode ?? '-' }}<br>
+                            <span class="text-muted">Cluster: {{ $penduduk->hasilKmeans->cluster ?? '-' }}</span>
+                        </div>
+                    @else
+                        <div class="alert alert-info">Belum ada hasil penetapan penerima bantuan untuk periode berjalan.</div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card card-info">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-history mr-1"></i> Riwayat Pengajuan Data</h3>
+                </div>
+                <div class="card-body p-0">
+                    @if($riwayatPengajuan->count())
+                        <div class="table-responsive">
+                            <table class="table table-bordered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Keterangan</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($riwayatPengajuan as $riwayat)
+                                        <tr>
+                                            <td>{{ $riwayat->created_at->format('d-m-Y H:i') }}</td>
+                                            <td>{{ $riwayat->keterangan }}</td>
+                                            <td>{{ ucfirst($riwayat->status) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="p-3 text-center text-muted">Belum ada riwayat pengajuan data.</div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection 

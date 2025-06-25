@@ -24,6 +24,13 @@ return new class extends Migration
             $table->enum('kondisi_rumah', ['baik', 'cukup', 'kurang'])->nullable();
             $table->enum('status_kepemilikan', ['hak milik', 'numpang', 'sewa'])->nullable();
             $table->decimal('penghasilan', 12, 2)->nullable();
+
+            // Kolom file upload dokumen
+            $table->string('ktp_photo')->nullable();
+            $table->string('sktm_file')->nullable();
+            $table->string('bukti_kepemilikan_file')->nullable();
+            $table->string('slip_gaji_file')->nullable();
+            $table->string('foto_rumah')->nullable();
             
             $table->timestamps();
         });

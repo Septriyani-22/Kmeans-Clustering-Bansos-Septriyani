@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <form action="{{ route('penduduk.profile.update') }}" method="POST">
+    <form action="{{ route('penduduk.profile.update') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="row">
@@ -152,6 +152,48 @@
                                 <option value="sewa" {{ old('status_kepemilikan', $penduduk->status_kepemilikan) == 'sewa' ? 'selected' : '' }}>Sewa</option>
                             </select>
                             @error('status_kepemilikan') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+
+                        <!-- FILE UPLOADS -->
+                        <div class="form-group">
+                            <label for="ktp_photo">Upload Foto KTP</label>
+                            <input type="file" id="ktp_photo" name="ktp_photo" class="form-control-file @error('ktp_photo') is-invalid @enderror">
+                            @if($penduduk->ktp_photo)
+                                <div class="mt-2"><img src="{{ asset('storage/'.$penduduk->ktp_photo) }}" alt="Foto KTP" width="120"></div>
+                            @endif
+                            @error('ktp_photo') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="sktm_file">Upload Surat Keterangan Tidak Mampu</label>
+                            <input type="file" id="sktm_file" name="sktm_file" class="form-control-file @error('sktm_file') is-invalid @enderror">
+                            @if($penduduk->sktm_file)
+                                <div class="mt-2"><a href="{{ asset('storage/'.$penduduk->sktm_file) }}" target="_blank">Lihat File</a></div>
+                            @endif
+                            @error('sktm_file') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="bukti_kepemilikan_file">Upload Bukti Status Kepemilikan Rumah</label>
+                            <input type="file" id="bukti_kepemilikan_file" name="bukti_kepemilikan_file" class="form-control-file @error('bukti_kepemilikan_file') is-invalid @enderror">
+                            @if($penduduk->bukti_kepemilikan_file)
+                                <div class="mt-2"><a href="{{ asset('storage/'.$penduduk->bukti_kepemilikan_file) }}" target="_blank">Lihat File</a></div>
+                            @endif
+                            @error('bukti_kepemilikan_file') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="slip_gaji_file">Upload Slip Gaji</label>
+                            <input type="file" id="slip_gaji_file" name="slip_gaji_file" class="form-control-file @error('slip_gaji_file') is-invalid @enderror">
+                            @if($penduduk->slip_gaji_file)
+                                <div class="mt-2"><a href="{{ asset('storage/'.$penduduk->slip_gaji_file) }}" target="_blank">Lihat File</a></div>
+                            @endif
+                            @error('slip_gaji_file') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="foto_rumah">Upload Foto Kondisi Rumah</label>
+                            <input type="file" id="foto_rumah" name="foto_rumah" class="form-control-file @error('foto_rumah') is-invalid @enderror">
+                            @if($penduduk->foto_rumah)
+                                <div class="mt-2"><img src="{{ asset('storage/'.$penduduk->foto_rumah) }}" alt="Foto Rumah" width="120"></div>
+                            @endif
+                            @error('foto_rumah') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
                 </div>
