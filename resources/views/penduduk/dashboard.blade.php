@@ -152,17 +152,17 @@
                     @if($penduduk->hasilKmeans)
                         @if($penduduk->hasilKmeans->cluster == 1)
                             <div class="alert alert-success">
-                                Data anda <b>termasuk kategori penerima bantuan</b> (Membutuhkan) periode {{ $penduduk->hasilKmeans->periode ?? '-' }}<br>
+                                <b>Selamat!</b> Kamu termasuk kategori <b>penerima bantuan</b> (Cluster Membutuhkan) periode {{ $penduduk->hasilKmeans->periode ?? '-' }}<br>
                                 <span class="text-muted">Cluster: 1 (Membutuhkan)</span>
                             </div>
                         @elseif($penduduk->hasilKmeans->cluster == 3)
                             <div class="alert alert-warning">
-                                Data anda <b>termasuk kategori prioritas sedang</b> (Prioritas Sedang). Bantuan akan diberikan jika kuota masih tersedia.<br>
+                                <b>Info:</b> Kamu termasuk <b>prioritas sedang</b> (Cluster 3). Bantuan akan diberikan jika kuota masih tersedia.<br>
                                 <span class="text-muted">Cluster: 3 (Prioritas Sedang)</span>
                             </div>
                         @else
                             <div class="alert alert-info">
-                                Data anda <b>termasuk kategori tidak membutuhkan bantuan</b> periode ini.<br>
+                                <b>Maaf,</b> kamu <b>tidak termasuk penerima bantuan</b> periode ini.<br>
                                 <span class="text-muted">Cluster: 2 (Tidak Membutuhkan)</span>
                             </div>
                         @endif
