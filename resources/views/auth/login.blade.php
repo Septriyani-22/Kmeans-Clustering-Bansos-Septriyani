@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login Sistem Bansos</title>
+    <title>Login SibansosTanser</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -177,7 +177,7 @@
     <div class="login-box">
         <div class="login-logo">
             <img src="{{ asset('images/logo.png') }}" alt="Logo" style="width:100px; height:100px; margin-bottom:1rem; border-radius:50%; background:none;">
-            <h2><b>BANSOS</b><span>KMEANS</span></h2>
+            <h2><b>SibansosTanser</b></h2>
         </div>
         <div class="card">
             <div class="card-header">

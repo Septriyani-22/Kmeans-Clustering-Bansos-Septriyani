@@ -172,7 +172,7 @@
                                     <td>{{ $result['kondisi_rumah'] }}</td>
                                     <td>{{ $result['status_kepemilikan'] }}</td>
                                     <td>{{ $result['penghasilan'] }}</td>
-                                    <td>{{ $result['kelayakan'] }}</td>
+                                    <td>{{ $result['cluster'] }}</td>
                                     <td>{{ $result['keterangan'] }}</td>
                                 </tr>
                                 @empty

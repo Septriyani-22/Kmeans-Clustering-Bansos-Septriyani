@@ -267,7 +267,7 @@
 <body>
     <div class="container">
         <nav class="sidebar">
-            <h2>BANSOS<span style="font-weight:400;">KMEANS</span></h2>
+            <h2>SibansosTanser</h2>
             <ul>
                 <li class="{{ request()->is('/') ? 'active' : '' }}">
                     <a href="/"><i class="fas fa-home"></i><span>Menu Utama</span></a>
