@@ -35,9 +35,9 @@
 
                     <!-- Tab Navigation -->
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link active" id="data-penduduk-tab" data-toggle="tab" href="#data-penduduk" role="tab" aria-controls="data-penduduk" aria-selected="true">Data Penduduk (Konversi)</a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a class="nav-link" id="mapping-tab" data-toggle="tab" href="#mapping" role="tab" aria-controls="mapping" aria-selected="false">1. Mapping Centroid Awal</a>
                         </li>
@@ -49,7 +49,7 @@
                     <!-- Tab Content -->
                     <div class="tab-content" id="myTabContent">
                         <!-- Data Penduduk Konversi -->
-                        <div class="tab-pane fade show active" id="data-penduduk" role="tabpanel" aria-labelledby="data-penduduk-tab">
+                        <!-- <div class="tab-pane fade show active" id="data-penduduk" role="tabpanel" aria-labelledby="data-penduduk-tab">
                              <div class="pt-3">
                                 <p>Ini adalah data penduduk asli yang telah dikonversi ke dalam nilai numerik berdasarkan kriteria yang ada.</p>
                                 <div class="table-responsive">
@@ -85,7 +85,7 @@
                                     </table>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Mapping Centroid Tab -->
                         <div class="tab-pane fade" id="mapping" role="tabpanel" aria-labelledby="mapping-tab">
