@@ -71,8 +71,8 @@
                                     @error('tanggal_lahir') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
+                            <div class="col-sm-6" style="display: none;">
+                            <div class="form-group">
                                     <label for="usia">Usia</label>
                                     <input type="number" id="usia" name="usia" class="form-control @error('usia') is-invalid @enderror" value="{{ old('usia', $penduduk->usia ?? 0) }}" required readonly>
                                     @error('usia') <span class="text-danger">{{ $message }}</span> @enderror
