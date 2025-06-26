@@ -15,6 +15,7 @@ class Penduduk extends Model
         'no',
         'nik',
         'nama',
+        'tahun',
         'tanggal_lahir',
         'jenis_kelamin',
         'usia',

@@ -34,6 +34,7 @@ class PendudukSeeder extends Seeder
                     'no' => $row[0],
                     'nik' => $row[1],
                     'nama' => $row[2],
+                    'tahun' => $row[3],
                     'tanggal_lahir' => $tahun_lahir ? $tahun_lahir . '-01-01' : null,
                     'jenis_kelamin' => $row[4],
                     'usia' => $usia,

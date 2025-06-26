@@ -27,6 +27,7 @@ class PendudukController extends Controller
                   ->orWhere('tanggal_lahir', 'like', "%{$search}%")
                   ->orWhere('jenis_kelamin', 'like', "%{$search}%")
                   ->orWhere('usia', 'like', "%{$search}%")
+                  ->orWhere('tahun', 'like', "%{$search}%")
                   ->orWhere('rt', 'like', "%{$search}%")
                   ->orWhere('tanggungan', 'like', "%{$search}%")
                   ->orWhere('kondisi_rumah', 'like', "%{$search}%")
@@ -131,6 +132,7 @@ class PendudukController extends Controller
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
             'usia' => 'required|integer|min:0',
+            'tahun' => 'required|integer|min:0',
             'rt' => 'required|integer|min:1',
             'tanggungan' => 'required|integer|min:0',
             'kondisi_rumah' => 'required|in:baik,cukup,kurang',

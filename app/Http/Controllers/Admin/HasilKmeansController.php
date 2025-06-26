@@ -20,7 +20,7 @@ class HasilKmeansController extends Controller
             ->orderBy('cluster', 'asc')
             ->orderBy('penduduk_id', 'asc')
             ->get();
-
+        
         // Calculate totals
         $totalData = $hasilKmeans->count();
         

@@ -35,6 +35,13 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
+                                    <label for="tahun">Tahun</label>
+                                    <input type="number" class="form-control @error('tahun') is-invalid @enderror" id="tahun" name="tahun" value="{{ old('tahun') }}" min="2000" max="2100" required>
+                                    @error('tahun')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
                                     <label for="tanggal_lahir">Tanggal Lahir</label>
                                     <input type="date" class="form-control @error('tanggal_lahir') is-invalid @enderror" id="tanggal_lahir" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" required>
                                     @error('tanggal_lahir')
