@@ -106,9 +106,9 @@
                     <h3 class="card-title"><i class="fas fa-file-alt mr-1"></i> Dokumen & Foto</h3>
                 </div>
                 <div class="card-body">
-                    <strong>Foto KTP:</strong><br>
-                    @if($penduduk->ktp_photo)
-                        <img src="{{ asset('storage/'.$penduduk->ktp_photo) }}" alt="Foto KTP" width="120">
+                    <strong>Foto KK:</strong><br>
+                    @if($penduduk->kk_photo)
+                        <img src="{{ asset('storage/'.$penduduk->kk_photo) }}" alt="Foto KK" width="120">
                     @else
                         <span class="text-muted">Belum diupload</span>
                     @endif

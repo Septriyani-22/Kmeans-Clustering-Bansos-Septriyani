@@ -117,9 +117,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Foto KTP</label><br>
-                            @if($penduduk->ktp_photo)
-                                <img src="{{ asset('storage/'.$penduduk->ktp_photo) }}" alt="Foto KTP" width="120">
+                            <label>Foto KK</label><br>
+                            @if($penduduk->kk_photo)
+                                <img src="{{ asset('storage/'.$penduduk->kk_photo) }}" alt="Foto KK" width="120">
                             @else
                                 <span class="text-muted">Belum diupload</span>
                             @endif

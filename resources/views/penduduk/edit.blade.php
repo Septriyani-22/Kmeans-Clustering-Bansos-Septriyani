@@ -156,12 +156,12 @@
 
                         <!-- FILE UPLOADS -->
                         <div class="form-group">
-                            <label for="ktp_photo">Upload Foto KTP</label>
-                            <input type="file" id="ktp_photo" name="ktp_photo" class="form-control-file @error('ktp_photo') is-invalid @enderror">
-                            @if($penduduk->ktp_photo)
-                                <div class="mt-2"><img src="{{ asset('storage/'.$penduduk->ktp_photo) }}" alt="Foto KTP" width="120"></div>
+                            <label for="kk_photo">Upload Foto KTP</label>
+                            <input type="file" id="kk_photo" name="kk_photo" class="form-control-file @error('kk_photo') is-invalid @enderror">
+                            @if($penduduk->kk_photo)
+                                <div class="mt-2"><img src="{{ asset('storage/'.$penduduk->kk_photo) }}" alt="Foto KTP" width="120"></div>
                             @endif
-                            @error('ktp_photo') <span class="text-danger">{{ $message }}</span> @enderror
+                            @error('kk_photo') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="form-group">
                             <label for="sktm_file">Upload Surat Keterangan Tidak Mampu</label>

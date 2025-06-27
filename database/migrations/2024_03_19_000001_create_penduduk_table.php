@@ -27,7 +27,7 @@ return new class extends Migration
             $table->decimal('penghasilan', 12, 2)->nullable();
 
             // Kolom file upload dokumen
-            $table->string('ktp_photo')->nullable();
+            $table->string('kk_photo')->nullable();
             $table->string('sktm_file')->nullable();
             $table->string('bukti_kepemilikan_file')->nullable();
             $table->string('slip_gaji_file')->nullable();

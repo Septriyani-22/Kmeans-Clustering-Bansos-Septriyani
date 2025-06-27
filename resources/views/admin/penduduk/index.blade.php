@@ -77,7 +77,7 @@
                                     <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'kondisi_rumah_asc' ? 'kondisi_rumah_desc' : 'kondisi_rumah_asc'])) }}">Kondisi Rumah{!! request('sort') == 'kondisi_rumah_asc' ? ' ▲' : (request('sort') == 'kondisi_rumah_desc' ? ' ▼' : '') !!}</a></th>
                                     <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'status_kepemilikan_asc' ? 'status_kepemilikan_desc' : 'status_kepemilikan_asc'])) }}">Status Kepemilikan{!! request('sort') == 'status_kepemilikan_asc' ? ' ▲' : (request('sort') == 'status_kepemilikan_desc' ? ' ▼' : '') !!}</a></th>
                                     <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'penghasilan_asc' ? 'penghasilan_desc' : 'penghasilan_asc'])) }}">Penghasilan{!! request('sort') == 'penghasilan_asc' ? ' ▲' : (request('sort') == 'penghasilan_desc' ? ' ▼' : '') !!}</a></th>
-                                    <th>Foto KTP</th>
+                                    <th>Foto KK</th>
                                     <th>SKTM</th>
                                     <th>Bukti Kepemilikan</th>
                                     <th>Slip Gaji</th>
@@ -103,7 +103,7 @@
                                         </td>
                                         <td>{{ ucfirst($p->status_kepemilikan) }}</td>
                                         <td>Rp {{ number_format($p->penghasilan, 0, ',', '.') }}</td>
-                                        <td>@if($p->ktp_photo)<a href="{{ asset('storage/'.$p->ktp_photo) }}" target="_blank">Lihat</a>@else-@endif</td>
+                                        <td>@if($p->kk_photo)<a href="{{ asset('storage/'.$p->kk_photo) }}" target="_blank">Lihat</a>@else-@endif</td>
                                         <td>@if($p->sktm_file)<a href="{{ asset('storage/'.$p->sktm_file) }}" target="_blank">Lihat</a>@else-@endif</td>
                                         <td>@if($p->bukti_kepemilikan_file)<a href="{{ asset('storage/'.$p->bukti_kepemilikan_file) }}" target="_blank">Lihat</a>@else-@endif</td>
                                         <td>@if($p->slip_gaji_file)<a href="{{ asset('storage/'.$p->slip_gaji_file) }}" target="_blank">Lihat</a>@else-@endif</td>

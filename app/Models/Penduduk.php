@@ -25,7 +25,7 @@ class Penduduk extends Model
         'status_kepemilikan',
         'penghasilan',
         'is_profile_complete',
-        'ktp_photo',
+        'kk_photo',
         'sktm_file',
         'bukti_kepemilikan_file',
         'slip_gaji_file',
