@@ -90,6 +90,19 @@
                             </select>
                             @error('jenis_kelamin') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
+
+                        <!-- Tahun Periode -->
+                        <div class="form-group">
+                            <label for="tahun">Tahun Periode</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                </div>
+                                <input type="number" id="tahun" name="tahun" class="form-control @error('tahun') is-invalid @enderror" value="{{ old('tahun', $penduduk->tahun) }}" required>
+                            </div>
+                            @error('tahun') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -156,10 +169,10 @@
 
                         <!-- FILE UPLOADS -->
                         <div class="form-group">
-                            <label for="kk_photo">Upload Foto KTP</label>
+                            <label for="kk_photo">Upload Foto KK</label>
                             <input type="file" id="kk_photo" name="kk_photo" class="form-control-file @error('kk_photo') is-invalid @enderror">
                             @if($penduduk->kk_photo)
-                                <div class="mt-2"><img src="{{ asset('storage/'.$penduduk->kk_photo) }}" alt="Foto KTP" width="120"></div>
+                                <div class="mt-2"><img src="{{ asset('storage/'.$penduduk->kk_photo) }}" alt="Foto KK" width="120"></div>
                             @endif
                             @error('kk_photo') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>

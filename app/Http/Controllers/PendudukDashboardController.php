@@ -42,7 +42,7 @@ class PendudukDashboardController extends Controller
         }
 
         $fileRules = [
-            'kk_photo' => (!$penduduk || !$penduduk->kk_photo || !Storage::disk('public')->exists($penduduk->kk_photo)) ? 'required|image|mimes:jpeg,png,jpg|max:2048' : 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'ktp_photo' => (!$penduduk || !$penduduk->ktp_photo || !Storage::disk('public')->exists($penduduk->ktp_photo)) ? 'required|image|mimes:jpeg,png,jpg|max:2048' : 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'sktm_file' => (!$penduduk || !$penduduk->sktm_file || !Storage::disk('public')->exists($penduduk->sktm_file)) ? 'required|mimes:pdf,jpeg,png,jpg|max:2048' : 'nullable|mimes:pdf,jpeg,png,jpg|max:2048',
             'bukti_kepemilikan_file' => (!$penduduk || !$penduduk->bukti_kepemilikan_file || !Storage::disk('public')->exists($penduduk->bukti_kepemilikan_file)) ? 'required|mimes:pdf,jpeg,png,jpg|max:2048' : 'nullable|mimes:pdf,jpeg,png,jpg|max:2048',
             'slip_gaji_file' => (!$penduduk || !$penduduk->slip_gaji_file || !Storage::disk('public')->exists($penduduk->slip_gaji_file)) ? 'required|mimes:pdf,jpeg,png,jpg|max:2048' : 'nullable|mimes:pdf,jpeg,png,jpg|max:2048',
@@ -55,6 +55,7 @@ class PendudukDashboardController extends Controller
             'nik' => 'required|string|size:16|unique:penduduk,nik,' . optional($penduduk)->id,
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
+            'tahun' => 'required|integer',
             'usia' => 'required|integer',
             'rt' => 'required|integer',
             'tanggungan' => 'required|integer',
@@ -65,8 +66,8 @@ class PendudukDashboardController extends Controller
 
         // Simpan data lama untuk log
         $dataLama = $penduduk->only([
-            'nik','nama','tanggal_lahir','jenis_kelamin','usia','rt','tanggungan','kondisi_rumah','status_kepemilikan','penghasilan',
-            'kk_photo','sktm_file','bukti_kepemilikan_file','slip_gaji_file','foto_rumah'
+            'nik','nama','tanggal_lahir','tahun','jenis_kelamin','usia','rt','tanggungan','kondisi_rumah','status_kepemilikan','penghasilan',
+            'ktp_photo','sktm_file','bukti_kepemilikan_file','slip_gaji_file','foto_rumah'
         ]);
 
         // Update tabel users
@@ -82,7 +83,7 @@ class PendudukDashboardController extends Controller
 
         // Handle file upload
         $fileFields = [
-            'kk_photo',
+            'ktp_photo',
             'sktm_file',
             'bukti_kepemilikan_file',
             'slip_gaji_file',
@@ -105,7 +106,7 @@ class PendudukDashboardController extends Controller
         // Simpan data baru untuk log
         $dataBaru = $penduduk->only([
             'nik','nama','tanggal_lahir','jenis_kelamin','usia','rt','tanggungan','kondisi_rumah','status_kepemilikan','penghasilan',
-            'kk_photo','sktm_file','bukti_kepemilikan_file','slip_gaji_file','foto_rumah'
+            'ktp_photo','sktm_file','bukti_kepemilikan_file','slip_gaji_file','foto_rumah'
         ]);
 
         // Log riwayat pengajuan super detail

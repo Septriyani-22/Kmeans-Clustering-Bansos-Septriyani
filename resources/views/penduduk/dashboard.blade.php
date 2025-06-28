@@ -33,6 +33,9 @@
                         <li class="list-group-item">
                             <b>Tanggal Lahir</b> <a class="float-right">{{ $penduduk->tanggal_lahir ? \Carbon\Carbon::parse($penduduk->tanggal_lahir)->format('d-m-Y') : 'Belum diisi' }}</a>
                         </li>
+                        <li class="list-group-item">
+                            <b>Tahun Periode</b> <a class="float-right">{{ $penduduk->tahun ?? 'Belum diisi' }}</a>
+                        </li>
                     </ul>
 
                     @if(!$penduduk->is_profile_complete)
