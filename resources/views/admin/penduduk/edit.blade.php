@@ -14,13 +14,13 @@
                         @method('PUT')
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label for="no">No</label>
                                     <input type="number" class="form-control @error('no') is-invalid @enderror" id="no" name="no" value="{{ old('no', $penduduk->no) }}">
                                     @error('no')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                </div>
+                                </div> -->
                                 <div class="form-group">
                                     <label for="nik">NIK</label>
                                     <input type="text" class="form-control @error('nik') is-invalid @enderror" id="nik" name="nik" value="{{ old('nik', $penduduk->nik) }}" required>
@@ -96,9 +96,9 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label for="status_kepemilikan">Status Kepemilikan</label>
+                                    <label for="status_kepemilikan">Status Kepemilikan Rumah</label>
                                     <select class="form-control @error('status_kepemilikan') is-invalid @enderror" id="status_kepemilikan" name="status_kepemilikan" required>
-                                        <option value="">Pilih Status Kepemilikan</option>
+                                        <option value="">Pilih Status Kepemilikan Rumah</option>
                                         <option value="hak milik" {{ old('status_kepemilikan', $penduduk->status_kepemilikan) == 'hak milik' ? 'selected' : '' }}>Hak Milik</option>
                                         <option value="numpang" {{ old('status_kepemilikan', $penduduk->status_kepemilikan) == 'numpang' ? 'selected' : '' }}>Numpang</option>
                                         <option value="sewa" {{ old('status_kepemilikan', $penduduk->status_kepemilikan) == 'sewa' ? 'selected' : '' }}>Sewa</option>

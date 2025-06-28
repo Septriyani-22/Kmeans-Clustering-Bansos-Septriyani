@@ -75,11 +75,11 @@
                                     <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'rt_asc' ? 'rt_desc' : 'rt_asc'])) }}">Rt{!! request('sort') == 'rt_asc' ? ' ▲' : (request('sort') == 'rt_desc' ? ' ▼' : '') !!}</a></th>
                                     <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'tanggungan_asc' ? 'tanggungan_desc' : 'tanggungan_asc'])) }}">Tanggungan{!! request('sort') == 'tanggungan_asc' ? ' ▲' : (request('sort') == 'tanggungan_desc' ? ' ▼' : '') !!}</a></th>
                                     <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'kondisi_rumah_asc' ? 'kondisi_rumah_desc' : 'kondisi_rumah_asc'])) }}">Kondisi Rumah{!! request('sort') == 'kondisi_rumah_asc' ? ' ▲' : (request('sort') == 'kondisi_rumah_desc' ? ' ▼' : '') !!}</a></th>
-                                    <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'status_kepemilikan_asc' ? 'status_kepemilikan_desc' : 'status_kepemilikan_asc'])) }}">Status Kepemilikan{!! request('sort') == 'status_kepemilikan_asc' ? ' ▲' : (request('sort') == 'status_kepemilikan_desc' ? ' ▼' : '') !!}</a></th>
+                                    <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'status_kepemilikan_asc' ? 'status_kepemilikan_desc' : 'status_kepemilikan_asc'])) }}">Status Kepemilikan Rumah{!! request('sort') == 'status_kepemilikan_asc' ? ' ▲' : (request('sort') == 'status_kepemilikan_desc' ? ' ▼' : '') !!}</a></th>
                                     <th><a href="{{ route('admin.penduduk.index', array_merge(request()->except('sort', 'page'), ['sort' => request('sort') == 'penghasilan_asc' ? 'penghasilan_desc' : 'penghasilan_asc'])) }}">Penghasilan{!! request('sort') == 'penghasilan_asc' ? ' ▲' : (request('sort') == 'penghasilan_desc' ? ' ▼' : '') !!}</a></th>
                                     <th>Foto KK</th>
                                     <th>SKTM</th>
-                                    <th>Bukti Kepemilikan</th>
+                                    <th>Bukti Kepemilikan Rumah</th>
                                     <th>Slip Gaji</th>
                                     <th>Foto Rumah</th>
                                     <th>Actions</th>

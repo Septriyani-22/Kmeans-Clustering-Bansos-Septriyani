@@ -105,7 +105,7 @@ class PendudukDashboardController extends Controller
 
         // Simpan data baru untuk log
         $dataBaru = $penduduk->only([
-            'nik','nama','tanggal_lahir','jenis_kelamin','usia','rt','tanggungan','kondisi_rumah','status_kepemilikan','penghasilan',
+            'nik','nama','tanggal_lahir','jenis_kelamin','tahun','usia','rt','tanggungan','kondisi_rumah','status_kepemilikan','penghasilan',
             'ktp_photo','sktm_file','bukti_kepemilikan_file','slip_gaji_file','foto_rumah'
         ]);
 
