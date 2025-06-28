@@ -98,7 +98,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                                 </div>
-                                <input type="number" id="tahun" name="tahun" class="form-control @error('tahun') is-invalid @enderror" value="{{ old('tahun', $penduduk->tahun) }}" required>
+                                <input type="number" id="tahun" name="tahun" class="form-control @error('tahun') is-invalid @enderror" value="{{ old('tahun', $penduduk->tahun) }}" min="2000" max="2100" required>
                             </div>
                             @error('tahun') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
