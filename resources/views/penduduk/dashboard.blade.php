@@ -95,7 +95,7 @@
                     <strong><i class="fas fa-house-user mr-1"></i> Kondisi Rumah</strong>
                     <p class="text-muted text-capitalize">{{ $penduduk->kondisi_rumah ?? 'Belum diisi' }}</p>
                     <hr>
-                    <strong><i class="fas fa-file-signature mr-1"></i> Status Kepemilikan</strong>
+                    <strong><i class="fas fa-file-signature mr-1"></i> Status Kepemilikan Rumah</strong>
                     <p class="text-muted text-capitalize">{{ $penduduk->status_kepemilikan ?? 'Belum diisi' }}</p>
                 </div>
             </div>

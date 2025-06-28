@@ -157,7 +157,7 @@
 
                         <!-- STATUS KEPEMILIKAN -->
                         <div class="form-group">
-                            <label for="status_kepemilikan">Status Kepemilikan</label>
+                            <label for="status_kepemilikan">Status Kepemilikan Rumah</label>
                             <select id="status_kepemilikan" name="status_kepemilikan" class="form-control @error('status_kepemilikan') is-invalid @enderror" required>
                                 <option value="" disabled selected>Pilih Status</option>
                                 <option value="hak milik" {{ old('status_kepemilikan', $penduduk->status_kepemilikan) == 'hak milik' ? 'selected' : '' }}>Hak Milik</option>
