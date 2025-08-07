@@ -1,0 +1,149 @@
+Jul 16 10:34:40 server-kmeans-septri.com systemd[1]: Starting A high performance web server and a reverse proxy server...
+[0;38;5;245m░░ [0m[0;32mSubject: A start job for unit nginx.service has begun execution[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mA start job for unit nginx.service has begun execution.[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe job identifier is 139.[0m
+Jul 16 10:34:40 server-kmeans-septri.com nginx[856]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:34:40 server-kmeans-septri.com nginx[856]: nginx: [emerg] bind() to [::]:80 failed (98: Unknown error)
+Jul 16 10:34:41 server-kmeans-septri.com nginx[856]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:34:41 server-kmeans-septri.com nginx[856]: nginx: [emerg] bind() to [::]:80 failed (98: Unknown error)
+Jul 16 10:34:41 server-kmeans-septri.com nginx[856]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:34:41 server-kmeans-septri.com nginx[856]: nginx: [emerg] bind() to [::]:80 failed (98: Unknown error)
+Jul 16 10:34:42 server-kmeans-septri.com nginx[856]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:34:42 server-kmeans-septri.com nginx[856]: nginx: [emerg] bind() to [::]:80 failed (98: Unknown error)
+Jul 16 10:34:42 server-kmeans-septri.com nginx[856]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:34:42 server-kmeans-septri.com nginx[856]: nginx: [emerg] bind() to [::]:80 failed (98: Unknown error)
+Jul 16 10:34:43 server-kmeans-septri.com nginx[856]: nginx: [emerg] still could not bind()
+Jul 16 10:34:43 server-kmeans-septri.com systemd[1]: [0;1;39m[0;1;31m[0;1;39mnginx.service: Control process exited, code=exited, status=1/FAILURE[0m
+[0;38;5;245m░░ [0m[0;32mSubject: Unit process exited[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mAn ExecStart= process belonging to unit nginx.service has exited.[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe process' exit code is 'exited' and its exit status is 1.[0m
+Jul 16 10:34:43 server-kmeans-septri.com systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mnginx.service: Failed with result 'exit-code'.[0m
+[0;38;5;245m░░ [0m[0;32mSubject: Unit failed[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe unit nginx.service has entered the 'failed' state with result 'exit-code'.[0m
+Jul 16 10:34:43 server-kmeans-septri.com systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start A high performance web server and a reverse proxy server.[0m
+[0;38;5;245m░░ [0m[0;32mSubject: A start job for unit nginx.service has failed[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mA start job for unit nginx.service has finished with a failure.[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe job identifier is 139 and the job result is failed.[0m
+Jul 16 10:42:19 server-kmeans-septri.com systemd[1]: Starting A high performance web server and a reverse proxy server...
+[0;38;5;245m░░ [0m[0;32mSubject: A start job for unit nginx.service has begun execution[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mA start job for unit nginx.service has begun execution.[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe job identifier is 1203.[0m
+Jul 16 10:42:19 server-kmeans-septri.com nginx[12231]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:42:20 server-kmeans-septri.com nginx[12231]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:42:20 server-kmeans-septri.com nginx[12231]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:42:21 server-kmeans-septri.com nginx[12231]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:42:21 server-kmeans-septri.com nginx[12231]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:42:22 server-kmeans-septri.com nginx[12231]: nginx: [emerg] still could not bind()
+Jul 16 10:42:22 server-kmeans-septri.com systemd[1]: [0;1;39m[0;1;31m[0;1;39mnginx.service: Control process exited, code=exited, status=1/FAILURE[0m
+[0;38;5;245m░░ [0m[0;32mSubject: Unit process exited[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mAn ExecStart= process belonging to unit nginx.service has exited.[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe process' exit code is 'exited' and its exit status is 1.[0m
+Jul 16 10:42:22 server-kmeans-septri.com systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mnginx.service: Failed with result 'exit-code'.[0m
+[0;38;5;245m░░ [0m[0;32mSubject: Unit failed[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe unit nginx.service has entered the 'failed' state with result 'exit-code'.[0m
+Jul 16 10:42:22 server-kmeans-septri.com systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start A high performance web server and a reverse proxy server.[0m
+[0;38;5;245m░░ [0m[0;32mSubject: A start job for unit nginx.service has failed[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mA start job for unit nginx.service has finished with a failure.[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe job identifier is 1203 and the job result is failed.[0m
+Jul 16 10:44:05 server-kmeans-septri.com systemd[1]: Starting A high performance web server and a reverse proxy server...
+[0;38;5;245m░░ [0m[0;32mSubject: A start job for unit nginx.service has begun execution[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mA start job for unit nginx.service has begun execution.[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe job identifier is 1347.[0m
+Jul 16 10:44:05 server-kmeans-septri.com nginx[12295]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:44:06 server-kmeans-septri.com nginx[12295]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:44:06 server-kmeans-septri.com nginx[12295]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:44:07 server-kmeans-septri.com nginx[12295]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:44:07 server-kmeans-septri.com nginx[12295]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:44:08 server-kmeans-septri.com nginx[12295]: nginx: [emerg] still could not bind()
+Jul 16 10:44:08 server-kmeans-septri.com systemd[1]: [0;1;39m[0;1;31m[0;1;39mnginx.service: Control process exited, code=exited, status=1/FAILURE[0m
+[0;38;5;245m░░ [0m[0;32mSubject: Unit process exited[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mAn ExecStart= process belonging to unit nginx.service has exited.[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe process' exit code is 'exited' and its exit status is 1.[0m
+Jul 16 10:44:08 server-kmeans-septri.com systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mnginx.service: Failed with result 'exit-code'.[0m
+[0;38;5;245m░░ [0m[0;32mSubject: Unit failed[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe unit nginx.service has entered the 'failed' state with result 'exit-code'.[0m
+Jul 16 10:44:08 server-kmeans-septri.com systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start A high performance web server and a reverse proxy server.[0m
+[0;38;5;245m░░ [0m[0;32mSubject: A start job for unit nginx.service has failed[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mA start job for unit nginx.service has finished with a failure.[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe job identifier is 1347 and the job result is failed.[0m
+Jul 16 10:44:18 server-kmeans-septri.com systemd[1]: Starting A high performance web server and a reverse proxy server...
+[0;38;5;245m░░ [0m[0;32mSubject: A start job for unit nginx.service has begun execution[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mA start job for unit nginx.service has begun execution.[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe job identifier is 1419.[0m
+Jul 16 10:44:18 server-kmeans-septri.com nginx[12302]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:44:18 server-kmeans-septri.com nginx[12302]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:44:19 server-kmeans-septri.com nginx[12302]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:44:19 server-kmeans-septri.com nginx[12302]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:44:20 server-kmeans-septri.com nginx[12302]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Unknown error)
+Jul 16 10:44:20 server-kmeans-septri.com nginx[12302]: nginx: [emerg] still could not bind()
+Jul 16 10:44:20 server-kmeans-septri.com systemd[1]: [0;1;39m[0;1;31m[0;1;39mnginx.service: Control process exited, code=exited, status=1/FAILURE[0m
+[0;38;5;245m░░ [0m[0;32mSubject: Unit process exited[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mAn ExecStart= process belonging to unit nginx.service has exited.[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe process' exit code is 'exited' and its exit status is 1.[0m
+Jul 16 10:44:20 server-kmeans-septri.com systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mnginx.service: Failed with result 'exit-code'.[0m
+[0;38;5;245m░░ [0m[0;32mSubject: Unit failed[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe unit nginx.service has entered the 'failed' state with result 'exit-code'.[0m
+Jul 16 10:44:20 server-kmeans-septri.com systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start A high performance web server and a reverse proxy server.[0m
+[0;38;5;245m░░ [0m[0;32mSubject: A start job for unit nginx.service has failed[0m
+[0;38;5;245m░░[0m [0;32mDefined-By: systemd[0m
+[0;38;5;245m░░[0m [0;32mSupport: http://www.ubuntu.com/support[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mA start job for unit nginx.service has finished with a failure.[0m
+[0;38;5;245m░░[0m [0;32m[0m
+[0;38;5;245m░░[0m [0;32mThe job identifier is 1419 and the job result is failed.[0m
